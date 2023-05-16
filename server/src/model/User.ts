@@ -3,7 +3,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -27,10 +26,6 @@ export class User extends BaseEntity {
   password!: string
 
   @Field()
-  @Column()
-  userId!: number
-
-  @Field()
   @Column({ type: 'text' })
   displayName!: string
 
@@ -38,11 +33,21 @@ export class User extends BaseEntity {
   @Column({ type: 'boolean' })
   status!: boolean
 
-  @OneToMany(() => Post, post => post.userId)
+  @Field()
+  @Column({ type: 'text' })
+  pfp?: string
+
+  @Field()
+  @Column({ type: 'text' })
+  shoes?: string
+
+  @Field()
+  @Column()
   posts?: Post[]
 
-  @OneToMany(() => Reply, reply => reply.userId)
-  replies?: Reply
+  @Field()
+  @Column()
+  replies?: Reply[]
 
   @Field(() => String)
   @CreateDateColumn()

@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm'
 
 import { Reply } from './Reply'
@@ -27,8 +26,8 @@ export class Post extends BaseEntity {
   content!: string
 
   @Field()
-  @Column()
-  userId!: number
+  @Column({ type: 'text' })
+  owner!: string
 
   @Field()
   @Column()
@@ -38,7 +37,8 @@ export class Post extends BaseEntity {
   @Column({ type: 'text' })
   tag!: string
 
-  @OneToMany(() => Reply, reply => reply.userId)
+  @Field()
+  @Column()
   replies?: Reply[]
 
   @Field(() => String)

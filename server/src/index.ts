@@ -47,7 +47,7 @@ const main = async () => {
 
   const server = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [__dirname + '/resolvers/*.ts'],
+      resolvers: [(__dirname + '/resolvers/*.ts') as any],
       validate: false,
     }),
   })

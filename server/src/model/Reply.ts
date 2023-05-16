@@ -3,14 +3,10 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToOne,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-
-import { User } from './User'
-import { Post } from './Post'
 
 @ObjectType()
 @Entity()
@@ -19,10 +15,12 @@ export class Reply extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @OneToOne(() => User, user => user.userId)
-  userId!: number
+  @Field()
+  @Column()
+  displayName!: number
 
-  @OneToOne(() => Post, post => post.postId)
+  @Field()
+  @Column()
   postId!: number
 
   @Field()
