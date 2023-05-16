@@ -9,6 +9,7 @@ npm-debug.log
 
 # Package Dependancies
 package-lock.json
+yarn.lock
 
 # Build
 dist

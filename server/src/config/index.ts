@@ -1,15 +1,14 @@
-import mongoose from 'mongoose'
-import { MONGO_URI } from './consts'
+import { DataSource } from 'typeorm'
+import path from 'path'
 
-export const Mongoose = () => {
-  if (MONGO_URI) {
-    mongoose
-      .connect(MONGO_URI)
-      .then(x => {
-        console.log(
-          `Connected to Mongo! Database name: "${x.connection[0].name}`
-        )
-      })
-      .catch(e => console.error('Error connecting to Mongo', e))
-  }
-}
+export default new DataSource({
+  type: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  username: process.env.POSTGRES_USER || 'postgres',
+  password: process.env.POSTGRES_PASS || 'postgres',
+  database: 'fullstack',
+  synchronize: true,
+  logging: true,
+  entities: [path.join(__dirname, 'model/**/*.ts')],
+})

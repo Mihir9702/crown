@@ -1,5 +1,7 @@
 import 'dotenv/config'
 
-export const MONGO_URI = process.env.MONGOURI || process.env.MONGO_LOCAL
+export const __prod__ = process.env.NODE_ENV !== 'production'
 
-export const PORT = process.env.port || 3000
+export const PORT = process.env.PORT || 3000
+
+export const COOKIE = 'wrk'
