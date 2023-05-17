@@ -1,5 +1,6 @@
 import Image from "next/image";
-import Crown from "../assets/crown.png";
+import Link from "next/link";
+import Crown from "@/assets/crown.png";
 
 export default function Home() {
   return (
@@ -7,13 +8,21 @@ export default function Home() {
       <div className="z-10 w-full max-w-5xl items-center justify-center font-mono text-sm lg:flex">
         <div className="left-0 top-0 flex w-full justify-between gap-8 border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           <div className="flex gap-8">
-            <p className="hover:text-gray-800 cursor-pointer">Home</p>
-            <p className="hover:text-gray-800 cursor-pointer">About</p>
+            <Link href="/">
+              <p className="hover:text-gray-800 cursor-pointer">Home</p>
+            </Link>
+            <Link href="/about">
+              <p className="hover:text-gray-800 cursor-pointer">About</p>
+            </Link>
           </div>
 
           <div className="flex gap-8">
-            <p className="hover:text-gray-800 cursor-pointer">Forums</p>
-            <p className="hover:text-gray-800 cursor-pointer">Contact Us</p>
+            <Link href="/forum/maplestory">
+              <p className="hover:text-gray-800 cursor-pointer">Forums</p>
+            </Link>
+            <Link href="/contact">
+              <p className="hover:text-gray-800 cursor-pointer">Contact Us</p>
+            </Link>
           </div>
         </div>
       </div>
