@@ -17,15 +17,23 @@ export class Reply extends BaseEntity {
 
   @Field()
   @Column()
-  displayName!: number
+  displayName!: string
 
   @Field()
   @Column()
   postId!: number
 
   @Field()
+  @Column()
+  replyId!: number
+
+  @Field()
   @Column({ type: 'text' })
   content!: string
+
+  @Field()
+  @Column()
+  likes!: number
 
   @Field(() => String)
   @CreateDateColumn()

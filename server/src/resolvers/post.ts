@@ -61,7 +61,7 @@ export class PostResolver {
         owner: req.session.displayName,
         likes: 0,
         postId: randomNumber,
-      })
+      }).save()
       return post
     } else {
       throw new Error('Please log in')
