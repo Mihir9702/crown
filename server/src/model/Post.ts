@@ -29,13 +29,20 @@ export class Post extends BaseEntity {
   @Column({ type: 'text' })
   owner!: string
 
-  @Field()
   @Column()
   postId!: number
 
   @Field()
   @Column({ type: 'text' })
   tag!: string
+
+  @Field()
+  @Column()
+  pinned?: boolean
+
+  @Field()
+  @Column({ default: 0 })
+  likes!: number
 
   @Field()
   @Column()

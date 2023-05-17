@@ -124,12 +124,26 @@ export class UserResolver {
 
     req.session.displayName = user.displayName
 
+    user.status = true
+
+    await User.save(user)
+
     return user
   }
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async logout(@Ctx() { req }: MyContext): Promise<boolean> {
+    const user = await User.findOne({
+      where: { displayName: req.session.displayName },
+    })
+
+    if (!user) throw new Error('User not found')
+
+    user.status = false
+
+    await User.save(user)
+
     req.session.destroy(err => (err ? err : true))
 
     return true
