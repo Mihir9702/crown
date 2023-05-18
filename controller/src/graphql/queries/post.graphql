@@ -1,0 +1,8 @@
+query Post($postId: Float!) {
+  post(postId: $postId) {
+    header
+    content
+    owner
+    updatedAt
+  }
+}

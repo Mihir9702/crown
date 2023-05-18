@@ -1,0 +1,6 @@
+mutation CreateReply($postId: Float!, $content: String!) {
+  createReply(params: { postId: $postId, content: $content }) {
+    content
+    displayName
+  }
+}

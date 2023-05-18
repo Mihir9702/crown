@@ -1,6 +1,19 @@
-mutation UpdatePost($postId:Float!, $owner:String!,$pinned:Boolean!,$content:String!) {
-  updatePost(params: {postId:$postId, owner:$owner, pinned:$pinned, content:$content}) {
+mutation UpdatePost(
+  $postId: Float!
+  $owner: String!
+  $pinned: Boolean!
+  $content: String!
+) {
+  updatePost(
+    params: {
+      postId: $postId
+      owner: $owner
+      pinned: $pinned
+      content: $content
+    }
+  ) {
     header
     content
     owner
+  }
 }

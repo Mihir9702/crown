@@ -23,20 +23,16 @@ class ReCreate {
 }
 
 @InputType()
-class ReUpdate {
+class ReDelete {
+  @Field()
+  id!: number
+
   @Field()
   displayName!: string
-
-  @Field()
-  content!: string
-
-  @Field()
-  replyId!: number
 }
-
 @Resolver()
 export class ReplyResolver {
-  @Mutation(() => [Reply])
+  @Mutation(() => Reply)
   @UseMiddleware(isAuth)
   async createReply(
     @Arg('params') params: ReCreate,
@@ -60,27 +56,19 @@ export class ReplyResolver {
     return reply
   }
 
-  @Mutation(() => [Reply])
+  @Mutation(() => Reply)
   @UseMiddleware(isAuth)
-  async updateReply(
-    @Arg('params') params: ReUpdate,
+  async deleteReply(
+    @Arg('params') params: ReDelete,
     @Ctx() { req }: MyContext
-  ): Promise<Reply> {
-    if (
-      req.session.displayName &&
-      req.session.displayName === params.displayName
-    ) {
-      const reply = await Reply.findOne({
-        where: { replyId: params.replyId },
-      })
+  ): Promise<boolean> {
+    const reply = await Reply.findOne({
+      where: { id: params.id },
+    })
 
-      reply.content = params.content
-
-      await Reply.save(reply)
-
-      return reply
-    } else {
-      throw new Error('Please log in')
+    if (req.session.displayName === reply.displayName) {
+      await reply.remove()
+      return true
     }
   }
 }
