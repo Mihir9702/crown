@@ -41,12 +41,21 @@ class Update {
 }
 
 @InputType()
-class Num {
+class Digits {
   @Field()
   op: string
 
   @Field()
   postId: number
+}
+
+@InputType()
+class Delete {
+  @Field()
+  displayName!: string
+
+  @Field()
+  postId!: number
 }
 
 @Resolver()
@@ -92,7 +101,7 @@ export class PostResolver {
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
-  async likePost(@Arg('params') params: Num): Promise<Post> {
+  async likePost(@Arg('params') params: Digits): Promise<Post> {
     const post = await Post.findOne({
       where: { postId: params.postId },
     })
@@ -102,5 +111,26 @@ export class PostResolver {
       : (post.likes = post.likes - 1)
 
     return await Post.save(post)
+  }
+
+  @Mutation(() => Post)
+  @UseMiddleware(isAuth)
+  async deletePost(@Arg('params') params: Delete): Promise<Post> {
+    const post = await Post.findOne({
+      where: { postId: params.postId },
+    })
+
+    if (params.displayName === post.owner) {
+      await Post.remove(post)
+    } else {
+      throw new Error('Please log in to delete your post')
+    }
+
+    // const check = await Post.findOne({
+    //   where: { postId: params.postId },
+    // })
+
+    // return !check ? true : false
+    return post
   }
 }

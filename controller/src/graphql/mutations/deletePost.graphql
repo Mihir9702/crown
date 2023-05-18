@@ -1,0 +1,6 @@
+mutation DeletePost($displayName: String!, $postId: Float!) {
+  deletePost(params: { displayName: $displayName, postId: $postId }) {
+    postId
+    owner
+  }
+}

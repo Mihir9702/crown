@@ -22,6 +22,18 @@ import { isAuth } from '../middleware/isAuth'
 // email
 
 @InputType()
+class UpdateUser {
+  @Field({ nullable: true })
+  displayName!: string
+
+  @Field({ nullable: true })
+  pfp?: string
+
+  @Field({ nullable: true })
+  password?: string
+}
+
+@InputType()
 class Login {
   @Field()
   username!: string
@@ -158,6 +170,40 @@ export class UserResolver {
     await User.save(user)
 
     req.session.destroy(err => (err ? err : true))
+
+    return true
+  }
+
+  @Mutation(() => User)
+  @UseMiddleware(isAuth)
+  async updateUser(
+    @Arg('params') params: UpdateUser,
+    @Ctx() { req }: MyContext
+  ): Promise<User> {
+    const user = await User.findOne({
+      where: { displayName: req.session.displayName },
+    })
+
+    !params.displayName
+      ? (user.displayName = params.displayName)
+      : !params.pfp
+      ? (user.pfp = params.pfp)
+      : !params.password
+      ? (user.password = params.password)
+      : new Error('Please make some changes then hit "Save".')
+
+    return await User.save(user)
+  }
+
+  // delete button !! no need mutation
+  @Mutation(() => User)
+  @UseMiddleware(isAuth)
+  async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
+    const user = await User.findOne({
+      where: { displayName: req.session.displayName },
+    })
+
+    await user.remove()
 
     return true
   }

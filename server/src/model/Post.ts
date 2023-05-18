@@ -9,7 +9,6 @@ import {
 } from 'typeorm'
 
 import { Reply } from './Reply'
-import { Posties } from '../types'
 
 @ObjectType()
 @Entity()
@@ -30,6 +29,7 @@ export class Post extends BaseEntity {
   @Column({ type: 'text' })
   owner!: string
 
+  @Field()
   @Column()
   postId!: number
 

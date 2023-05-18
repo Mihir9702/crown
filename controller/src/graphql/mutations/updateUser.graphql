@@ -1,0 +1,8 @@
+mutation UpdateUser($displayName: String!, $pfp: String!, $password: String!) {
+  updateUser(
+    params: { displayName: $displayName, pfp: $pfp, password: $password }
+  ) {
+    displayName
+    pfp
+  }
+}
