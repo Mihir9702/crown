@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import express from 'express'
 import { COOKIE, PORT, __prod__ } from './config/consts'
 import db from './config'

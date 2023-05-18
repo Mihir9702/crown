@@ -10,6 +10,9 @@ npm-debug.log
 # Package Dependancies
 package-lock.json
 yarn.lock
+yarn-error.log
 
 # Build
 dist
+
+.next
