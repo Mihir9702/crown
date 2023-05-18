@@ -10,7 +10,7 @@ import {
 } from 'type-graphql'
 import { User } from '../model/User'
 import { MyContext } from '../types'
-import { hash, genSalt, compare } from 'bcrypt'
+import { hash, genSalt, compare } from 'bcryptjs'
 import {
   Config,
   adjectives,
@@ -19,15 +19,18 @@ import {
 } from 'unique-names-generator'
 import { isAuth } from '../middleware/isAuth'
 
+// email
+
 @InputType()
 class Login {
   @Field()
-  name!: string
+  username!: string
 
   @Field()
   password!: string
 }
 
+@InputType()
 class Signup {
   @Field()
   username!: string
@@ -43,7 +46,7 @@ class Signup {
 export class UserResolver {
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return User.find()
+    return await User.find()
   }
 
   @Query(() => User, { nullable: true })
@@ -55,7 +58,7 @@ export class UserResolver {
     const user = await User.findOne({
       where: { displayName: req.session.displayName },
     })
-    return user
+    return await user
   }
 
   @Mutation(() => User)
@@ -63,9 +66,22 @@ export class UserResolver {
     @Arg('params') params: Signup,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    const unoriginal = await User.findOne({
+    if (params.username.length < 2)
+      throw new Error('Username must be at least 2 characters')
+    if (params.password.length < 4)
+      throw new Error('Password must be at least 4 characters')
+
+    const usernameTaken = await User.findOne({
       where: { username: params.username },
     })
+
+    if (usernameTaken) throw new Error('Username already taken')
+
+    const nameTaken = await User.findOne({
+      where: { displayName: params.displayName },
+    })
+
+    if (nameTaken) throw new Error('Already taken')
 
     const config: Config = {
       dictionaries: [adjectives, colors],
@@ -74,29 +90,24 @@ export class UserResolver {
 
     const randomName = uniqueNamesGenerator(config)
 
-    const name = await User.findOne({
-      where: { displayName: params.displayName },
-    })
-
-    const disappointed = await User.findOne({
+    const failedGeneration = await User.findOne({
       where: { displayName: randomName },
     })
 
-    if (unoriginal) throw new Error('Username already taken')
-    if (disappointed) throw new Error('disappointed already')
-    if (name) throw new Error('Already taken')
-    if (params.username.length < 2)
-      throw new Error('Username must be at least 2 characters')
-    if (params.password.length < 4)
-      throw new Error('Password must be at least 4 characters')
+    if (failedGeneration)
+      throw new Error('Generation of a random name has failed')
+
+    const def =
+      'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'
 
     const hashedPassword = await hash(params.password, await genSalt(10))
 
-    const user = await User.create({
+    const user: User = await User.create({
       username: params.username.toLowerCase(),
       password: hashedPassword,
       displayName: randomName,
       status: true,
+      pfp: def,
     }).save()
 
     req.session.displayName = user.displayName
@@ -109,11 +120,11 @@ export class UserResolver {
     @Arg('params') params: Login,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    if (!params.name) throw new Error('Username not provided')
+    if (!params.username) throw new Error('Username not provided')
     if (!params.password) throw new Error('Password not provided')
 
     const user = await User.findOne({
-      where: { username: params.name } || { displayName: params.name },
+      where: { username: params.username },
     })
 
     if (!user) throw new Error('User not found')
@@ -125,6 +136,10 @@ export class UserResolver {
     req.session.displayName = user.displayName
 
     user.status = true
+
+    if (!user.pfp)
+      user.pfp =
+        'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'
 
     await User.save(user)
 

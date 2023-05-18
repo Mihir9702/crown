@@ -6,10 +6,12 @@ import {
   Mutation,
   Field,
   Ctx,
+  UseMiddleware,
 } from 'type-graphql'
 import { Post } from '../model/Post'
 import { MyContext } from '../types'
-import { generateNumber } from '../helpers'
+import { generateNumber } from '../consts'
+import { isAuth } from '../middleware/isAuth'
 
 @InputType()
 class Create {
@@ -35,19 +37,29 @@ class Update {
   content!: string
 }
 
+@InputType()
+class Num {
+  @Field()
+  op: string
+
+  @Field()
+  postId: number
+}
+
 @Resolver()
 export class PostResolver {
-  @Query(() => [Post])
-  async post(@Arg('params') params: { postId: number }): Promise<Post> {
-    return Post.findOne({ where: { postId: params.postId } })
+  @Query(() => Post)
+  async post(@Arg('postId') postId: number): Promise<Post> {
+    return Post.findOne({ where: { postId: postId } })
   }
 
   @Query(() => [Post])
-  async posts(@Arg('params') params: { tag: string }): Promise<Post[]> {
-    return Post.find({ where: { tag: params.tag } })
+  async posts(@Arg('tag') tag: string): Promise<Post[]> {
+    return Post.find({ where: { tag: tag } })
   }
 
   @Mutation(() => [Post])
+  @UseMiddleware(isAuth)
   async createPost(
     @Arg('params') params: Create,
     @Ctx() { req }: MyContext
@@ -69,6 +81,7 @@ export class PostResolver {
   }
 
   @Mutation(() => [Post])
+  @UseMiddleware(isAuth)
   async updatePost(
     @Arg('params') params: Update,
     @Ctx() { req }: MyContext
@@ -90,8 +103,9 @@ export class PostResolver {
   }
 
   @Mutation(() => [Post])
+  @UseMiddleware(isAuth)
   async likePost(
-    @Arg('params') params: { op: string; postId: number },
+    @Arg('params') params: Num,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     if (req.session.displayName) {

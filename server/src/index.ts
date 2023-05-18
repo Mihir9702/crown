@@ -1,14 +1,16 @@
 import express from 'express'
-import { COOKIE, PORT, __prod__ } from './config/consts'
-import db from './config'
+import { COOKIE, PORT, __prod__ } from './consts'
+import db from './conn'
 import cors from 'cors'
 import session from 'express-session'
 import { buildSchema } from 'type-graphql'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
-import { ApolloServer } from '@apollo/server'
-import { expressMiddleware } from '@apollo/server/express4'
-import { json } from 'body-parser'
+
+import { createYoga } from 'graphql-yoga'
+import { UserResolver } from './resolvers/user'
+import { PostResolver } from './resolvers/post'
+import { ReplyResolver } from './resolvers/reply'
 
 const main = async () => {
   await db.initialize()
@@ -20,10 +22,10 @@ const main = async () => {
   app.use(cookieParser())
 
   // might have to set to 1
-  app.set('trust proxy', __prod__)
+  app.set('trust proxy', 1)
   app.use(
     cors({
-      origin: 'http://localhost:8080',
+      origin: 'http://localhost:3000',
       credentials: true,
     })
   )
@@ -38,30 +40,23 @@ const main = async () => {
         secure: !__prod__,
       },
       saveUninitialized: false,
-      secret:
-        (process.env.SESSION_SECRET as string) || 'akwljdlkawmdlkawjdoiajkl',
+      secret: process.env.SESSION_SECRET as string,
       resave: false,
     })
   )
 
-  const server = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [(__dirname + '/resolvers/*.ts') as any],
-      validate: false,
-    }),
+  const schema = await buildSchema({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolvers: [UserResolver, PostResolver, ReplyResolver],
+    validate: false,
   })
 
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>,
-    json(),
-    expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
-    })
-  )
+  const yoga = createYoga({ schema })
+
+  app.use('/graphql', yoga)
 
   app.listen(PORT, () =>
-    console.log('🚀 Server started on http://localhost:3000')
+    console.log(`🚀 Server started on http:localhost:${PORT}/graphql`)
   )
 }
 

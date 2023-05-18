@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm'
 
 import { Reply } from './Reply'
@@ -44,9 +46,10 @@ export class Post extends BaseEntity {
   @Column({ default: 0 })
   likes!: number
 
-  @Field()
-  @Column()
-  replies?: Reply[]
+  @OneToMany(() => Reply, reply => reply.postId)
+  @JoinColumn({ name: 'postId' })
+  @Column('text', { array: true })
+  replies: Reply[]
 
   @Field(() => String)
   @CreateDateColumn()

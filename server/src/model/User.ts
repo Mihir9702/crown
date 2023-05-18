@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm'
 import { Post } from './Post'
 import { Reply } from './Reply'
@@ -33,20 +35,22 @@ export class User extends BaseEntity {
   @Column({ type: 'boolean' })
   status!: boolean
 
-  @Field()
-  @Column({ type: 'text' })
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   pfp?: string
 
-  @Field()
-  @Column({ type: 'text' })
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   shoes?: string
 
-  @Field()
-  @Column()
+  // @OneToMany(() => Post, post => post.postId)
+  @Field(() => Post, { nullable: true })
+  @Column('text', { array: true, nullable: true })
   posts?: Post[]
 
-  @Field()
-  @Column()
+  // @OneToMany(() => Reply, reply => reply.displayName)
+  @Field(() => Reply, { nullable: true })
+  @Column('text', { array: true, nullable: true })
   replies?: Reply[]
 
   @Field(() => String)

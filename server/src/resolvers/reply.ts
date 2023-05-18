@@ -1,11 +1,20 @@
-import { Resolver, Arg, InputType, Mutation, Field, Ctx } from 'type-graphql'
+import {
+  Resolver,
+  Arg,
+  InputType,
+  Mutation,
+  Field,
+  Ctx,
+  UseMiddleware,
+} from 'type-graphql'
 import { MyContext } from '../types'
 import { Reply } from '../model/Reply'
 import { Post } from '../model/Post'
-import { generateNumber } from '../helpers'
+import { generateNumber } from '../consts'
+import { isAuth } from '../middleware/isAuth'
 
 @InputType()
-class Create {
+class ReCreate {
   @Field()
   postId!: number
 
@@ -14,7 +23,7 @@ class Create {
 }
 
 @InputType()
-class Update {
+class ReUpdate {
   @Field()
   displayName!: string
 
@@ -28,8 +37,9 @@ class Update {
 @Resolver()
 export class ReplyResolver {
   @Mutation(() => [Reply])
+  @UseMiddleware(isAuth)
   async createReply(
-    @Arg('params') params: Create,
+    @Arg('params') params: ReCreate,
     @Ctx() { req }: MyContext
   ): Promise<Reply> {
     const reply = await Reply.create({
@@ -51,8 +61,9 @@ export class ReplyResolver {
   }
 
   @Mutation(() => [Reply])
+  @UseMiddleware(isAuth)
   async updateReply(
-    @Arg('params') params: Update,
+    @Arg('params') params: ReUpdate,
     @Ctx() { req }: MyContext
   ): Promise<Reply> {
     if (

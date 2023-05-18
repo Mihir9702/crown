@@ -2,8 +2,10 @@
   "compilerOptions": {
     "rootDirs": ["src"],
     "outDir": "dist",
+    "baseUrl": ".",
+    "skipLibCheck": true,
     "lib": ["ES2016"],
-    "target": "ESNext",
+    "target": "es2020",
     "module": "CommonJS",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -11,6 +13,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
