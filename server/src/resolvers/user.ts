@@ -58,7 +58,7 @@ export class UserResolver {
     const user = await User.findOne({
       where: { displayName: req.session.displayName },
     })
-    return await user
+    return user
   }
 
   @Mutation(() => User)
@@ -141,9 +141,7 @@ export class UserResolver {
       user.pfp =
         'https://cdn.landesa.org/wp-content/uploads/default-user-image.png'
 
-    await User.save(user)
-
-    return user
+    return await User.save(user)
   }
 
   @Mutation(() => Boolean)

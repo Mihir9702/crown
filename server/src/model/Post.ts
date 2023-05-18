@@ -6,11 +6,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
-  JoinColumn,
 } from 'typeorm'
 
 import { Reply } from './Reply'
+import { Posties } from '../types'
 
 @ObjectType()
 @Entity()
@@ -34,21 +33,21 @@ export class Post extends BaseEntity {
   @Column()
   postId!: number
 
-  @Field()
-  @Column({ type: 'text' })
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   tag!: string
 
-  @Field()
-  @Column()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   pinned?: boolean
 
-  @Field()
+  @Field({ defaultValue: 0 })
   @Column({ default: 0 })
   likes!: number
 
-  @OneToMany(() => Reply, reply => reply.postId)
-  @JoinColumn({ name: 'postId' })
-  @Column('text', { array: true })
+  // @OneToMany(() => Reply, reply => reply.postId)
+  @Field(() => Reply, { nullable: true })
+  @Column('text', { array: true, nullable: true })
   replies: Reply[]
 
   @Field(() => String)

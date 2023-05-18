@@ -6,8 +6,6 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
-  JoinColumn,
 } from 'typeorm'
 import { Post } from './Post'
 import { Reply } from './Reply'
