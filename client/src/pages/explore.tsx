@@ -1,9 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePostsQuery, useUserQuery } from '@/graphql'
 import Crown from '@/assets/crown.png'
 import Header from '@/components/Header'
-import { usePostsQuery, useUserQuery } from '@/graphql'
 
 export default () => {
   const [{ data: userdata }] = useUserQuery()
@@ -15,9 +15,7 @@ export default () => {
 
   return (
     <main className="flex min-h-screen flex-col w-full items-center mt-8">
-      <div className="fixed z-10 max-w-5xl items-center justify-center font-mono text-sm md:flex">
-        <Header h={false} e={true} p={false} c={true} />
-      </div>
+      <Header h={true} e={false} p={true} c={true} />
 
       <Image
         className="relative mt-16 dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"

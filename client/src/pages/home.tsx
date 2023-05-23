@@ -11,9 +11,7 @@ export default () => {
   // ! create post -> show post
   return (
     <main className="flex min-h-screen flex-col w-full items-center mt-8">
-      <div className="fixed z-10 max-w-5xl items-center justify-center font-mono text-sm md:flex">
-        <Header h={false} e={true} p={true} c={true} />
-      </div>
+      <Header h={false} e={true} p={true} c={true} />
 
       <Crown />
 

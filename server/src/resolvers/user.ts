@@ -117,10 +117,6 @@ export class UserResolver {
 
     await User.remove(user)
 
-    // if (await User.findOne({where:{username:user.username}})) throw new Error('Failed')
-
     return true
   }
-
-  // ?? followers? //
 }

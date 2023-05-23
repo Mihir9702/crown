@@ -26,10 +26,10 @@ export default () => {
     }
   }
   return (
-    <main className="flex justify-center items-center h-screen w-full">
+    <main className="flex justify-center font-mono items-center bg-[#0e1111] h-screen w-full">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-8 rounded-xl shadow-lg py-12 lg:scale-150 flex flex-col items-start text-gray-300"
+        className="bg-[#212425] border-2 border-[#101110] p-8 rounded-xl shadow-lg py-12 lg:scale-150 flex flex-col items-start text-gray-300"
       >
         <h1 className="font-bold text-2xl text-gray-200">Login</h1>
         {error && <p className="text-red-500 my-4">{error}</p>}
@@ -50,13 +50,13 @@ export default () => {
           />
         </div>
         <Link href={'/signup'} legacyBehavior>
-          <a className="text-gray-400 hover:text-pink-500 mt-4 text-sm">
+          <a className="text-gray-400 hover:text-gray-500 mt-4 text-sm">
             Create Account
           </a>
         </Link>
         <button
           type="submit"
-          className="bg-pink-500 hover:bg-pink-700 text-white font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-pink-500 hover:bg-pink-700 transition-all duration-500 text-white shadow-lg font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           onClick={() => handleSubmit}
         >
           Login
