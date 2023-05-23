@@ -3,5 +3,8 @@ query User {
     id
     username
     likes
+    posts {
+      ...PostFragment
+    }
   }
 }

@@ -54,6 +54,11 @@ export class PostResolver {
     return await Post.find()
   }
 
+  @Query(() => [Post])
+  async owner(@Arg('owner') owner: string): Promise<Post[]> {
+    return await Post.find({ where: { owner } })
+  }
+
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async createPost(

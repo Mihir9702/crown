@@ -87,10 +87,15 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query'
+  owner: Array<Post>
   post: Post
   posts: Array<Post>
-  user?: Maybe<User>
+  user: User
   users: Array<User>
+}
+
+export type QueryOwnerArgs = {
+  owner: Scalars['String']
 }
 
 export type QueryPostArgs = {
@@ -108,9 +113,18 @@ export type User = {
   id: Scalars['Float']
   likes: Scalars['Float']
   password: Scalars['String']
-  posts?: Maybe<Post>
+  posts?: Maybe<Array<Post>>
   updatedAt: Scalars['String']
   username: Scalars['String']
+}
+
+export type PostFragmentFragment = {
+  __typename?: 'Post'
+  header: string
+  content: string
+  likes: number
+  owner: string
+  postId: number
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -177,6 +191,22 @@ export type UpdatePostMutation = {
   updatePost: { __typename?: 'Post'; header: string }
 }
 
+export type OwnerQueryVariables = Exact<{
+  owner: Scalars['String']
+}>
+
+export type OwnerQuery = {
+  __typename?: 'Query'
+  owner: Array<{
+    __typename?: 'Post'
+    header: string
+    content: string
+    likes: number
+    owner: string
+    postId: number
+  }>
+}
+
 export type PostQueryVariables = Exact<{
   postId: Scalars['Float']
 }>
@@ -185,11 +215,11 @@ export type PostQuery = {
   __typename?: 'Query'
   post: {
     __typename?: 'Post'
-    postId: number
     header: string
     content: string
+    likes: number
     owner: string
-    updatedAt: string
+    postId: number
   }
 }
 
@@ -212,14 +242,31 @@ export type UserQueryVariables = Exact<{ [key: string]: never }>
 
 export type UserQuery = {
   __typename?: 'Query'
-  user?: {
+  user: {
     __typename?: 'User'
     id: number
     username: string
     likes: number
-  } | null
+    posts?: Array<{
+      __typename?: 'Post'
+      header: string
+      content: string
+      likes: number
+      owner: string
+      postId: number
+    }> | null
+  }
 }
 
+export const PostFragmentFragmentDoc = gql`
+  fragment PostFragment on Post {
+    header
+    content
+    likes
+    owner
+    postId
+  }
+`
 export const CreatePostDocument = gql`
   mutation CreatePost($header: String!, $content: String!) {
     createPost(params: { header: $header, content: $content }) {
@@ -300,16 +347,30 @@ export function useUpdatePostMutation() {
     UpdatePostDocument
   )
 }
+export const OwnerDocument = gql`
+  query Owner($owner: String!) {
+    owner(owner: $owner) {
+      ...PostFragment
+    }
+  }
+  ${PostFragmentFragmentDoc}
+`
+
+export function useOwnerQuery(
+  options: Omit<Urql.UseQueryArgs<OwnerQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<OwnerQuery, OwnerQueryVariables>({
+    query: OwnerDocument,
+    ...options,
+  })
+}
 export const PostDocument = gql`
   query Post($postId: Float!) {
     post(postId: $postId) {
-      postId
-      header
-      content
-      owner
-      updatedAt
+      ...PostFragment
     }
   }
+  ${PostFragmentFragmentDoc}
 `
 
 export function usePostQuery(
@@ -347,8 +408,12 @@ export const UserDocument = gql`
       id
       username
       likes
+      posts {
+        ...PostFragment
+      }
     }
   }
+  ${PostFragmentFragmentDoc}
 `
 
 export function useUserQuery(

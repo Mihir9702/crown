@@ -1,6 +1,4 @@
 import { createContext } from 'react'
-import { UserQuery } from './graphql'
-
-export type User = UserQuery['user']
+import { User } from './graphql'
 
 export const UserContext = createContext<User>({} as User)

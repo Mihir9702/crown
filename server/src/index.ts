@@ -12,7 +12,9 @@ import { UserResolver } from './resolvers/user'
 import { PostResolver } from './resolvers/post'
 
 const main = async () => {
-  await db.initialize()
+  await db.initialize().then(() => {
+    console.log('Database Initialized')
+  })
   await db.runMigrations()
 
   const app = express()

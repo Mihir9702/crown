@@ -11,12 +11,6 @@ import {
 import { User } from '../model/User'
 import { MyContext } from '../types'
 import { hash, genSalt, compare } from 'bcryptjs'
-import {
-  Config,
-  adjectives,
-  colors,
-  uniqueNamesGenerator,
-} from 'unique-names-generator'
 import { isAuth } from '../middleware/isAuth'
 
 @InputType()
@@ -35,9 +29,9 @@ export class UserResolver {
     return await User.find()
   }
 
-  @Query(() => User, { nullable: true })
-  async user(@Ctx() { req }: MyContext): Promise<User | null> {
-    if (!req.session.username) {
+  @Query(() => User)
+  async user(@Ctx() { req }: MyContext): Promise<User> {
+    if (!req.session.id) {
       return null
     }
 
@@ -62,20 +56,6 @@ export class UserResolver {
     })
 
     if (usernameTaken) throw new Error('Username already taken')
-
-    const config: Config = {
-      dictionaries: [adjectives, colors],
-      length: 1,
-    }
-
-    const randomName = uniqueNamesGenerator(config)
-
-    const failedGeneration = await User.findOne({
-      where: { username: randomName },
-    })
-
-    if (failedGeneration)
-      throw new Error('Generation of a random name has failed')
 
     const hashedPassword = await hash(params.password, await genSalt(10))
 

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm'
 import { Post } from './Post'
 
@@ -28,8 +29,8 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   likes!: number
 
-  @Field(() => Post, { nullable: true })
-  @Column('text', { array: true, nullable: true })
+  @Field(() => [Post], { nullable: true })
+  @OneToMany(() => Post, post => post.owner)
   posts?: Post[]
 
   @Field(() => String)

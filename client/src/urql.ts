@@ -1,6 +1,6 @@
-import { cacheExchange, Client, fetchExchange } from 'urql'
+import { cacheExchange, createClient, fetchExchange } from 'urql'
 
-const client = new Client({
+const client = createClient({
   url: 'http://localhost:3000/graphql',
   exchanges: [cacheExchange, fetchExchange],
 })

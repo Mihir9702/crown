@@ -1,9 +1,5 @@
 query Post($postId: Float!) {
   post(postId: $postId) {
-    postId
-    header
-    content
-    owner
-    updatedAt
+    ...PostFragment
   }
 }

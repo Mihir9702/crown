@@ -7,7 +7,7 @@ import { useUserQuery } from '../graphql'
 // 3. Image storage / upload
 // 4. Tweaks
 
-export default function Home() {
+export default () => {
   const [{ data, fetching }] = useUserQuery()
 
   const user = data?.user
@@ -16,11 +16,9 @@ export default function Home() {
 
   if (fetching) {
     return <div>Loading...</div>
-  } else if (!data?.user) {
+  } else if (!user || user.id) {
     router.push('/login')
-    return
   } else if (user) {
     router.push('/home')
-    return
   }
 }
