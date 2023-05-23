@@ -1,5 +1,5 @@
-mutation LikePost($op: String!, $postId: Float!) {
-  likePost(params: { op: $op, postId: $postId }) {
+mutation LikePost($postId: Float!) {
+  likePost(postId: $postId) {
     postId
     likes
   }

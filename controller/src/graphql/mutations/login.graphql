@@ -1,6 +1,5 @@
 mutation Login($username: String!, $password: String!) {
   login(params: { username: $username, password: $password }) {
-    displayName
-    pfp
+    username
   }
 }

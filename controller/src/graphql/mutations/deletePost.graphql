@@ -1,5 +1,5 @@
-mutation DeletePost($displayName: String!, $postId: Float!) {
-  deletePost(params: { displayName: $displayName, postId: $postId }) {
+mutation DeletePost($username: String!, $postId: Float!) {
+  deletePost(params: { username: $username, postId: $postId }) {
     postId
     owner
   }

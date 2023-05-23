@@ -29,13 +29,7 @@ class Update {
   postId!: number
 
   @Field()
-  owner!: string
-
-  @Field()
-  pinned?: boolean
-
-  @Field()
-  content!: string
+  header!: string
 }
 
 @InputType()
@@ -52,6 +46,12 @@ export class PostResolver {
   @Query(() => Post)
   async post(@Arg('postId') postId: number): Promise<Post> {
     return await Post.findOne({ where: { postId: postId } })
+  }
+
+  @Query(() => [Post])
+  @UseMiddleware(isAuth)
+  async posts(): Promise<Post[]> {
+    return await Post.find()
   }
 
   @Mutation(() => Post)
@@ -80,13 +80,15 @@ export class PostResolver {
     return post
   }
 
-  // !!
+  // !! Update Post
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async updatePost(@Arg('params') params: Update): Promise<Post> {
     const post = await Post.findOne({
       where: { postId: params.postId },
     })
+
+    post.header = params.header
 
     return await Post.save(post)
   }

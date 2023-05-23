@@ -1,12 +1,5 @@
-mutation Signup($username: String!, $password: String!, $displayName: String!) {
-  signup(
-    params: {
-      username: $username
-      password: $password
-      displayName: $displayName
-    }
-  ) {
-    displayName
-    pfp
+mutation Signup($username: String!, $password: String!) {
+  signup(params: { username: $username, password: $password }) {
+    username
   }
 }

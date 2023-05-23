@@ -3,7 +3,7 @@ import { Session, SessionData } from 'express-session'
 
 export type MyContext = {
   req: Request & {
-    session: Session & Partial<SessionData> & { username?: string }
+    session: Session & Partial<SessionData> & { username: string }
   }
   res: Response
 }

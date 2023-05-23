@@ -1,8 +1,7 @@
-mutation CreatePost($header: String!, $content: String!, $tag: String!) {
-  createPost(params: { header: $header, content: $content, tag: $tag }) {
+mutation CreatePost($header: String!, $content: String!) {
+  createPost(params: { header: $header, content: $content }) {
     header
     content
     owner
-    tag
   }
 }

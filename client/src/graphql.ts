@@ -1,224 +1,224 @@
-import gql from "graphql-tag";
-import * as Urql from "urql";
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+import gql from 'graphql-tag'
+import * as Urql from 'urql'
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
+  [K in keyof T]: T[K]
+}
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>;
-};
+  [SubKey in K]?: Maybe<T[SubKey]>
+}
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>;
-};
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+  [SubKey in K]: Maybe<T[SubKey]>
+}
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-};
+  ID: string
+  String: string
+  Boolean: boolean
+  Int: number
+  Float: number
+}
 
 export type Create = {
-  content: Scalars["String"];
-  header: Scalars["String"];
-};
+  content: Scalars['String']
+  header: Scalars['String']
+}
 
 export type Delete = {
-  postId: Scalars["Float"];
-  username: Scalars["String"];
-};
+  postId: Scalars['Float']
+  username: Scalars['String']
+}
 
 export type Input = {
-  password: Scalars["String"];
-  username: Scalars["String"];
-};
+  password: Scalars['String']
+  username: Scalars['String']
+}
 
 export type Mutation = {
-  __typename?: "Mutation";
-  createPost: Post;
-  deletePost: Post;
-  deleteUser: User;
-  likePost: Post;
-  login: User;
-  logout: Scalars["Boolean"];
-  signup: User;
-  updatePost: Post;
-};
+  __typename?: 'Mutation'
+  createPost: Post
+  deletePost: Post
+  deleteUser: User
+  likePost: Post
+  login: User
+  logout: Scalars['Boolean']
+  signup: User
+  updatePost: Post
+}
 
 export type MutationCreatePostArgs = {
-  params: Create;
-};
+  params: Create
+}
 
 export type MutationDeletePostArgs = {
-  params: Delete;
-};
+  params: Delete
+}
 
 export type MutationLikePostArgs = {
-  postId: Scalars["Float"];
-};
+  postId: Scalars['Float']
+}
 
 export type MutationLoginArgs = {
-  params: Input;
-};
+  params: Input
+}
 
 export type MutationSignupArgs = {
-  params: Input;
-};
+  params: Input
+}
 
 export type MutationUpdatePostArgs = {
-  params: Update;
-};
+  params: Update
+}
 
 export type Post = {
-  __typename?: "Post";
-  content: Scalars["String"];
-  createdAt: Scalars["String"];
-  header: Scalars["String"];
-  id: Scalars["Float"];
-  likes: Scalars["Float"];
-  owner: Scalars["String"];
-  pinned?: Maybe<Scalars["Boolean"]>;
-  postId: Scalars["Float"];
-  updatedAt: Scalars["String"];
-};
+  __typename?: 'Post'
+  content: Scalars['String']
+  createdAt: Scalars['String']
+  header: Scalars['String']
+  id: Scalars['Float']
+  likes: Scalars['Float']
+  owner: Scalars['String']
+  pinned?: Maybe<Scalars['Boolean']>
+  postId: Scalars['Float']
+  updatedAt: Scalars['String']
+}
 
 export type Query = {
-  __typename?: "Query";
-  post: Post;
-  posts: Array<Post>;
-  user?: Maybe<User>;
-  users: Array<User>;
-};
+  __typename?: 'Query'
+  post: Post
+  posts: Array<Post>
+  user?: Maybe<User>
+  users: Array<User>
+}
 
 export type QueryPostArgs = {
-  postId: Scalars["Float"];
-};
+  postId: Scalars['Float']
+}
 
 export type Update = {
-  header: Scalars["String"];
-  postId: Scalars["Float"];
-};
+  header: Scalars['String']
+  postId: Scalars['Float']
+}
 
 export type User = {
-  __typename?: "User";
-  createdAt: Scalars["String"];
-  id: Scalars["Float"];
-  likes: Scalars["Float"];
-  password: Scalars["String"];
-  posts?: Maybe<Post>;
-  updatedAt: Scalars["String"];
-  username: Scalars["String"];
-};
+  __typename?: 'User'
+  createdAt: Scalars['String']
+  id: Scalars['Float']
+  likes: Scalars['Float']
+  password: Scalars['String']
+  posts?: Maybe<Post>
+  updatedAt: Scalars['String']
+  username: Scalars['String']
+}
 
 export type CreatePostMutationVariables = Exact<{
-  header: Scalars["String"];
-  content: Scalars["String"];
-}>;
+  header: Scalars['String']
+  content: Scalars['String']
+}>
 
 export type CreatePostMutation = {
-  __typename?: "Mutation";
+  __typename?: 'Mutation'
   createPost: {
-    __typename?: "Post";
-    header: string;
-    content: string;
-    owner: string;
-  };
-};
+    __typename?: 'Post'
+    header: string
+    content: string
+    owner: string
+  }
+}
 
 export type DeletePostMutationVariables = Exact<{
-  username: Scalars["String"];
-  postId: Scalars["Float"];
-}>;
+  username: Scalars['String']
+  postId: Scalars['Float']
+}>
 
 export type DeletePostMutation = {
-  __typename?: "Mutation";
-  deletePost: { __typename?: "Post"; postId: number; owner: string };
-};
+  __typename?: 'Mutation'
+  deletePost: { __typename?: 'Post'; postId: number; owner: string }
+}
 
 export type LikePostMutationVariables = Exact<{
-  postId: Scalars["Float"];
-}>;
+  postId: Scalars['Float']
+}>
 
 export type LikePostMutation = {
-  __typename?: "Mutation";
-  likePost: { __typename?: "Post"; postId: number; likes: number };
-};
+  __typename?: 'Mutation'
+  likePost: { __typename?: 'Post'; postId: number; likes: number }
+}
 
 export type LoginMutationVariables = Exact<{
-  username: Scalars["String"];
-  password: Scalars["String"];
-}>;
+  username: Scalars['String']
+  password: Scalars['String']
+}>
 
 export type LoginMutation = {
-  __typename?: "Mutation";
-  login: { __typename?: "User"; username: string };
-};
+  __typename?: 'Mutation'
+  login: { __typename?: 'User'; username: string }
+}
 
 export type SignupMutationVariables = Exact<{
-  username: Scalars["String"];
-  password: Scalars["String"];
-}>;
+  username: Scalars['String']
+  password: Scalars['String']
+}>
 
 export type SignupMutation = {
-  __typename?: "Mutation";
-  signup: { __typename?: "User"; username: string };
-};
+  __typename?: 'Mutation'
+  signup: { __typename?: 'User'; username: string }
+}
 
 export type UpdatePostMutationVariables = Exact<{
-  postId: Scalars["Float"];
-  header: Scalars["String"];
-}>;
+  postId: Scalars['Float']
+  header: Scalars['String']
+}>
 
 export type UpdatePostMutation = {
-  __typename?: "Mutation";
-  updatePost: { __typename?: "Post"; header: string };
-};
+  __typename?: 'Mutation'
+  updatePost: { __typename?: 'Post'; header: string }
+}
 
 export type PostQueryVariables = Exact<{
-  postId: Scalars["Float"];
-}>;
+  postId: Scalars['Float']
+}>
 
 export type PostQuery = {
-  __typename?: "Query";
+  __typename?: 'Query'
   post: {
-    __typename?: "Post";
-    postId: number;
-    header: string;
-    content: string;
-    owner: string;
-    updatedAt: string;
-  };
-};
+    __typename?: 'Post'
+    postId: number
+    header: string
+    content: string
+    owner: string
+    updatedAt: string
+  }
+}
 
-export type PostsQueryVariables = Exact<{ [key: string]: never }>;
+export type PostsQueryVariables = Exact<{ [key: string]: never }>
 
 export type PostsQuery = {
-  __typename?: "Query";
+  __typename?: 'Query'
   posts: Array<{
-    __typename?: "Post";
-    postId: number;
-    header: string;
-    content: string;
-    owner: string;
-    likes: number;
-    updatedAt: string;
-  }>;
-};
+    __typename?: 'Post'
+    postId: number
+    header: string
+    content: string
+    owner: string
+    likes: number
+    updatedAt: string
+  }>
+}
 
-export type UserQueryVariables = Exact<{ [key: string]: never }>;
+export type UserQueryVariables = Exact<{ [key: string]: never }>
 
 export type UserQuery = {
-  __typename?: "Query";
+  __typename?: 'Query'
   user?: {
-    __typename?: "User";
-    id: number;
-    username: string;
-    likes: number;
-  } | null;
-};
+    __typename?: 'User'
+    id: number
+    username: string
+    likes: number
+  } | null
+}
 
 export const CreatePostDocument = gql`
   mutation CreatePost($header: String!, $content: String!) {
@@ -228,12 +228,12 @@ export const CreatePostDocument = gql`
       owner
     }
   }
-`;
+`
 
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(
     CreatePostDocument
-  );
+  )
 }
 export const DeletePostDocument = gql`
   mutation DeletePost($username: String!, $postId: Float!) {
@@ -242,12 +242,12 @@ export const DeletePostDocument = gql`
       owner
     }
   }
-`;
+`
 
 export function useDeletePostMutation() {
   return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(
     DeletePostDocument
-  );
+  )
 }
 export const LikePostDocument = gql`
   mutation LikePost($postId: Float!) {
@@ -256,12 +256,12 @@ export const LikePostDocument = gql`
       likes
     }
   }
-`;
+`
 
 export function useLikePostMutation() {
   return Urql.useMutation<LikePostMutation, LikePostMutationVariables>(
     LikePostDocument
-  );
+  )
 }
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
@@ -269,10 +269,10 @@ export const LoginDocument = gql`
       username
     }
   }
-`;
+`
 
 export function useLoginMutation() {
-  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument)
 }
 export const SignupDocument = gql`
   mutation Signup($username: String!, $password: String!) {
@@ -280,12 +280,12 @@ export const SignupDocument = gql`
       username
     }
   }
-`;
+`
 
 export function useSignupMutation() {
   return Urql.useMutation<SignupMutation, SignupMutationVariables>(
     SignupDocument
-  );
+  )
 }
 export const UpdatePostDocument = gql`
   mutation UpdatePost($postId: Float!, $header: String!) {
@@ -293,12 +293,12 @@ export const UpdatePostDocument = gql`
       header
     }
   }
-`;
+`
 
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
     UpdatePostDocument
-  );
+  )
 }
 export const PostDocument = gql`
   query Post($postId: Float!) {
@@ -310,15 +310,15 @@ export const PostDocument = gql`
       updatedAt
     }
   }
-`;
+`
 
 export function usePostQuery(
-  options: Omit<Urql.UseQueryArgs<PostQueryVariables>, "query">
+  options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'>
 ) {
   return Urql.useQuery<PostQuery, PostQueryVariables>({
     query: PostDocument,
     ...options,
-  });
+  })
 }
 export const PostsDocument = gql`
   query Posts {
@@ -331,15 +331,15 @@ export const PostsDocument = gql`
       updatedAt
     }
   }
-`;
+`
 
 export function usePostsQuery(
-  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
+  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>
 ) {
   return Urql.useQuery<PostsQuery, PostsQueryVariables>({
     query: PostsDocument,
     ...options,
-  });
+  })
 }
 export const UserDocument = gql`
   query User {
@@ -349,13 +349,13 @@ export const UserDocument = gql`
       likes
     }
   }
-`;
+`
 
 export function useUserQuery(
-  options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, "query">
+  options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>
 ) {
   return Urql.useQuery<UserQuery, UserQueryVariables>({
     query: UserDocument,
     ...options,
-  });
+  })
 }

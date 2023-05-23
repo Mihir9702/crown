@@ -1,9 +1,10 @@
-query Post($postId: Float!) {
-  post(postId: $postId) {
+query Posts {
+  posts {
     postId
     header
     content
     owner
+    likes
     updatedAt
   }
 }
