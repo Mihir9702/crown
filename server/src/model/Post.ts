@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
-import { Reply } from './Reply'
+import { User } from './User'
 
 @ObjectType()
 @Entity()
@@ -29,26 +29,17 @@ export class Post extends BaseEntity {
   @Column({ type: 'text' })
   owner!: string
 
+  @Field({ nullable: true, defaultValue: false })
+  @Column({ nullable: true, default: false })
+  pinned?: boolean
+
+  @Field()
+  @Column()
+  likes!: number
+
   @Field()
   @Column()
   postId!: number
-
-  @Field({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  tag!: string
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  pinned?: boolean
-
-  @Field({ defaultValue: 0 })
-  @Column({ default: 0 })
-  likes!: number
-
-  // @OneToMany(() => Reply, reply => reply.postId)
-  @Field(() => Reply, { nullable: true })
-  @Column('text', { array: true, nullable: true })
-  replies: Reply[]
 
   @Field(() => String)
   @CreateDateColumn()

@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser'
 import { createYoga } from 'graphql-yoga'
 import { UserResolver } from './resolvers/user'
 import { PostResolver } from './resolvers/post'
-import { ReplyResolver } from './resolvers/reply'
 
 const main = async () => {
   await db.initialize()
@@ -47,7 +46,7 @@ const main = async () => {
 
   const schema = await buildSchema({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolvers: [UserResolver, PostResolver, ReplyResolver],
+    resolvers: [UserResolver, PostResolver],
     validate: false,
   })
 

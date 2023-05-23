@@ -9,9 +9,10 @@ import {
   UseMiddleware,
 } from 'type-graphql'
 import { Post } from '../model/Post'
-import { MyContext, Posties } from '../types'
+import { MyContext } from '../types'
 import { generateNumber } from '../consts'
 import { isAuth } from '../middleware/isAuth'
+import { User } from '../model/User'
 
 @InputType()
 class Create {
@@ -20,9 +21,6 @@ class Create {
 
   @Field()
   content!: string
-
-  @Field()
-  tag!: string
 }
 
 @InputType()
@@ -41,18 +39,9 @@ class Update {
 }
 
 @InputType()
-class Digits {
-  @Field()
-  op: string
-
-  @Field()
-  postId: number
-}
-
-@InputType()
 class Delete {
   @Field()
-  displayName!: string
+  username!: string
 
   @Field()
   postId!: number
@@ -65,27 +54,33 @@ export class PostResolver {
     return await Post.findOne({ where: { postId: postId } })
   }
 
-  @Query(() => [Post])
-  async posts(@Arg('tag') tag: Posties): Promise<Post[]> {
-    return await Post.find({ where: { tag: tag } })
-  }
-
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async createPost(
     @Arg('params') params: Create,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
-    return await Post.create({
+    const user = await User.findOne({
+      where: { username: req.session.username },
+    })
+
+    const post = await Post.create({
       header: params.header,
       content: params.content,
-      owner: req.session.displayName,
+      owner: user.username,
       likes: 0,
+      pinned: false,
       postId: generateNumber(4),
-      tag: params.tag,
     }).save()
+
+    user.posts.push(post)
+
+    await User.save(user)
+
+    return post
   }
 
+  // !!
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async updatePost(@Arg('params') params: Update): Promise<Post> {
@@ -93,44 +88,46 @@ export class PostResolver {
       where: { postId: params.postId },
     })
 
-    post.pinned = params.pinned
-    post.content = params.content
+    return await Post.save(post)
+  }
+
+  @Mutation(() => Post)
+  @UseMiddleware(isAuth)
+  async likePost(@Arg('postId') postId: number): Promise<Post> {
+    const post = await Post.findOne({ where: { postId } })
+
+    post.likes += 1
+
+    const user = await User.findOne({ where: { username: post.owner } })
+
+    user.likes += 1
+
+    await User.save(user)
 
     return await Post.save(post)
   }
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
-  async likePost(@Arg('params') params: Digits): Promise<Post> {
+  async deletePost(
+    @Arg('params') params: Delete,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
     const post = await Post.findOne({
       where: { postId: params.postId },
     })
 
-    params.op === 'like'
-      ? (post.likes = post.likes + 1)
-      : (post.likes = post.likes - 1)
+    if (post.owner !== req.session.username) return false
 
-    return await Post.save(post)
-  }
-
-  @Mutation(() => Post)
-  @UseMiddleware(isAuth)
-  async deletePost(@Arg('params') params: Delete): Promise<Post> {
-    const post = await Post.findOne({
-      where: { postId: params.postId },
+    const user = await User.findOne({
+      where: { username: req.session.username },
     })
 
-    if (params.displayName === post.owner) {
-      await Post.remove(post)
-    } else {
-      throw new Error('Please log in to delete your post')
-    }
+    user.likes -= post.likes
 
-    // const check = await Post.findOne({
-    //   where: { postId: params.postId },
-    // })
+    await User.save(user)
+    await Post.remove(post)
 
-    // return !check ? true : false
-    return post
+    return true
   }
 }
