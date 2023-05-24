@@ -27,11 +27,12 @@ export type Create = {
 }
 
 export type Delete = {
-  postId: Scalars['Float']
-  username: Scalars['String']
+  nameid: Scalars['String']
+  postid: Scalars['Float']
 }
 
 export type Input = {
+  nameid?: InputMaybe<Scalars['String']>
   password: Scalars['String']
   username: Scalars['String']
 }
@@ -57,7 +58,7 @@ export type MutationDeletePostArgs = {
 }
 
 export type MutationLikePostArgs = {
-  postId: Scalars['Float']
+  postid: Scalars['Float']
 }
 
 export type MutationLoginArgs = {
@@ -81,7 +82,7 @@ export type Post = {
   likes: Scalars['Float']
   owner: Scalars['String']
   pinned?: Maybe<Scalars['Boolean']>
-  postId: Scalars['Float']
+  postid: Scalars['Float']
   updatedAt: Scalars['String']
 }
 
@@ -99,12 +100,12 @@ export type QueryOwnerArgs = {
 }
 
 export type QueryPostArgs = {
-  postId: Scalars['Float']
+  postid: Scalars['Float']
 }
 
 export type Update = {
   header: Scalars['String']
-  postId: Scalars['Float']
+  postid: Scalars['Float']
 }
 
 export type User = {
@@ -112,9 +113,11 @@ export type User = {
   createdAt: Scalars['String']
   id: Scalars['Float']
   likes: Scalars['Float']
+  nameid: Scalars['String']
   password: Scalars['String']
   posts?: Maybe<Array<Post>>
   updatedAt: Scalars['String']
+  userid: Scalars['Float']
   username: Scalars['String']
 }
 
@@ -124,7 +127,7 @@ export type PostFragmentFragment = {
   content: string
   likes: number
   owner: string
-  postId: number
+  postid: number
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -143,22 +146,22 @@ export type CreatePostMutation = {
 }
 
 export type DeletePostMutationVariables = Exact<{
-  username: Scalars['String']
-  postId: Scalars['Float']
+  nameid: Scalars['String']
+  postid: Scalars['Float']
 }>
 
 export type DeletePostMutation = {
   __typename?: 'Mutation'
-  deletePost: { __typename?: 'Post'; postId: number; owner: string }
+  deletePost: { __typename?: 'Post'; postid: number; owner: string }
 }
 
 export type LikePostMutationVariables = Exact<{
-  postId: Scalars['Float']
+  postid: Scalars['Float']
 }>
 
 export type LikePostMutation = {
   __typename?: 'Mutation'
-  likePost: { __typename?: 'Post'; postId: number; likes: number }
+  likePost: { __typename?: 'Post'; postid: number; likes: number }
 }
 
 export type LoginMutationVariables = Exact<{
@@ -174,15 +177,16 @@ export type LoginMutation = {
 export type SignupMutationVariables = Exact<{
   username: Scalars['String']
   password: Scalars['String']
+  nameid?: InputMaybe<Scalars['String']>
 }>
 
 export type SignupMutation = {
   __typename?: 'Mutation'
-  signup: { __typename?: 'User'; username: string }
+  signup: { __typename?: 'User'; nameid: string; userid: number }
 }
 
 export type UpdatePostMutationVariables = Exact<{
-  postId: Scalars['Float']
+  postid: Scalars['Float']
   header: Scalars['String']
 }>
 
@@ -203,12 +207,12 @@ export type OwnerQuery = {
     content: string
     likes: number
     owner: string
-    postId: number
+    postid: number
   }>
 }
 
 export type PostQueryVariables = Exact<{
-  postId: Scalars['Float']
+  postid: Scalars['Float']
 }>
 
 export type PostQuery = {
@@ -219,7 +223,7 @@ export type PostQuery = {
     content: string
     likes: number
     owner: string
-    postId: number
+    postid: number
   }
 }
 
@@ -229,7 +233,7 @@ export type PostsQuery = {
   __typename?: 'Query'
   posts: Array<{
     __typename?: 'Post'
-    postId: number
+    postid: number
     header: string
     content: string
     owner: string
@@ -245,7 +249,8 @@ export type UserQuery = {
   user: {
     __typename?: 'User'
     id: number
-    username: string
+    nameid: string
+    userid: number
     likes: number
     posts?: Array<{
       __typename?: 'Post'
@@ -253,7 +258,7 @@ export type UserQuery = {
       content: string
       likes: number
       owner: string
-      postId: number
+      postid: number
     }> | null
   }
 }
@@ -264,7 +269,7 @@ export const PostFragmentFragmentDoc = gql`
     content
     likes
     owner
-    postId
+    postid
   }
 `
 export const CreatePostDocument = gql`
@@ -283,9 +288,9 @@ export function useCreatePostMutation() {
   )
 }
 export const DeletePostDocument = gql`
-  mutation DeletePost($username: String!, $postId: Float!) {
-    deletePost(params: { username: $username, postId: $postId }) {
-      postId
+  mutation DeletePost($nameid: String!, $postid: Float!) {
+    deletePost(params: { nameid: $nameid, postid: $postid }) {
+      postid
       owner
     }
   }
@@ -297,9 +302,9 @@ export function useDeletePostMutation() {
   )
 }
 export const LikePostDocument = gql`
-  mutation LikePost($postId: Float!) {
-    likePost(postId: $postId) {
-      postId
+  mutation LikePost($postid: Float!) {
+    likePost(postid: $postid) {
+      postid
       likes
     }
   }
@@ -322,9 +327,12 @@ export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument)
 }
 export const SignupDocument = gql`
-  mutation Signup($username: String!, $password: String!) {
-    signup(params: { username: $username, password: $password }) {
-      username
+  mutation Signup($username: String!, $password: String!, $nameid: String) {
+    signup(
+      params: { username: $username, password: $password, nameid: $nameid }
+    ) {
+      nameid
+      userid
     }
   }
 `
@@ -335,8 +343,8 @@ export function useSignupMutation() {
   )
 }
 export const UpdatePostDocument = gql`
-  mutation UpdatePost($postId: Float!, $header: String!) {
-    updatePost(params: { postId: $postId, header: $header }) {
+  mutation UpdatePost($postid: Float!, $header: String!) {
+    updatePost(params: { postid: $postid, header: $header }) {
       header
     }
   }
@@ -365,8 +373,8 @@ export function useOwnerQuery(
   })
 }
 export const PostDocument = gql`
-  query Post($postId: Float!) {
-    post(postId: $postId) {
+  query Post($postid: Float!) {
+    post(postid: $postid) {
       ...PostFragment
     }
   }
@@ -384,7 +392,7 @@ export function usePostQuery(
 export const PostsDocument = gql`
   query Posts {
     posts {
-      postId
+      postid
       header
       content
       owner
@@ -406,7 +414,8 @@ export const UserDocument = gql`
   query User {
     user {
       id
-      username
+      nameid
+      userid
       likes
       posts {
         ...PostFragment

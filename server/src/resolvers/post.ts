@@ -1,55 +1,28 @@
+import 'dotenv/config'
+import * as Upload from 'upload-js-full'
 import {
   Resolver,
   Query,
   Arg,
-  InputType,
   Mutation,
-  Field,
   Ctx,
   UseMiddleware,
 } from 'type-graphql'
 import { Post } from '../model/Post'
-import { MyContext } from '../types'
-import { generateNumber } from '../consts'
+import { Create, Delete, MyContext, Update } from '../types'
+import { randomNumber } from '../helpers'
 import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
-
-@InputType()
-class Create {
-  @Field()
-  header!: string
-
-  @Field()
-  content!: string
-}
-
-@InputType()
-class Update {
-  @Field()
-  postId!: number
-
-  @Field()
-  header!: string
-}
-
-@InputType()
-class Delete {
-  @Field()
-  username!: string
-
-  @Field()
-  postId!: number
-}
 
 @Resolver()
 export class PostResolver {
   @Query(() => Post)
-  async post(@Arg('postId') postId: number): Promise<Post> {
-    return await Post.findOne({ where: { postId: postId } })
+  async post(@Arg('postid') postid: number): Promise<Post> {
+    // pull from upload.io
+    return await Post.findOne({ where: { postid } })
   }
 
   @Query(() => [Post])
-  @UseMiddleware(isAuth)
   async posts(): Promise<Post[]> {
     return await Post.find()
   }
@@ -65,17 +38,39 @@ export class PostResolver {
     @Arg('params') params: Create,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
+    const apiKey = process.env.UPLOAD_PRIVATE_KEY
+    const accountId = process.env.UPLOAD_ACCOUNT_ID
+
     const user = await User.findOne({
-      where: { username: req.session.username },
+      where: { userid: req.session.userid },
     })
+    console.log('[POST OWNER] - ', user.username)
+
+    const { header, content } = params
+    const postid = randomNumber(4)
+
+    new Upload.UploadManager(
+      new Upload.Configuration({
+        fetchApi: fetch,
+        apiKey,
+      })
+    )
+      .upload({
+        accountId,
+        data: 'image upload', //fileurl
+      })
+      .then(({ fileUrl, filePath }) => {
+        console.log('[FILE UPLOAD] - ', fileUrl)
+      })
+      .catch(x => console.log(x))
 
     const post = await Post.create({
-      header: params.header,
-      content: params.content,
+      header,
+      content,
       owner: user.username,
       likes: 0,
       pinned: false,
-      postId: generateNumber(4),
+      postid,
     }).save()
 
     user.posts.push(post)
@@ -90,7 +85,7 @@ export class PostResolver {
   @UseMiddleware(isAuth)
   async updatePost(@Arg('params') params: Update): Promise<Post> {
     const post = await Post.findOne({
-      where: { postId: params.postId },
+      where: { postid: params.postid },
     })
 
     post.header = params.header
@@ -100,12 +95,12 @@ export class PostResolver {
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
-  async likePost(@Arg('postId') postId: number): Promise<Post> {
-    const post = await Post.findOne({ where: { postId } })
+  async likePost(@Arg('postid') postid: number): Promise<Post> {
+    const post = await Post.findOne({ where: { postid } })
 
     post.likes += 1
 
-    const user = await User.findOne({ where: { username: post.owner } })
+    const user = await User.findOne({ where: { nameid: post.owner } })
 
     user.likes += 1
 
@@ -121,13 +116,13 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
     const post = await Post.findOne({
-      where: { postId: params.postId },
+      where: { postid: params.postid },
     })
 
-    if (post.owner !== req.session.username) return false
+    if (post.owner !== params.nameid) return false
 
     const user = await User.findOne({
-      where: { username: req.session.username },
+      where: { userid: req.session.userid },
     })
 
     user.likes -= post.likes

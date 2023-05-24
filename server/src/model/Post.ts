@@ -39,7 +39,7 @@ export class Post extends BaseEntity {
 
   @Field()
   @Column()
-  postId!: number
+  postid!: number
 
   @Field(() => String)
   @CreateDateColumn()

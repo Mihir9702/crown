@@ -50,13 +50,13 @@ export default () => {
           />
         </div>
         <Link href={'/login'} legacyBehavior>
-          <a className="text-gray-400 hover:text-pink-500 mt-4 text-sm">
+          <a className="text-gray-400 hover:text-gray-500 mt-4 text-sm">
             Already have an Account?
           </a>
         </Link>
         <button
           type="submit"
-          className="bg-pink-500 hover:bg-pink-700 text-white font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-pink-500 hover:bg-pink-700 text-white font-bold mt-7 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           onClick={() => handleSubmit}
         >
           Signup

@@ -1,7 +1,8 @@
 query User {
   user {
     id
-    username
+    nameid
+    userid
     likes
     posts {
       ...PostFragment

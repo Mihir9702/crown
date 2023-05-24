@@ -15,13 +15,15 @@ export default () => {
     e.preventDefault()
 
     const response = await login({
-      username: username,
-      password: password,
+      username,
+      password,
     })
 
-    if (response.error?.graphQLErrors[0]) {
-      setError(response.error?.graphQLErrors[0].message)
+    if (!response.data && response.error?.graphQLErrors[0]) {
+      const { message } = response.error.graphQLErrors[0]
+      setError(message)
     } else {
+      console.log('Logged in')
       router.push('/home')
     }
   }
@@ -57,7 +59,6 @@ export default () => {
         <button
           type="submit"
           className="bg-pink-500 hover:bg-pink-700 transition-all duration-500 text-white shadow-lg font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={() => handleSubmit}
         >
           Login
         </button>

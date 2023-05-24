@@ -40,6 +40,7 @@
     "jsonwebtoken": "^9.0.0",
     "logger": "^0.0.1",
     "morgan": "^1.10.0",
+    "node-fetch": "^3.3.1",
     "nodemon": "^2.0.22",
     "pg": "^8.11.0",
     "serve": "^14.2.0",
@@ -48,6 +49,7 @@
     "type-graphql": "^2.0.0-beta.2",
     "typeorm": "^0.3.16",
     "typescript": "^5.0.4",
-    "unique-names-generator": "^4.7.1"
+    "unique-names-generator": "^4.7.1",
+    "upload-js-full": "^2.14.0"
   }
 }

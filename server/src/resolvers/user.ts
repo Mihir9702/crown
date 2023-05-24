@@ -1,26 +1,16 @@
 import {
   Arg,
   Ctx,
-  Field,
-  InputType,
   Mutation,
   Query,
   Resolver,
   UseMiddleware,
 } from 'type-graphql'
 import { User } from '../model/User'
-import { MyContext } from '../types'
+import { Input, MyContext } from '../types'
 import { hash, genSalt, compare } from 'bcryptjs'
 import { isAuth } from '../middleware/isAuth'
-
-@InputType()
-class Input {
-  @Field()
-  username!: string
-
-  @Field()
-  password!: string
-}
+import { randomName, randomNumber } from '../helpers'
 
 @Resolver()
 export class UserResolver {
@@ -31,13 +21,10 @@ export class UserResolver {
 
   @Query(() => User)
   async user(@Ctx() { req }: MyContext): Promise<User> {
-    if (!req.session.id) {
-      return null
-    }
-
     const user = await User.findOne({
-      where: { username: req.session.username },
+      where: { userid: req.session.userid },
     })
+    console.log(user)
     return user
   }
 
@@ -46,7 +33,8 @@ export class UserResolver {
     @Arg('params') params: Input,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    if (params.username.length < 2)
+    const { username } = params
+    if (username.length < 2)
       throw new Error('Username must be at least 2 characters')
     if (params.password.length < 4)
       throw new Error('Password must be at least 4 characters')
@@ -57,14 +45,19 @@ export class UserResolver {
 
     if (usernameTaken) throw new Error('Username already taken')
 
-    const hashedPassword = await hash(params.password, await genSalt(10))
+    const password = await hash(params.password, await genSalt(10))
+
+    const nameid: string = params.nameid || randomName()
+    const userid: number = randomNumber(4)
 
     const user: User = await User.create({
-      username: params.username,
-      password: hashedPassword,
+      username,
+      password,
+      nameid,
+      userid,
     }).save()
 
-    req.session.username = user.username
+    req.session.userid = user.userid
 
     return user
   }
@@ -87,7 +80,7 @@ export class UserResolver {
 
     if (!valid) throw new Error('Invalid username or password')
 
-    req.session.username = user.username
+    req.session.userid = user.userid
 
     return await user
   }
@@ -96,7 +89,7 @@ export class UserResolver {
   @UseMiddleware(isAuth)
   async logout(@Ctx() { req }: MyContext): Promise<boolean> {
     const user = await User.findOne({
-      where: { username: req.session.username },
+      where: { userid: req.session.userid },
     })
 
     if (!user) throw new Error('User not found')
@@ -112,7 +105,7 @@ export class UserResolver {
   @UseMiddleware(isAuth)
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
     const user = await User.findOne({
-      where: { username: req.session.username },
+      where: { userid: req.session.userid },
     })
 
     await User.remove(user)

@@ -3,5 +3,5 @@ fragment PostFragment on Post {
   content
   likes
   owner
-  postId
+  postid
 }

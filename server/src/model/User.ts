@@ -25,6 +25,14 @@ export class User extends BaseEntity {
   @Column({ type: 'text' })
   password!: string
 
+  @Field()
+  @Column({ type: 'text' })
+  nameid!: string
+
+  @Field()
+  @Column({ unique: true })
+  userid!: number
+
   @Field({ defaultValue: 0 })
   @Column({ default: 0 })
   likes!: number
