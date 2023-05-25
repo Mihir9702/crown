@@ -1,18 +1,32 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLikePostMutation, usePostsQuery } from '@/graphql'
+import { useLikePostMutation, usePostsQuery, useUserQuery } from '@/graphql'
 import Crown from '@/assets/crown.png'
 import Header from '@/components/Header'
 
 export default () => {
   const [{ data, fetching }] = usePostsQuery()
+  const [{ data: userData }] = useUserQuery()
 
   if (fetching) return <div>Loading...</div>
 
   const [, like] = useLikePostMutation()
 
   const posts = data?.posts
+  const userid = userData?.user.userid!
+
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>,
+    postid: number
+  ) {
+    e.preventDefault()
+
+    const response = await like({
+      postid,
+      userid,
+    })
+  }
 
   return (
     <main className="flex min-h-screen flex-col w-full items-center mt-8">
@@ -24,14 +38,15 @@ export default () => {
         alt="Crown Logo"
         width={180}
         height={37}
-        priority
+        // priority
       />
 
       <section className="mt-12 text-center flex flex-col items-center min-w-[480px] sm:w-[512px] lg:w-[760px] max-w-[760px] gap-6">
         {posts &&
           posts.map(post => (
-            <div
+            <form
               // href={`/p/${post.postid}`}
+              onSubmit={e => handleSubmit(e, post.postid)}
               key={post.postid}
               className="w-full h-[720px] rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30"
               // target="_blank"
@@ -54,18 +69,16 @@ export default () => {
                   width={600}
                   height={375}
                   className="max-h-[512px] w-[32rem] h-full rounded-md"
+                  // priority
                 />
               </div>
               <p className="text-gray-300 text-sm mt-3 ml-2 text-left">
                 {post.likes} likes
               </p>
-              <button
-                className="text-3xl"
-                onClick={async () => await like({ postid: post.postid })}
-              >
+              <button type="submit" className="text-3xl">
                 💖
               </button>
-            </div>
+            </form>
           ))}
       </section>
     </main>

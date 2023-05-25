@@ -92,26 +92,25 @@ export class PostResolver {
   @Mutation(() => Post)
   async likePost(
     @Arg('postid') postid: number,
-    @Ctx() { req }: MyContext
+    @Arg('userid') userid: number
   ): Promise<Post> {
-    if (!req.session.userid) console.log('[LikePost] - !userid')
-
-    console.log(req.session.userid)
-
     const post = await Post.findOne({ where: { postid } })
 
     if (post.likes) {
-      if (post.likes.includes(req.session.userid)) {
+      if (post.likes.includes(userid)) {
         console.log('[LikePost] - post.likes(userid)')
-      } else {
-        post.likes.push(req.session.userid)
       }
     } else {
-      post.likes = [req.session.userid]
-      await Post.save(post)
-      console.log(post.likes, post.likes.length)
-      console.log('[LikePost] - post.likes + 1')
+      post.likes = [0]
     }
+
+    console.log('userid', userid)
+    console.log(post.likes)
+    post.likes.push(userid)
+    console.log('post.likes', post.likes)
+    post.likes.shift()
+    console.log(post.likes)
+    await Post.save(post)
 
     const user = await User.findOne({ where: { nameid: post.owner } })
 

@@ -35,9 +35,9 @@ export class Post extends BaseEntity {
   @Column({ nullable: true, default: false })
   pinned?: boolean
 
-  @Field(() => [Number], { nullable: true })
-  @OneToMany(() => User, user => user.userid, { nullable: true })
-  @JoinColumn()
+  @Field(() => [Number], { defaultValue: [] })
+  @Column({ type: 'text', default: [] })
+  // @OneToMany(() => User, user => user.userid)
   likes!: number[]
 
   @Field()
