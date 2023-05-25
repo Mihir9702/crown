@@ -26,7 +26,7 @@ export class User extends BaseEntity {
   password!: string
 
   @Field()
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   nameid!: string
 
   @Field()

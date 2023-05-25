@@ -4,6 +4,9 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_UPLOAD_KEY: process.env.NEXT_PUBLIC_UPLOAD_KEY,
   },
+  images: {
+    domains: ['upcdn.io'],
+  },
 }
 
 module.exports = nextConfig

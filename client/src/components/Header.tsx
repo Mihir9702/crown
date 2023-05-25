@@ -21,7 +21,7 @@ export default ({ h, e, p, c }: Props) => {
     )
 
   return (
-    <div className="fixed z-50 max-w-5xl items-center justify-center font-mono text-sm md:flex">
+    <div className=" z-50 max-w-5xl items-center justify-center font-mono text-sm md:flex">
       <div className="z-100 left-0 top-0 flex w-auto justify-between gap-8 border-b border-gray-800 pb-6 pt-8 backdrop-blur-2xl static rounded-xl shadow-xl border bg-[#0e1111] p-4">
         {h ? (
           <Link href="/home">
