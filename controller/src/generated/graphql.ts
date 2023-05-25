@@ -59,6 +59,7 @@ export type MutationDeletePostArgs = {
 
 export type MutationLikePostArgs = {
   postid: Scalars["Float"];
+  userid: Scalars["Float"];
 };
 
 export type MutationLoginArgs = {
@@ -79,7 +80,7 @@ export type Post = {
   createdAt: Scalars["String"];
   header: Scalars["String"];
   id: Scalars["Float"];
-  likes: Scalars["Float"];
+  likes?: Maybe<Array<Scalars["Float"]>>;
   owner: Scalars["String"];
   pinned?: Maybe<Scalars["Boolean"]>;
   postid: Scalars["Float"];
@@ -125,7 +126,7 @@ export type PostFragmentFragment = {
   __typename?: "Post";
   header: string;
   content: string;
-  likes: number;
+  likes?: Array<number> | null;
   owner: string;
   postid: number;
 };
@@ -157,11 +158,16 @@ export type DeletePostMutation = {
 
 export type LikePostMutationVariables = Exact<{
   postid: Scalars["Float"];
+  userid: Scalars["Float"];
 }>;
 
 export type LikePostMutation = {
   __typename?: "Mutation";
-  likePost: { __typename?: "Post"; postid: number; likes: number };
+  likePost: {
+    __typename?: "Post";
+    postid: number;
+    likes?: Array<number> | null;
+  };
 };
 
 export type LoginMutationVariables = Exact<{
@@ -205,7 +211,7 @@ export type OwnerQuery = {
     __typename?: "Post";
     header: string;
     content: string;
-    likes: number;
+    likes?: Array<number> | null;
     owner: string;
     postid: number;
   }>;
@@ -221,7 +227,7 @@ export type PostQuery = {
     __typename?: "Post";
     header: string;
     content: string;
-    likes: number;
+    likes?: Array<number> | null;
     owner: string;
     postid: number;
   };
@@ -237,7 +243,7 @@ export type PostsQuery = {
     header: string;
     content: string;
     owner: string;
-    likes: number;
+    likes?: Array<number> | null;
     updatedAt: string;
   }>;
 };
@@ -256,7 +262,7 @@ export type UserQuery = {
       __typename?: "Post";
       header: string;
       content: string;
-      likes: number;
+      likes?: Array<number> | null;
       owner: string;
       postid: number;
     }> | null;
@@ -302,8 +308,8 @@ export function useDeletePostMutation() {
   );
 }
 export const LikePostDocument = gql`
-  mutation LikePost($postid: Float!) {
-    likePost(postid: $postid) {
+  mutation LikePost($postid: Float!, $userid: Float!) {
+    likePost(postid: $postid, userid: $userid) {
       postid
       likes
     }

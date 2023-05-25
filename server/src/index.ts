@@ -55,7 +55,6 @@ const main = async () => {
 
   const yoga = createYoga({
     schema,
-    context: ({ req, res }): MyContext => ({ req, res }),
   })
 
   app.use('/graphql', yoga)

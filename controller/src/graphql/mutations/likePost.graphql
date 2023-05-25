@@ -1,5 +1,5 @@
-mutation LikePost($postid: Float!) {
-  likePost(postid: $postid) {
+mutation LikePost($postid: Float!, $userid: Float!) {
+  likePost(postid: $postid, userid: $userid) {
     postid
     likes
   }

@@ -6,11 +6,13 @@ import { cookies } from 'next/headers'
 import { useLikePostMutation, usePostsQuery, useUserQuery } from '@/graphql'
 
 export default () => {
-  const [{ data }] = usePostsQuery()
+  const [{ data, fetching }] = usePostsQuery()
+  const [{ data: user }] = useUserQuery()
   const posts = data?.posts
+  const ud = user?.user.userid as number
 
   const [, like] = useLikePostMutation()
-
+  let fetch
 
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center mt-8">
@@ -18,6 +20,7 @@ export default () => {
 
       <Crown />
 
+      {fetch && fetch}
       {posts &&
         posts.map(post => (
           <div
@@ -54,7 +57,9 @@ export default () => {
             <button
               className="text-3xl"
               // onClick={e => handleLike(e, post.postid)}
-              onClick={async () => await like({ postid: post.postid })}
+              onClick={async () =>
+                await like({ postid: post.postid, userid: ud })
+              }
             >
               💖
             </button>
