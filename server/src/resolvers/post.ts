@@ -33,7 +33,6 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
-  @UseMiddleware(isAuth)
   async createPost(
     @Arg('params') params: Create,
     @Ctx() { req }: MyContext
@@ -67,15 +66,11 @@ export class PostResolver {
     const post = await Post.create({
       header,
       content,
-      owner: user.username,
-      likes: 0,
+      owner: user.nameid,
+      likes: [user.userid],
       pinned: false,
       postid,
     }).save()
-
-    user.posts.push(post)
-
-    await User.save(user)
 
     return post
   }
@@ -93,20 +88,40 @@ export class PostResolver {
     return await Post.save(post)
   }
 
+  // @UseMiddleware(isAuth)
   @Mutation(() => Post)
-  @UseMiddleware(isAuth)
-  async likePost(@Arg('postid') postid: number): Promise<Post> {
+  async likePost(
+    @Arg('postid') postid: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Post> {
+    if (!req.session.userid) console.log('[LikePost] - !userid')
+
+    console.log(req.session.userid)
+
     const post = await Post.findOne({ where: { postid } })
 
-    post.likes += 1
+    if (post.likes) {
+      if (post.likes.includes(req.session.userid)) {
+        console.log('[LikePost] - post.likes(userid)')
+      } else {
+        post.likes.push(req.session.userid)
+      }
+    } else {
+      post.likes = [req.session.userid]
+      await Post.save(post)
+      console.log(post.likes, post.likes.length)
+      console.log('[LikePost] - post.likes + 1')
+    }
 
     const user = await User.findOne({ where: { nameid: post.owner } })
 
     user.likes += 1
 
+    console.log('[LikePost] - user.likes + 1')
+
     await User.save(user)
 
-    return await Post.save(post)
+    return post
   }
 
   @Mutation(() => Post)
@@ -125,7 +140,7 @@ export class PostResolver {
       where: { userid: req.session.userid },
     })
 
-    user.likes -= post.likes
+    user.likes -= post.likes.length
 
     await User.save(user)
     await Post.remove(post)

@@ -23,7 +23,7 @@ export default () => {
       const { message } = response.error.graphQLErrors[0]
       setError(message)
     } else {
-      console.log('Logged in')
+      console.log('Logged in', response.data)
       router.push('/home')
     }
   }

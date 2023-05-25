@@ -82,7 +82,7 @@ export class UserResolver {
 
     req.session.userid = user.userid
 
-    return await user
+    return user
   }
 
   @Mutation(() => Boolean)
