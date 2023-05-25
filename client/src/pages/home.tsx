@@ -11,6 +11,7 @@ export default () => {
 
   const [, like] = useLikePostMutation()
 
+
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center mt-8">
       <Header h={false} e={true} p={true} c={true} />
@@ -48,7 +49,7 @@ export default () => {
               />
             </div>
             <p className="text-gray-300 text-sm mt-3 ml-2 text-left">
-              {post.likes} likes
+              {post.likes ? post.likes : 0} likes
             </p>
             <button
               className="text-3xl"

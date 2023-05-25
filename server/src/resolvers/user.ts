@@ -81,6 +81,7 @@ export class UserResolver {
     if (!valid) throw new Error('Invalid username or password')
 
     req.session.userid = user.userid
+    console.log('[REQ SESSION ID] - ', req.session.userid)
 
     return user
   }
