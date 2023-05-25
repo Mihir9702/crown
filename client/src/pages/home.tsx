@@ -14,8 +14,6 @@ export default () => {
   const [, like] = useLikePostMutation()
   let fetch
 
-  console.log(posts)
-  if (fetching) fetch = <div>Loading...</div>
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center mt-8">
       <Header h={false} e={true} p={true} c={true} />
