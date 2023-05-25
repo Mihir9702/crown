@@ -68,7 +68,7 @@ export class PostResolver {
       header,
       content,
       owner: user.username,
-      likes: 0,
+      likes: [user.userid],
       pinned: false,
       postid,
     }).save()
@@ -95,10 +95,13 @@ export class PostResolver {
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
-  async likePost(@Arg('postid') postid: number): Promise<Post> {
+  async likePost(
+    @Arg('postid') postid: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
 
-    post.likes += 1
+    post.likes.push(req.session.userid)
 
     const user = await User.findOne({ where: { nameid: post.owner } })
 
@@ -125,7 +128,7 @@ export class PostResolver {
       where: { userid: req.session.userid },
     })
 
-    user.likes -= post.likes
+    user.likes -= post.likes.length
 
     await User.save(user)
     await Post.remove(post)

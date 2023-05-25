@@ -26,7 +26,7 @@ export default () => {
                 alt="pfp"
               />
               <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                {user.username}
+                {user.nameid}
               </h5>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {user.likes} likes
@@ -54,7 +54,7 @@ export default () => {
             !saved &&
             user.posts.map(post => (
               <a
-                href={`/p/${post.postId}`}
+                href={`/p/${post.postid}`}
                 className="w-full h-[720px] mt-6 rounded-lg border border-transparent px-5 py-4 transition-colors border-gray-300 bg-gray-100 dark:border-neutral-700 dark:bg-neutral-800/30"
                 target="_blank"
                 rel="noopener noreferrer"
