@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Crown from '@/components/Crown'
 import Header from '@/components/Header'
-import { cookies } from 'next/headers'
 import { useLikePostMutation, usePostsQuery, useUserQuery } from '@/graphql'
 
 export default () => {

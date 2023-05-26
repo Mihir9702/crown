@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser'
 import { createYoga } from 'graphql-yoga'
 import { UserResolver } from './resolvers/user'
 import { PostResolver } from './resolvers/post'
-import { MyContext } from './types'
 
 const main = async () => {
   await db.initialize().then(() => {
@@ -55,6 +54,7 @@ const main = async () => {
 
   const yoga = createYoga({
     schema,
+    // context: ({ req, res }): MyContext => ({ req, res }),
   })
 
   app.use('/graphql', yoga)
