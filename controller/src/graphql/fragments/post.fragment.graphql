@@ -1,7 +1,6 @@
 fragment PostFragment on Post {
   header
   content
-  likes
   owner
   postid
 }

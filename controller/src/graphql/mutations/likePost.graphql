@@ -1,6 +1,5 @@
 mutation LikePost($postid: Float!, $userid: Float!) {
   likePost(postid: $postid, userid: $userid) {
     postid
-    likes
   }
 }

@@ -3,15 +3,17 @@ import Image from 'next/image'
 import Crown from '@/components/Crown'
 import Header from '@/components/Header'
 import { useLikePostMutation, usePostsQuery, useUserQuery } from '@/graphql'
+import { useState } from 'react'
 
 export default () => {
   const [{ data, fetching }] = usePostsQuery()
   const [{ data: user }] = useUserQuery()
+  const [heart, setHeart] = useState('🖤')
   const posts = data?.posts
   const ud = user?.user.userid as number
 
   const [, like] = useLikePostMutation()
-  let fetch
+  console.log(posts?.at(0)?.likes)
 
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center mt-8">
@@ -19,7 +21,6 @@ export default () => {
 
       <Crown />
 
-      {fetch && fetch}
       {posts &&
         posts.map(post => (
           <div
@@ -51,16 +52,20 @@ export default () => {
               />
             </div>
             <p className="text-gray-300 text-sm mt-3 ml-2 text-left">
-              {post.likes ? post.likes : 0} likes
+              {post.likes ? post.likes.length : 0} likes
             </p>
             <button
               className="text-3xl"
               // onClick={e => handleLike(e, post.postid)}
-              onClick={async () =>
+              disabled={heart === '💖'}
+              onClick={async () => {
+                if (post.likes?.includes(ud)) {
+                  setHeart('💖')
+                }
                 await like({ postid: post.postid, userid: ud })
-              }
+              }}
             >
-              💖
+              {heart}
             </button>
           </div>
         ))}

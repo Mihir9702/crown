@@ -126,7 +126,6 @@ export type PostFragmentFragment = {
   __typename?: "Post";
   header: string;
   content: string;
-  likes?: Array<number> | null;
   owner: string;
   postid: number;
 };
@@ -163,11 +162,7 @@ export type LikePostMutationVariables = Exact<{
 
 export type LikePostMutation = {
   __typename?: "Mutation";
-  likePost: {
-    __typename?: "Post";
-    postid: number;
-    likes?: Array<number> | null;
-  };
+  likePost: { __typename?: "Post"; postid: number };
 };
 
 export type LoginMutationVariables = Exact<{
@@ -211,7 +206,6 @@ export type OwnerQuery = {
     __typename?: "Post";
     header: string;
     content: string;
-    likes?: Array<number> | null;
     owner: string;
     postid: number;
   }>;
@@ -227,7 +221,6 @@ export type PostQuery = {
     __typename?: "Post";
     header: string;
     content: string;
-    likes?: Array<number> | null;
     owner: string;
     postid: number;
   };
@@ -262,7 +255,6 @@ export type UserQuery = {
       __typename?: "Post";
       header: string;
       content: string;
-      likes?: Array<number> | null;
       owner: string;
       postid: number;
     }> | null;
@@ -273,7 +265,6 @@ export const PostFragmentFragmentDoc = gql`
   fragment PostFragment on Post {
     header
     content
-    likes
     owner
     postid
   }
@@ -311,7 +302,6 @@ export const LikePostDocument = gql`
   mutation LikePost($postid: Float!, $userid: Float!) {
     likePost(postid: $postid, userid: $userid) {
       postid
-      likes
     }
   }
 `;

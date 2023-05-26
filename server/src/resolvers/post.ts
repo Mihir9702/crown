@@ -24,7 +24,7 @@ export class PostResolver {
 
   @Query(() => [Post])
   async posts(): Promise<Post[]> {
-    return await Post.find()
+    return await Post.find({ order: { createdAt: -1 } })
   }
 
   @Query(() => [Post])
@@ -43,7 +43,7 @@ export class PostResolver {
     const user = await User.findOne({
       where: { userid: req.session.userid },
     })
-    console.log('[POST OWNER] - ', user.username)
+    console.log('[POST OWNER] - ', user.nameid)
 
     const { header, content } = params
     const postid = randomNumber(4)
@@ -63,19 +63,23 @@ export class PostResolver {
       })
       .catch(x => console.log(x))
 
+    const likes = [user.userid]
+
     const post = await Post.create({
       header,
       content,
       owner: user.nameid,
-      likes: [user.userid],
+      likes,
       pinned: false,
       postid,
     }).save()
 
+    console.log(post)
+    // user.posts
+
     return post
   }
 
-  // !! Update Post
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async updatePost(@Arg('params') params: Update): Promise<Post> {
@@ -95,31 +99,11 @@ export class PostResolver {
     @Arg('userid') userid: number
   ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
+    const user = await User.findOne({ where: { userid } })
 
-    if (post.likes) {
-      if (post.likes.includes(userid)) {
-        console.log('[LikePost] - post.likes(userid)')
-      }
-    } else {
-      post.likes = [0]
-    }
-
-    console.log('userid', userid)
-    console.log(post.likes)
     post.likes.push(userid)
-    console.log('post.likes', post.likes)
-    post.likes.shift()
-    console.log(post.likes)
+
     await Post.save(post)
-
-    const user = await User.findOne({ where: { nameid: post.owner } })
-
-    user.likes += 1
-
-    console.log('[LikePost] - user.likes + 1')
-
-    await User.save(user)
-
     return post
   }
 
