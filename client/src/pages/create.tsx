@@ -52,7 +52,7 @@ export default () => {
   else if (!data?.user) router.push('/login')
 
   return (
-    <main className="h-screen flex flex-col font-mono my-8 items-center">
+    <main className="h-screen flex flex-col items-center">
       <Header c={false} h={true} />
 
       <form

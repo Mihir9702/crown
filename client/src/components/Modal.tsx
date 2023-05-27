@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dialog } from '@mui/material'
 import Image from 'next/image'
-import { PostIdProps } from '@/consts'
+import { PostIdProps } from '@/types'
 
 interface ModalProps {
   open: boolean

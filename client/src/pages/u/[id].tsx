@@ -4,9 +4,10 @@ import Crown from '@/assets/crown.png'
 import { Header, Modal } from '@/components'
 import { useOwnerQuery, useUserSearchQuery } from '@/graphql'
 import { usePathname } from 'next/navigation'
-import { filler, PostIdProps } from '@/consts'
+import { PostIdProps } from '@/types'
 
 function UserData({ path }: { path: string }) {
+  const filler = { header: '', content: '', owner: '' }
   const [open, isOpen] = useState(false)
   const [post, isPost] = useState<PostIdProps>(filler)
 
