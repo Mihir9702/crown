@@ -17,8 +17,8 @@ export default (props: ModalProps) => {
   }
 
   return (
-    <Dialog onClose={handleClose} open={open} className="font-mono">
-      <div className="bg-[#121516] max-w-[600px] min-h-[650px] text-gray-400 border-2 border-gray-950 p-4 rounded-lg shadow-lg">
+    <Dialog onClose={handleClose} open={open} className="">
+      <div className="bg-[#121516] max-w-[600px] h-screen flex flex-col items-center justify-between text-gray-400 border-2 border-gray-950 p-4 rounded-lg shadow-lg">
         <h1 className="text-2xl text-center mb-6">{id.header}</h1>
         <Image
           src={id.content}

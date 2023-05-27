@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export default () => {
   return (
-    <footer className="bg-white rounded-lg shadow dark:bg-[#121516] w-full mt-32">
+    <footer className="bg-transparent rounded-lg shadow dark:bg-transparent w-full mt-32">
       <div className="mx-auto max-w-xl">
         <div className="sm:flex sm:items-center py-4 sm:justify-between">
           <a href="#" className="flex items-center">
