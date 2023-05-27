@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Header, Crown, Cols, Item } from '@/components'
+import { Header, Crown, Cols, Item, Footer } from '@/components'
 
 export default () => {
   const [state, setState] = useState(false)
@@ -10,6 +10,7 @@ export default () => {
       <Crown />
       <Cols setState={setState} />
       <Item state={state} />
+      <Footer />
     </main>
   )
 }

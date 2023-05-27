@@ -8,7 +8,6 @@ export default function Document() {
         <Main />
         <NextScript />
       </body>
-      <script src="https://unpkg.com/feather-icons"></script>
     </Html>
   )
 }

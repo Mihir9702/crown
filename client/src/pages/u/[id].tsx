@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Crown from '@/assets/crown.png'
-import { Header, Modal } from '@/components'
+import { Footer, Header, Modal } from '@/components'
 import { useOwnerQuery, useUserSearchQuery } from '@/graphql'
 import { usePathname } from 'next/navigation'
 import { PostIdProps } from '@/types'
+import { Button } from '@mui/material'
+import { useRouter } from 'next/navigation'
 
 function UserData({ path }: { path: string }) {
   const filler = { header: '', content: '', owner: '' }
@@ -89,12 +91,14 @@ function UserCard({ path }: { path: string }) {
 export default () => {
   const pathname = usePathname()
   const path = pathname?.split('/u/')[1]
+  const router = useRouter()
 
   return (
-    <main className="flex flex-col h-screen items-center">
+    <main className="flex flex-col items-center justify-between min-h-screen">
       <Header h={true} c={true} />
       <UserCard path={path} />
       <UserData path={path} />
+      <Footer />
     </main>
   )
 }
