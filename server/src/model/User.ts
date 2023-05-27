@@ -33,6 +33,16 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   userid!: number
 
+  @Field({
+    defaultValue: 'https://upcdn.io/12a1yGp/raw/default/id.png',
+    nullable: true,
+  })
+  @Column({
+    default: 'https://upcdn.io/12a1yGp/raw/default/id.png',
+    nullable: true,
+  })
+  photoid!: string
+
   @Field({ defaultValue: 0 })
   @Column({ default: 0 })
   likes!: number

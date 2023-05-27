@@ -20,11 +20,19 @@ export class UserResolver {
   }
 
   @Query(() => User)
+  async userSearch(@Arg('nameid') nameid: string): Promise<User> {
+    const user = await User.findOne({
+      where: { nameid },
+    })
+    console.log(user)
+    return user
+  }
+
+  @Query(() => User)
   async user(@Ctx() { req }: MyContext): Promise<User> {
     const user = await User.findOne({
       where: { userid: req.session.userid },
     })
-    console.log(user)
     return user
   }
 
@@ -58,6 +66,8 @@ export class UserResolver {
     }).save()
 
     req.session.userid = user.userid
+
+    console.log(user)
 
     return user
   }

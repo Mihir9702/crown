@@ -29,7 +29,7 @@ export default () => {
     <main className="flex justify-center items-center h-screen w-full">
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-8 rounded-xl shadow-lg py-12 lg:scale-150 flex flex-col items-start text-gray-300"
+        className="p-8 rounded-xl shadow-lg shadow-black py-12 lg:scale-150 flex flex-col items-start text-gray-300"
       >
         <h1 className="font-bold text-2xl text-gray-200">Signup</h1>
         {error && <p className="text-red-500 my-4">{error}</p>}

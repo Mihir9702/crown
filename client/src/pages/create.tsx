@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useCreatePostMutation, useUserQuery } from '@/graphql'
 import { useRouter } from 'next/navigation'
-import Header from '@/components/Header'
+import { Header } from '@/components'
 import { Uploader } from 'uploader'
 import { UploadDropzone } from 'react-uploader'
 
@@ -18,7 +18,8 @@ export default () => {
 
     styles: {
       colors: {
-        primary: '#45caff',
+        primary: '#EC4899',
+        active: '#EC4899',
       },
     },
   }
@@ -52,13 +53,13 @@ export default () => {
 
   return (
     <main className="h-screen flex flex-col font-mono my-8 items-center">
-      <Header c={false} e={true} h={true} p={true} />
+      <Header c={false} h={true} />
 
       <form
         onSubmit={handleSubmit}
-        className="lg:w-[40%] h-fit max-w-[512px] bg-[#0e1111] mt-[200px] px-8 py-8 shadow-2xl shadow-black rounded-lg flex flex-col gap-4 items-center"
+        className="lg:w-[40%] h-fit max-w-[512px] mt-[200px] px-8 py-8 shadow-lg shadow-black rounded-lg flex flex-col gap-4 items-center"
       >
-        {error && <p className="text-blue-500">{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         <input
           name={header}
           type="text"
@@ -74,7 +75,14 @@ export default () => {
           width="600px"
           height="375px"
         />
-        {content && <button type="submit">Upload</button>}
+        {content && (
+          <button
+            type="submit"
+            className="bg-[#EC4899] px-4 py-2 hover:bg-pink-500 rounded-lg shadow-md shadow-black"
+          >
+            Upload
+          </button>
+        )}
       </form>
     </main>
   )

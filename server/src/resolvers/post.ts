@@ -45,7 +45,6 @@ export class PostResolver {
     })
     console.log('[POST OWNER] - ', user.nameid)
 
-    const { header, content } = params
     const postid = randomNumber(4)
 
     new Upload.UploadManager(
@@ -66,15 +65,19 @@ export class PostResolver {
     const likes = [user.userid]
 
     const post = await Post.create({
-      header,
-      content,
+      ...params,
       owner: user.nameid,
       likes,
       pinned: false,
       postid,
     }).save()
 
-    console.log(post)
+    user.posts !== undefined
+      ? (user.posts = [...user.posts, post])
+      : (user.posts = [post])
+    await User.save(user)
+
+    console.log(user.posts)
     // user.posts
 
     return post
@@ -101,9 +104,21 @@ export class PostResolver {
     const post = await Post.findOne({ where: { postid } })
     const user = await User.findOne({ where: { userid } })
 
-    post.likes.push(userid)
+    const users = post.likes.map(p => p.toString())
 
-    await Post.save(post)
+    if (users.includes(String(userid))) {
+      const newusers = users.filter(id => id !== String(userid))
+      console.log(newusers)
+      const numusers = newusers.map(u => Number(u))
+      post.likes = numusers
+      await Post.save(post)
+    } else {
+      const newusers = ['00000', String(userid)]
+      console.log(newusers)
+      post.likes = newusers.map(u => Number(u))
+      await Post.save(post)
+    }
+
     return post
   }
 

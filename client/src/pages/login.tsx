@@ -24,14 +24,14 @@ export default () => {
       setError(message)
     } else {
       console.log('Logged in', response.data)
-      router.push('/home')
+      router.push('/')
     }
   }
   return (
-    <main className="flex justify-center font-mono items-center bg-[#0e1111] h-screen w-full">
+    <main className="flex justify-center items-center bg-[#0e1111] h-screen w-full">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#212425] border-2 border-[#101110] p-8 rounded-xl shadow-lg py-12 lg:scale-150 flex flex-col items-start text-gray-300"
+        className="border-2 border-[#101110] p-8 rounded-xl shadow-lg shadow-black py-12 lg:scale-150 flex flex-col items-start text-gray-300"
       >
         <h1 className="font-bold text-2xl text-gray-200">Login</h1>
         {error && <p className="text-red-500 my-4">{error}</p>}

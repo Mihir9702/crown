@@ -40,7 +40,7 @@ export class Post extends BaseEntity {
   likes?: number[]
 
   @Field()
-  @Column()
+  @Column({ unique: true })
   postid!: number
 
   @Field(() => String)

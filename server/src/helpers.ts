@@ -22,7 +22,7 @@ export function randomNumber(length: number): number {
 export function randomName(): string {
   const config: Config = {
     dictionaries: [adjectives, colors],
-    length: 1,
+    length: 2,
   }
 
   return uniqueNamesGenerator(config)

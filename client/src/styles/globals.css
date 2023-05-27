@@ -16,9 +16,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    var(--background-start-rgb),
-    var(--background-end-rgb)
-  );
+
+  @apply font-mono bg-[#0e1111];
 }

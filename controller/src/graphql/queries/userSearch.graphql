@@ -1,5 +1,5 @@
-query User {
-  user {
+query UserSearch($nameid: String!) {
+  userSearch(nameid: $nameid) {
     id
     nameid
     userid
