@@ -6,7 +6,7 @@ export default () => {
 
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center">
-      <Header h={false} c={true} />
+      <Header home={false} create={true} />
       <Crown />
       <Cols setState={setState} />
       <Item state={state} />

@@ -9,6 +9,6 @@ export default new DataSource({
   password: process.env.POSTGRES_PASS || 'postgres',
   database: 'fullstack',
   synchronize: true,
-  logging: true,
+  // logging: true,
   entities: [path.join(__dirname, 'model/**/*.ts')],
 })

@@ -4,6 +4,7 @@ query User {
     nameid
     userid
     photoid
+    bio
     likes
     posts {
       ...PostFragment

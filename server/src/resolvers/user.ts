@@ -7,7 +7,7 @@ import {
   UseMiddleware,
 } from 'type-graphql'
 import { User } from '../model/User'
-import { Input, MyContext } from '../types'
+import { Input, MyContext, UpdateUser } from '../types'
 import { hash, genSalt, compare } from 'bcryptjs'
 import { isAuth } from '../middleware/isAuth'
 import { randomName, randomNumber } from '../helpers'
@@ -21,19 +21,13 @@ export class UserResolver {
 
   @Query(() => User)
   async userSearch(@Arg('nameid') nameid: string): Promise<User> {
-    const user = await User.findOne({
-      where: { nameid },
-    })
-    console.log(user)
-    return user
+    console.log('[UserSearch] - ', await User.findOne({ where: { nameid } }))
+    return await User.findOne({ where: { nameid } })
   }
 
   @Query(() => User)
   async user(@Ctx() { req }: MyContext): Promise<User> {
-    const user = await User.findOne({
-      where: { userid: req.session.userid },
-    })
-    return user
+    return await User.findOne({ where: { userid: req.session.userid } })
   }
 
   @Mutation(() => User)
@@ -58,7 +52,7 @@ export class UserResolver {
     const nameid: string = params.nameid || randomName()
     const userid: number = randomNumber(4)
 
-    const user: User = await User.create({
+    const user = await User.create({
       username,
       password,
       nameid,
@@ -66,8 +60,6 @@ export class UserResolver {
     }).save()
 
     req.session.userid = user.userid
-
-    console.log(user)
 
     return user
   }
@@ -91,36 +83,41 @@ export class UserResolver {
     if (!valid) throw new Error('Invalid username or password')
 
     req.session.userid = user.userid
-    console.log('[REQ SESSION ID] - ', req.session.userid)
 
     return user
+  }
+
+  @Mutation(() => User)
+  @UseMiddleware(isAuth)
+  async updateUser(
+    @Arg('params') params: UpdateUser,
+    @Ctx() { req }: MyContext
+  ): Promise<User> {
+    const user = await User.findOne({ where: { userid: req.session.userid } })
+    if (!user) throw new Error('[UpdateUser] - no user')
+
+    user.nameid = params.nameid
+    user.photoid = params.photoid
+    user.bio = params.bio
+
+    return await User.save(user)
   }
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async logout(@Ctx() { req }: MyContext): Promise<boolean> {
-    const user = await User.findOne({
-      where: { userid: req.session.userid },
-    })
-
-    if (!user) throw new Error('User not found')
-
-    await User.save(user)
-
     req.session.destroy(err => (err ? err : true))
-
     return true
   }
 
   @Mutation(() => User)
   @UseMiddleware(isAuth)
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
-    const user = await User.findOne({
-      where: { userid: req.session.userid },
-    })
-
-    await User.remove(user)
-
+    await User.remove(
+      await User.findOne({
+        where: { userid: req.session.userid },
+      })
+    )
     return true
   }
 }

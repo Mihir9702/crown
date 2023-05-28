@@ -4,6 +4,7 @@ query UserSearch($nameid: String!) {
     nameid
     userid
     photoid
+    bio
     likes
     posts {
       ...PostFragment

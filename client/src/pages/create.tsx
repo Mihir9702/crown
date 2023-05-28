@@ -53,7 +53,7 @@ export default () => {
 
   return (
     <main className="h-screen flex flex-col items-center">
-      <Header c={false} h={true} />
+      <Header home={true} create={false} />
 
       <form
         onSubmit={handleSubmit}

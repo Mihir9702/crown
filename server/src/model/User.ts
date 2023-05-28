@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm'
+
 import { Post } from './Post'
 
 @ObjectType()
@@ -17,19 +18,19 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number
 
-  @Field()
-  @Column({ type: 'text' })
+  @Field(() => String)
+  @Column({ type: 'text', unique: true })
   username!: string
 
-  @Field()
+  @Field(() => String)
   @Column({ type: 'text' })
   password!: string
 
-  @Field()
+  @Field(() => String)
   @Column({ type: 'text', unique: true })
   nameid!: string
 
-  @Field()
+  @Field(() => Number)
   @Column({ unique: true })
   userid!: number
 
@@ -43,7 +44,11 @@ export class User extends BaseEntity {
   })
   photoid!: string
 
-  @Field({ defaultValue: 0 })
+  @Field(() => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
+  bio?: string
+
+  @Field(() => Number, { defaultValue: 0 })
   @Column({ default: 0 })
   likes!: number
 

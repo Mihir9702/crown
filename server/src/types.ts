@@ -40,6 +40,18 @@ export class Update {
 }
 
 @InputType()
+export class UpdateUser {
+  @Field({ nullable: true })
+  nameid?: string
+
+  @Field({ nullable: true })
+  photoid?: string
+
+  @Field({ nullable: true })
+  bio?: string
+}
+
+@InputType()
 export class Delete {
   @Field()
   nameid!: string

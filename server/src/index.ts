@@ -6,21 +6,24 @@ import session from 'express-session'
 import { buildSchema } from 'type-graphql'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
 
-import { createYoga } from 'graphql-yoga'
 import { UserResolver } from './resolvers/user'
 import { PostResolver } from './resolvers/post'
+import { ApolloServer } from '@apollo/server'
+import { expressMiddleware } from '@apollo/server/express4'
+import { MyContext } from './types'
 
 const main = async () => {
-  await db.initialize().then(() => {
-    console.log('Database Initialized')
-  })
+  await db.initialize()
   await db.runMigrations()
 
   const app = express()
 
   app.use(logger('dev'))
   app.use(cookieParser())
+  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.json())
 
   // might have to set to 1
   app.set('trust proxy', 1)
@@ -47,18 +50,22 @@ const main = async () => {
     })
   )
 
-  const schema = await buildSchema({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolvers: [UserResolver, PostResolver],
-    validate: false,
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [UserResolver, PostResolver],
+      validate: false,
+    }),
   })
 
-  const yoga = createYoga({
-    schema,
-    // context: ({ req, res }): MyContext => ({ req, res }),
-  })
+  await apolloServer.start()
 
-  app.use('/graphql', yoga)
+  app.use(
+    '/graphql',
+    // cors<cors.CorsRequest>(),
+    expressMiddleware(apolloServer, {
+      context: async ({ req, res }): Promise<MyContext> => ({ req, res }),
+    })
+  )
 
   app.listen(PORT, () =>
     console.log(`🚀 Server started on http:localhost:${PORT}/graphql`)

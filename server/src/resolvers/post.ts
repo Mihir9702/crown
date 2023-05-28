@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import 'dotenv/config'
 import * as Upload from 'upload-js-full'
 import {
@@ -13,12 +14,12 @@ import { Create, Delete, MyContext, Update } from '../types'
 import { randomNumber } from '../helpers'
 import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
+import axios from 'axios'
 
 @Resolver()
 export class PostResolver {
   @Query(() => Post)
   async post(@Arg('postid') postid: number): Promise<Post> {
-    // pull from upload.io
     return await Post.findOne({ where: { postid } })
   }
 
@@ -33,6 +34,7 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
+  @UseMiddleware(isAuth)
   async createPost(
     @Arg('params') params: Create,
     @Ctx() { req }: MyContext
@@ -49,7 +51,7 @@ export class PostResolver {
 
     new Upload.UploadManager(
       new Upload.Configuration({
-        fetchApi: fetch,
+        fetchApi: axios,
         apiKey,
       })
     )
@@ -62,6 +64,7 @@ export class PostResolver {
       })
       .catch(x => console.log(x))
 
+    // ! this doesn't work
     const likes = [user.userid]
 
     const post = await Post.create({
@@ -72,12 +75,12 @@ export class PostResolver {
       postid,
     }).save()
 
+    // ? does this work
     user.posts !== undefined
       ? (user.posts = [...user.posts, post])
       : (user.posts = [post])
     await User.save(user)
 
-    console.log(user.posts)
     // user.posts
 
     return post
@@ -95,8 +98,9 @@ export class PostResolver {
     return await Post.save(post)
   }
 
-  // @UseMiddleware(isAuth)
+  // ! this doesn't work
   @Mutation(() => Post)
+  @UseMiddleware(isAuth)
   async likePost(
     @Arg('postid') postid: number,
     @Arg('userid') userid: number
@@ -122,11 +126,12 @@ export class PostResolver {
     return post
   }
 
+  // ! this doesn't work
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async deletePost(
-    @Arg('params') params: Delete,
-    @Ctx() { req }: MyContext
+    @Arg('params') params: Delete
+    // @Ctx() { req }: MyContext
   ): Promise<boolean> {
     const post = await Post.findOne({
       where: { postid: params.postid },
@@ -134,13 +139,11 @@ export class PostResolver {
 
     if (post.owner !== params.nameid) return false
 
-    const user = await User.findOne({
-      where: { userid: req.session.userid },
-    })
+    // ? does this work
+    // const user = await User.findOne({ where: { userid: req.session.userid }})
+    // user.likes -= post.likes.length
+    // await User.save(user)
 
-    user.likes -= post.likes.length
-
-    await User.save(user)
     await Post.remove(post)
 
     return true

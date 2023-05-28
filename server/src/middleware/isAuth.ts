@@ -3,7 +3,7 @@ import { MyContext } from '../types'
 import { User } from '../model/User'
 
 export const isAuth: MiddlewareFn<MyContext> = async ({ context }, next) => {
-  if (!context.req.session.userid) {
+  if (!context.req.session.id) {
     if (context.req.path !== '/') {
       console.log(
         '[isAuth] - User not authenticated for request - ',

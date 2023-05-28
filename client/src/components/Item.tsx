@@ -31,16 +31,26 @@ export default (props: Props) => {
     isOpen(false)
     isPost(filler)
   }
+
+  // useEffect(() => {
+  //   window.addEventListener('keydown', event => {
+  //     if (event.key === 'ArrowRight' && posts) {
+  //       let idx = posts.findIndex(post)
+  //       isPost(posts[idx + 1])
+  //     }
+  //   })
+  // }, [post])
+
   const viewStates = {
     section: 'grid gap-6 max-w-[960px]',
-    card: 'w-fit bg-[#181A1B] rounded-xl px-5 py-4 shadow-lg shadow-black  cursor-default hover:bg-[#121516]',
+    card: 'bg-[#181A1B] rounded-xl px-4 py-4 shadow-lg shadow-black cursor-default hover:bg-[#121516]',
     col1: {
       section: 'grid-cols-1',
-      card: 'flex flex-col h-[500px] max-w-[500px]',
+      card: 'flex flex-col min-h-[300px] md:h-[500px] max-w-[500px]',
       image: 'max-h-[400px] w-[400px]',
     },
     col4: {
-      section: 'grid-cols-4',
+      section: 'sm:grid-cols-3 md:grid-cols-4 grid-cols-1',
       card: 'h-[300px] max-w-[500px]',
       image: 'max-h-[200px] w-[250px]',
     },
@@ -73,7 +83,7 @@ export default (props: Props) => {
               <h1 className={`mb-3 text-xl text-left font-semibold`}>
                 {post.header}
               </h1>
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center">
                 <Image
                   src={post.content}
                   alt="photo-id"
