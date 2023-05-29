@@ -46,6 +46,7 @@ export type Mutation = {
   login: User
   logout: Scalars['Boolean']
   signup: User
+  unlikePost: Post
   updatePost: Post
   updateUser: User
 }
@@ -60,7 +61,6 @@ export type MutationDeletePostArgs = {
 
 export type MutationLikePostArgs = {
   postid: Scalars['Float']
-  userid: Scalars['Float']
 }
 
 export type MutationLoginArgs = {
@@ -69,6 +69,10 @@ export type MutationLoginArgs = {
 
 export type MutationSignupArgs = {
   params: Input
+}
+
+export type MutationUnlikePostArgs = {
+  postid: Scalars['Float']
 }
 
 export type MutationUpdatePostArgs = {
@@ -175,12 +179,15 @@ export type DeletePostMutation = {
 
 export type LikePostMutationVariables = Exact<{
   postid: Scalars['Float']
-  userid: Scalars['Float']
 }>
 
 export type LikePostMutation = {
   __typename?: 'Mutation'
-  likePost: { __typename?: 'Post'; postid: number }
+  likePost: {
+    __typename?: 'Post'
+    postid: number
+    likes?: Array<number> | null
+  }
 }
 
 export type LoginMutationVariables = Exact<{
@@ -206,6 +213,19 @@ export type SignupMutationVariables = Exact<{
 export type SignupMutation = {
   __typename?: 'Mutation'
   signup: { __typename?: 'User'; nameid: string; userid: number }
+}
+
+export type UnlikePostMutationVariables = Exact<{
+  postid: Scalars['Float']
+}>
+
+export type UnlikePostMutation = {
+  __typename?: 'Mutation'
+  unlikePost: {
+    __typename?: 'Post'
+    postid: number
+    likes?: Array<number> | null
+  }
 }
 
 export type UpdatePostMutationVariables = Exact<{
@@ -363,9 +383,10 @@ export function useDeletePostMutation() {
   )
 }
 export const LikePostDocument = gql`
-  mutation LikePost($postid: Float!, $userid: Float!) {
-    likePost(postid: $postid, userid: $userid) {
+  mutation LikePost($postid: Float!) {
+    likePost(postid: $postid) {
       postid
+      likes
     }
   }
 `
@@ -411,6 +432,20 @@ export const SignupDocument = gql`
 export function useSignupMutation() {
   return Urql.useMutation<SignupMutation, SignupMutationVariables>(
     SignupDocument
+  )
+}
+export const UnlikePostDocument = gql`
+  mutation UnlikePost($postid: Float!) {
+    unlikePost(postid: $postid) {
+      postid
+      likes
+    }
+  }
+`
+
+export function useUnlikePostMutation() {
+  return Urql.useMutation<UnlikePostMutation, UnlikePostMutationVariables>(
+    UnlikePostDocument
   )
 }
 export const UpdatePostDocument = gql`

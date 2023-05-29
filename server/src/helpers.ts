@@ -27,3 +27,7 @@ export function randomName(): string {
 
   return uniqueNamesGenerator(config)
 }
+
+export function removeDuplicates(arr: number[]) {
+  return arr.filter((item, index) => arr.indexOf(item) === index)
+}

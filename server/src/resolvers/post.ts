@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import 'dotenv/config'
 import * as Upload from 'upload-js-full'
 import {
@@ -42,13 +41,10 @@ export class PostResolver {
     const apiKey = process.env.UPLOAD_PRIVATE_KEY
     const accountId = process.env.UPLOAD_ACCOUNT_ID
 
-    const user = await User.findOne({
-      where: { userid: req.session.userid },
-    })
-    console.log('[POST OWNER] - ', user.nameid)
-
+    const user = await User.findOne({ where: { userid: req.session.userid } })
     const postid = randomNumber(4)
 
+    // upload.io
     new Upload.UploadManager(
       new Upload.Configuration({
         fetchApi: axios,
@@ -64,24 +60,16 @@ export class PostResolver {
       })
       .catch(x => console.log(x))
 
-    // ! this doesn't work
-    const likes = [user.userid]
-
     const post = await Post.create({
       ...params,
       owner: user.nameid,
-      likes,
       pinned: false,
       postid,
     }).save()
 
-    // ? does this work
-    user.posts !== undefined
-      ? (user.posts = [...user.posts, post])
-      : (user.posts = [post])
-    await User.save(user)
-
     // user.posts
+    if (!user.posts) user.posts = [post]
+    else user.posts.push(post)
 
     return post
   }
@@ -98,51 +86,46 @@ export class PostResolver {
     return await Post.save(post)
   }
 
-  // ! this doesn't work
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async likePost(
     @Arg('postid') postid: number,
-    @Arg('userid') userid: number
+    @Ctx() { req }: MyContext
   ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
-    const user = await User.findOne({ where: { userid } })
 
-    const users = post.likes.map(p => p.toString())
+    if (!post.likes) post.likes = [req.session.userid]
+    else post.likes.push(req.session.userid)
 
-    if (users.includes(String(userid))) {
-      const newusers = users.filter(id => id !== String(userid))
-      console.log(newusers)
-      const numusers = newusers.map(u => Number(u))
-      post.likes = numusers
-      await Post.save(post)
-    } else {
-      const newusers = ['00000', String(userid)]
-      console.log(newusers)
-      post.likes = newusers.map(u => Number(u))
-      await Post.save(post)
-    }
-
-    return post
+    return await Post.save(post)
   }
 
-  // ! this doesn't work
+  @Mutation(() => Post)
+  @UseMiddleware(isAuth)
+  async unlikePost(
+    @Arg('postid') postid: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Post> {
+    const post = await Post.findOne({ where: { postid } })
+    const idx = post.likes.indexOf(req.session.userid)
+
+    if (idx) {
+      post.likes.splice(idx, 1)
+    }
+
+    return await Post.save(post)
+  }
+
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
   async deletePost(
-    @Arg('params') params: Delete
-    // @Ctx() { req }: MyContext
+    @Arg('params') params: Delete,
+    @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    const post = await Post.findOne({
-      where: { postid: params.postid },
-    })
+    const post = await Post.findOne({ where: { postid: params.postid } })
+    const user = await User.findOne({ where: { userid: req.session.userid } })
 
-    if (post.owner !== params.nameid) return false
-
-    // ? does this work
-    // const user = await User.findOne({ where: { userid: req.session.userid }})
-    // user.likes -= post.likes.length
-    // await User.save(user)
+    if (post.owner !== user.nameid) return false
 
     await Post.remove(post)
 
