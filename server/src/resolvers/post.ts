@@ -97,6 +97,10 @@ export class PostResolver {
     if (!post.likes) post.likes = [req.session.userid]
     else post.likes.push(req.session.userid)
 
+    const user = await User.findOne({ where: { nameid: post.owner } })
+    user.likes += 1
+
+    await User.save(user)
     return await Post.save(post)
   }
 
@@ -113,6 +117,10 @@ export class PostResolver {
       post.likes.splice(idx, 1)
     }
 
+    const user = await User.findOne({ where: { nameid: post.owner } })
+    user.likes -= 1
+
+    await User.save(user)
     return await Post.save(post)
   }
 

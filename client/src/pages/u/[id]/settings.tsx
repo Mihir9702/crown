@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation'
 
 export default () => {
   const [{ data }] = useUserQuery()
-  const id = data?.user
+  const id = data?.user!
 
   const [photo, setPhoto] = useState<string>('')
-  const [nid, isNid] = useState<string>('')
-  const [bid, isBid] = useState<string>('')
-  const [err, isErr] = useState<string>('')
+  const [nid, isNid] = useState<string>(id.nameid)
+  const [bid, isBid] = useState<string>(String(id.bio))
+  const [err, isErr] = useState<string>(String(id.photoid))
   const [, update] = useUpdateUserMutation()
   const router = useRouter()
 
@@ -78,16 +78,14 @@ export default () => {
               className="bg-[#121516] text-gray-400 text-md text-center focus:outline-none focus:border-none"
             />
           </label>
-          <label>
-            Bio:
-            <input
-              name={bid}
-              value={bid}
-              placeholder={id?.bio!}
-              onChange={e => isBid(e.target.value)}
-              className="bg-[#121516] text-gray-400 text-md text-center focus:outline-none focus:border-none"
-            />
-          </label>
+          <label className="md:mr-[12.5em]">Bio:</label>
+          <textarea
+            name={bid}
+            value={bid}
+            placeholder={id?.bio!}
+            onChange={e => isBid(e.target.value)}
+            className="bg-[#121516] text-gray-400 border text-md md:max-h-[150px] md:w-full md:max-w-[225px] text-center focus:outline-none focus:border-none"
+          />
           <div className="flex gap-8">
             <button
               className="border border-red-500 text-red-500 rounded-md transition-all hover:bg-red-500 hover:text-[#0e1111] p-2"
