@@ -2,7 +2,7 @@ import React from 'react'
 import { useUserSearchQuery, useUserQuery } from '@/graphql'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Settings } from '@/components/Icons'
+import { Door, Settings } from '@/components/Icons'
 
 export default function UserCard({ path }: { path: string }) {
   const [{ data }] = useUserSearchQuery({
@@ -19,12 +19,18 @@ export default function UserCard({ path }: { path: string }) {
     <section className="w-full flex justify-center items-center my-16">
       <div className="flex flex-col items-end w-full max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl">
         {mine && (
-          <Link
-            href={`/u/${id?.nameid}/settings`}
-            className="text-gray-500 hover:text-gray-400 m-2 cursor-default"
-          >
-            {Settings}
-          </Link>
+          <div className="flex flex-col items-center gap-2">
+            <Link
+              href={`/u/${id?.nameid}/settings`}
+              className="text-gray-500 hover:text-gray-400 m-2 cursor-default"
+            >
+              {Settings}
+            </Link>
+            <Link
+              href="/logout"
+              className="text-transparent bg-red-500 rounded-full p-2 cursor-default"
+            ></Link>
+          </div>
         )}
         <div className="flex flex-col items-center pb-10 place-self-center">
           <Image
