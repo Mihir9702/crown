@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useLoginMutation } from '@/graphql'
+import { useLoginMutation, useUserQuery } from '@/graphql'
 import Link from 'next/link'
 
 export default () => {
+  const [{ data }] = useUserQuery()
+  const router = useRouter()
+
+  if (data?.user) {
+    router.push('/')
+  }
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | undefined>(undefined)
 
   const [, login] = useLoginMutation()
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Clock, Heart } from '@/components/Icons'
 
 interface Props {
@@ -6,20 +6,30 @@ interface Props {
 }
 
 export default ({ setState }: Props) => {
+  const [co, ico] = useState('text-gray-400')
+  const [act, iact] = useState('')
   return (
     <div className="flex gap-2">
       <p
-        className="hover:text-gray-400 p-1 rounded-lg cursor-default"
-        onClick={() => setState('popular')}
+        className={`${co} hover:text-gray-400 p-1 rounded-lg cursor-default`}
+        onClick={() => {
+          ico('text-gray-400')
+          iact('')
+          setState('date')
+        }}
       >
-        {Heart}
+        {Clock}
       </p>
 
       <p
-        className="hover:text-gray-400 rounded-lg cursor-default p-1"
-        onClick={() => setState('date')}
+        className={`${act} hover:text-gray-400 p-1 rounded-lg cursor-default`}
+        onClick={() => {
+          ico('')
+          iact('text-gray-400')
+          setState('popular')
+        }}
       >
-        {Clock}
+        {Heart}
       </p>
     </div>
   )
