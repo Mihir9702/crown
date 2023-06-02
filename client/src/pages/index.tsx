@@ -11,7 +11,6 @@ export default () => {
       <Header home={false} create={true} />
       <Crown />
       <Cols setState={setState} />
-      <hr className="border border-white max-w-md min-w-[4rem]" />
       <Sort setState={setSort} />
       <Item state={state} sort={sort} />
       <Footer />
