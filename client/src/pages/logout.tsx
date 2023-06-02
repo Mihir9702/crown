@@ -1,22 +1,22 @@
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLogoutMutation } from '@/graphql'
+import { useEffect } from 'react'
 
-export default () => {
+export default function Logout() {
   const router = useRouter()
   const [, logout] = useLogoutMutation()
-  const [x, isX] = useState<string>('')
 
-  const handleLogout = async () => {
-    const response = await logout({})
-    if (response.error?.graphQLErrors[0]) {
-      isX(response.error.graphQLErrors[0].message)
-    } else {
-      router.replace('/')
+  useEffect(() => {
+    async function action() {
+      const response = await logout({})
+      if (response.error) return
+
+      if (response) {
+        return router.push('/')
+      }
     }
-  }
+    action()
+  }, [])
 
-  handleLogout()
-
-  return <div>{x}</div>
+  return <></>
 }

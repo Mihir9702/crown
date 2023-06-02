@@ -52,19 +52,21 @@ export default () => {
   else if (!data?.user) router.push('/login')
 
   return (
-    <main className="h-screen flex flex-col items-center">
-      <Header home={true} create={false} />
+    <main className="h-screen flex flex-col justify-center items-center">
+      <div className="absolute top-0">
+        <Header home={true} create={false} />
+      </div>
 
       <form
         onSubmit={handleSubmit}
-        className="lg:w-[40%] h-fit max-w-[512px] mt-[200px] px-8 py-8 shadow-lg shadow-black rounded-lg flex flex-col gap-4 items-center"
+        className="py-8 px-32 shadow-lg w-full max-w-2xl shadow-black rounded-lg flex flex-col gap-4 items-center"
       >
         {error && <p className="text-red-500">{error}</p>}
         <input
           name={header}
           type="text"
           placeholder="Title of your content"
-          className="text-[#d6d6d6] text-md md:text-lg border-2 border-[#232b2b] bg-[#0e1111] min-w-[400px] max-w-[512px] px-28 outline-none py-2 rounded-md"
+          className="text-[#d6d6d6] text-md md:text-lg border-2 border-[#232b2b] bg-[#0e1111] md:w-[93.333%] px-4 outline-none py-2 rounded-md"
           onChange={e => setHeader(e.target.value)}
           required
         />
@@ -72,9 +74,11 @@ export default () => {
           uploader={uploader}
           options={uploaderOptions}
           onUpdate={files => files.map(x => setContent(x.fileUrl))}
-          width="600px"
-          height="375px"
+          // width="600px"
+          // height="375px"
         />
+
+        <span className="whitespace-nowrap text-yellow-400">225 x 225</span>
         {content && (
           <button
             type="submit"

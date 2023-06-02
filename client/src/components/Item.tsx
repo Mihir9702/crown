@@ -32,8 +32,8 @@ const viewStates = {
   },
   col4: {
     section: 'sm:grid-cols-3 md:grid-cols-4 grid-cols-1',
-    card: 'h-[300px] max-w-[500px]',
-    image: 'max-h-[200px] w-[250px]',
+    card: 'h-[325px] max-w-[500px]',
+    image: 'max-h-lg w-[250px]',
   },
 }
 
@@ -135,12 +135,12 @@ export default (props: Props) => {
                 <h1 className={`mb-3 text-xl text-left font-semibold`}>
                   {post.header}
                 </h1>
-                <div className="flex justify-center">
+                <div className="flex min-h-[325px] justify-center">
                   <Image
                     src={post.content}
                     alt="photo-id"
                     width={600}
-                    height={375}
+                    height={325}
                     content="fit"
                     className={`${
                       props.state
@@ -151,7 +151,7 @@ export default (props: Props) => {
                   />
                 </div>
               </button>
-              <div className="flex w-full justify-between">
+              <div className="flex w-full justify-between items-center">
                 {id && post.likes?.includes(id?.userid) && (
                   <button
                     onClick={() => handleUnlike(post.postid)}

@@ -11,6 +11,7 @@ import { Input, MyContext, UpdateUser } from '../types'
 import { hash, genSalt, compare } from 'bcryptjs'
 import { isAuth } from '../middleware/isAuth'
 import { randomName, randomNumber } from '../helpers'
+import { COOKIE } from '../consts'
 
 @Resolver()
 export class UserResolver {
@@ -21,12 +22,12 @@ export class UserResolver {
 
   @Query(() => User)
   async userSearch(@Arg('nameid') nameid: string): Promise<User> {
-    console.log('[UserSearch] - ', await User.findOne({ where: { nameid } }))
     return await User.findOne({ where: { nameid } })
   }
 
   @Query(() => User)
   async user(@Ctx() { req }: MyContext): Promise<User> {
+    // 6442 not 5480 & null
     return await User.findOne({ where: { userid: req.session.userid } })
   }
 
@@ -83,6 +84,7 @@ export class UserResolver {
     if (!valid) throw new Error('Invalid username or password')
 
     req.session.userid = user.userid
+    console.log(req.session)
 
     return user
   }
@@ -104,8 +106,8 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
-  async logout(@Ctx() { req }: MyContext): Promise<boolean> {
+  async logout(@Ctx() { req, res }: MyContext): Promise<boolean> {
+    res.clearCookie(COOKIE)
     req.session.destroy(err => (err ? err : true))
     return true
   }

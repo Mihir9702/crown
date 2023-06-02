@@ -5,7 +5,7 @@ import Image from 'next/image'
 export default function Crown() {
   return (
     <Image
-      className="relative w-auto h-auto"
+      className="relative invert w-auto h-auto"
       src={ICrown}
       alt="Crown Logo"
       width={180}

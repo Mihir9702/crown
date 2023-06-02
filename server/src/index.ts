@@ -6,7 +6,7 @@ import session from 'express-session'
 import { buildSchema } from 'type-graphql'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
-import bodyParser from 'body-parser'
+import { json } from 'body-parser'
 
 import { UserResolver } from './resolvers/user'
 import { PostResolver } from './resolvers/post'
@@ -22,8 +22,6 @@ const main = async () => {
 
   app.use(logger('dev'))
   app.use(cookieParser())
-  app.use(bodyParser.urlencoded({ extended: false }))
-  app.use(bodyParser.json())
 
   // might have to set to 1
   app.set('trust proxy', 1)
@@ -50,7 +48,7 @@ const main = async () => {
     })
   )
 
-  const apolloServer = new ApolloServer({
+  const apolloServer = new ApolloServer<MyContext>({
     schema: await buildSchema({
       resolvers: [UserResolver, PostResolver],
       validate: false,
@@ -61,14 +59,15 @@ const main = async () => {
 
   app.use(
     '/graphql',
-    // cors<cors.CorsRequest>(),
+    cors<cors.CorsRequest>(),
+    json(),
     expressMiddleware(apolloServer, {
       context: async ({ req, res }): Promise<MyContext> => ({ req, res }),
     })
   )
 
   app.listen(PORT, () =>
-    console.log(`🚀 Server started on http:localhost:${PORT}/graphql`)
+    console.log(`🚀 Server started on http://localhost:${PORT}/graphql`)
   )
 }
 
