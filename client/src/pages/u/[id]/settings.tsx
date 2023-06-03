@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { UploadButton } from 'react-uploader'
 import { Uploader } from 'uploader'
 import { useRouter } from 'next/navigation'
+import Icon from '@/assets/id.png'
 
 export default () => {
   const [{ data }] = useUserQuery()
@@ -25,15 +26,18 @@ export default () => {
     console.log('uploaded img')
 
     const response = await update({
-      nameid: nid,
-      photoid: photo,
-      bio: bid,
+      params: {
+        nameid: nid,
+        photoid: photo,
+        bio: bid,
+      },
     })
 
     if (response.error) {
       isErr(response.error.message)
     } else {
-      return location.reload()
+      location.reload()
+      return router.back()
     }
   }
   return (
@@ -58,49 +62,51 @@ export default () => {
                 )}
 
                 <Image
-                  src={photo || id?.photoid!}
+                  src={photo || id?.photoid! || Icon}
                   alt="photo-id"
                   width={96}
                   height={96}
                   className="rounded-full"
+                  priority
                 />
               </button>
             )}
           </UploadButton>
-          <label className="border p-2 border-gray-500 rounded-md">
+          <label className="p-2 rounded-md">
             Name:
             <input
               name={nid}
               value={nid}
               placeholder={id?.nameid}
               onChange={e => isNid(e.target.value)}
-              className="bg-[#121516] text-gray-400 text-md text-center focus:outline-none focus:border-none"
+              className="bg-[#121516] text-gray-100 text-md text-center focus:outline-none focus:border-none"
             />
           </label>
-          <label className="mr-[12.5em]">Bio:</label>
-          <textarea
-            name={bid}
-            value={bid}
-            placeholder={id?.bio!}
-            onChange={e => isBid(e.target.value)}
-            className="bg-[#121516] text-gray-400 border border-gray-500 text-md md:max-h-[150px] w-full max-w-[225px] text-center focus:outline-none focus:border-none"
-          />
+          <label className="flex p-2 rounded-md">
+            Bio:
+            <textarea
+              name={bid}
+              value={bid}
+              placeholder={id?.bio!}
+              onChange={e => isBid(e.target.value)}
+              className="bg-[#121516] text-gray-100 px-1 text-md md:max-h-[150px] w-full max-w-[225px] text-center focus:outline-none focus:border-none"
+            />
+          </label>
+          <div className="flex justify-center gap-8 mt-6">
+            <button
+              className="border border-red-500 text-red-500 rounded-md transition-all hover:bg-red-500 dark:hover:text-gray-200 p-2"
+              onClick={() => router.back()}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="text-gray-300 rounded-md transition-all dark:bg-green-800 dark:hover:bg-green-900 p-2"
+            >
+              Save Changes
+            </button>
+          </div>
         </form>
-
-        <div className="flex justify-center gap-8 mt-6">
-          <button
-            className="border border-red-500 text-red-500 rounded-md transition-all hover:bg-red-500 dark:hover:text-gray-200 p-2"
-            onClick={() => router.back()}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="text-gray-300 rounded-md transition-all dark:bg-green-800 dark:hover:bg-green-900 p-2"
-          >
-            Save Changes
-          </button>
-        </div>
       </div>
     </section>
   )

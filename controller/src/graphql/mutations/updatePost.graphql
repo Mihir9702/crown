@@ -1,5 +1,5 @@
-mutation UpdatePost($postid: Float!, $header: String!) {
-  updatePost(params: { postid: $postid, header: $header }) {
+mutation UpdatePost($params: Update!) {
+  updatePost(params: $params) {
     header
   }
 }

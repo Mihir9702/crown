@@ -100,10 +100,12 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
-    if (!post) throw new Error('No post found')
+    if (!post) throw new Error('[LikePost] - No post found')
 
-    if (!post.likes) post.likes = [Number(req.session.userid)]
-    else post.likes.push(Number(req.session.userid))
+    if (!req.session.userid) throw new Error('[LikePost] - Please log in')
+
+    if (!post.likes) post.likes = [req.session.userid]
+    else post.likes.push(req.session.userid)
 
     const user = await User.findOne({ where: { nameid: post.owner } })
     if (!user) throw new Error('No user found')
@@ -123,7 +125,8 @@ export class PostResolver {
     const post = await Post.findOne({ where: { postid } })
     if (!post) throw new Error('No post found')
 
-    const idx = post.likes?.indexOf(Number(req.session.userid))
+    if (!req.session.userid) throw new Error('[UnlikePost] - Please log in')
+    const idx = post.likes?.indexOf(req.session.userid)
 
     if (idx) {
       post.likes?.splice(idx, 1)
@@ -151,7 +154,6 @@ export class PostResolver {
     else if (post.owner !== user.nameid) return false
 
     await Post.remove(post)
-
     return true
   }
 }

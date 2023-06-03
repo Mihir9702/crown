@@ -34,14 +34,8 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   userid!: number
 
-  @Field({
-    defaultValue: 'https://upcdn.io/12a1yGp/raw/default/id.png',
-    nullable: true,
-  })
-  @Column({
-    default: 'https://upcdn.io/12a1yGp/raw/default/id.png',
-    nullable: true,
-  })
+  @Field({ defaultValue: process.env.DEFAULT_IMG, nullable: true })
+  @Column({ default: process.env.DEFAULT_IMG, nullable: true })
   photoid!: string
 
   @Field(() => String, { nullable: true })

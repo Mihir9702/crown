@@ -164,8 +164,7 @@ export type PostFragmentFragment = {
 }
 
 export type CreatePostMutationVariables = Exact<{
-  header: Scalars['String']
-  content: Scalars['String']
+  params: Create
 }>
 
 export type CreatePostMutation = {
@@ -179,8 +178,7 @@ export type CreatePostMutation = {
 }
 
 export type DeletePostMutationVariables = Exact<{
-  nameid: Scalars['String']
-  postid: Scalars['Float']
+  params: Delete
 }>
 
 export type DeletePostMutation = {
@@ -202,8 +200,7 @@ export type LikePostMutation = {
 }
 
 export type LoginMutationVariables = Exact<{
-  username: Scalars['String']
-  password: Scalars['String']
+  params: Input
 }>
 
 export type LoginMutation = {
@@ -216,9 +213,7 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never }>
 export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean }
 
 export type SignupMutationVariables = Exact<{
-  username: Scalars['String']
-  password: Scalars['String']
-  nameid?: InputMaybe<Scalars['String']>
+  params: Input
 }>
 
 export type SignupMutation = {
@@ -240,8 +235,7 @@ export type UnlikePostMutation = {
 }
 
 export type UpdatePostMutationVariables = Exact<{
-  postid: Scalars['Float']
-  header: Scalars['String']
+  params: Update
 }>
 
 export type UpdatePostMutation = {
@@ -250,9 +244,7 @@ export type UpdatePostMutation = {
 }
 
 export type UpdateUserMutationVariables = Exact<{
-  nameid: Scalars['String']
-  photoid: Scalars['String']
-  bio: Scalars['String']
+  params: UpdateUser
 }>
 
 export type UpdateUserMutation = {
@@ -398,8 +390,8 @@ export const PostFragmentFragmentDoc = gql`
   }
 `
 export const CreatePostDocument = gql`
-  mutation CreatePost($header: String!, $content: String!) {
-    createPost(params: { header: $header, content: $content }) {
+  mutation CreatePost($params: Create!) {
+    createPost(params: $params) {
       header
       content
       owner
@@ -413,8 +405,8 @@ export function useCreatePostMutation() {
   )
 }
 export const DeletePostDocument = gql`
-  mutation DeletePost($nameid: String!, $postid: Float!) {
-    deletePost(params: { nameid: $nameid, postid: $postid }) {
+  mutation DeletePost($params: Delete!) {
+    deletePost(params: $params) {
       postid
       owner
     }
@@ -441,8 +433,8 @@ export function useLikePostMutation() {
   )
 }
 export const LoginDocument = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(params: { username: $username, password: $password }) {
+  mutation Login($params: Input!) {
+    login(params: $params) {
       username
     }
   }
@@ -463,10 +455,8 @@ export function useLogoutMutation() {
   )
 }
 export const SignupDocument = gql`
-  mutation Signup($username: String!, $password: String!, $nameid: String) {
-    signup(
-      params: { username: $username, password: $password, nameid: $nameid }
-    ) {
+  mutation Signup($params: Input!) {
+    signup(params: $params) {
       nameid
       userid
     }
@@ -493,8 +483,8 @@ export function useUnlikePostMutation() {
   )
 }
 export const UpdatePostDocument = gql`
-  mutation UpdatePost($postid: Float!, $header: String!) {
-    updatePost(params: { postid: $postid, header: $header }) {
+  mutation UpdatePost($params: Update!) {
+    updatePost(params: $params) {
       header
     }
   }
@@ -506,8 +496,8 @@ export function useUpdatePostMutation() {
   )
 }
 export const UpdateUserDocument = gql`
-  mutation UpdateUser($nameid: String!, $photoid: String!, $bio: String!) {
-    updateUser(params: { nameid: $nameid, photoid: $photoid, bio: $bio }) {
+  mutation UpdateUser($params: UpdateUser!) {
+    updateUser(params: $params) {
       nameid
       photoid
       bio

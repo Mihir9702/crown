@@ -87,7 +87,6 @@ export class UserResolver {
 
     if (!valid) throw new Error('Invalid username or password')
 
-    console.log('[Login] - ', req.session.userid)
     req.session.userid = user.userid
     console.log('[Login] - ', req.session.userid)
 
@@ -115,6 +114,7 @@ export class UserResolver {
   logout(@Ctx() { req, res }: MyContext) {
     console.log('[Logout] - ', req.session.userid)
 
+    res.clearCookie(COOKIE)
     return new Promise(re =>
       req.session.destroy(err => {
         if (err) {
@@ -122,7 +122,6 @@ export class UserResolver {
           return
         }
 
-        res.clearCookie(COOKIE)
         re(true)
       })
     )

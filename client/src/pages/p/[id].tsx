@@ -1,8 +1,9 @@
 import React from 'react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { usePostQuery } from '@/graphql'
 import { Header } from '@/components'
+import { ArrowLeft } from '@/components/Icons'
 
 export default () => {
   const pathname = usePathname()
@@ -11,6 +12,9 @@ export default () => {
   const [{ data }] = usePostQuery({ variables: { postid: Number(path) } })
   const id = data?.post!
 
+  const router = useRouter()
+
+  if (!id) return <main>Nothing was found...</main>
   return (
     <main className="flex flex-col justify-between items-center">
       <Header home={true} create={true} search={true} />
@@ -19,10 +23,17 @@ export default () => {
         <Image
           src={id.content}
           alt="photo-id"
-          width={450}
-          height={450}
+          width={400}
+          height={400}
+          className="w-auto h-96"
           priority
         />
+        <button
+          onClick={() => router.back()}
+          className="dark:border dark:border-gray-100 dark:hover:border-gray-300 dark:hover:text-gray-300 dark:text-gray-100 transition-all p-2 rounded-full"
+        >
+          {ArrowLeft}
+        </button>
       </div>
     </main>
   )

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Settings } from '@/components/Icons'
 import { useRouter } from 'next/router'
+import Icon from '@/assets/id.png'
 
 export default function UserCard({ path }: { path: string }) {
   const router = useRouter()
@@ -52,11 +53,12 @@ export default function UserCard({ path }: { path: string }) {
 
         <div className="flex flex-col items-center place-self-center">
           <Image
-            src={id?.photoid || ''}
+            src={id?.photoid || Icon}
             className="mb-3 rounded-full shadow-lg"
             alt="photo-id"
             width={96}
             height={96}
+            priority
           />
           <h5 className="my-2 text-xl font-medium text-gray-900 dark:text-gray-300">
             {id?.nameid}
@@ -73,6 +75,7 @@ export default function UserCard({ path }: { path: string }) {
             </span>{' '}
             pts
           </p>
+          <p className="mt-4 text-center">{id?.bio}</p>
         </div>
       </div>
     </section>

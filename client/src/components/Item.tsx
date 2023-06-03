@@ -8,6 +8,7 @@ import {
   useUserQuery,
 } from '@/graphql'
 import { Heart, RedHeart } from './Icons'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   state: boolean
@@ -43,6 +44,7 @@ export default (props: Props) => {
 
   const [, like] = useLikePostMutation()
   const [, unlike] = useUnlikePostMutation()
+  const router = useRouter()
 
   const viewStates = {
     section: 'grid gap-6 max-w-[960px] py-1',
@@ -99,7 +101,10 @@ export default (props: Props) => {
                 props.state ? viewStates.col4.card : viewStates.col1.card
               }`}
             >
-              <Link href={`/p/${post.postid}`} rel="noopener noreferrer">
+              <button
+                onClick={() => router.push(`/p/${post.postid}`)}
+                rel="noopener noreferrer"
+              >
                 {props.show && (
                   <>
                     <div className="flex justify-between w-full pt-3">
@@ -132,7 +137,7 @@ export default (props: Props) => {
                     priority
                   />
                 </div>
-              </Link>
+              </button>
               <div className="flex w-full justify-between my-[2rem] z-50 bg-transparent items-center">
                 {id && post.likes?.includes(id.userid) && (
                   <button

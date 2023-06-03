@@ -1,5 +1,5 @@
-mutation UpdateUser($nameid: String!, $photoid: String!, $bio: String!) {
-  updateUser(params: { nameid: $nameid, photoid: $photoid, bio: $bio }) {
+mutation UpdateUser($params: UpdateUser!) {
+  updateUser(params: $params) {
     nameid
     photoid
     bio

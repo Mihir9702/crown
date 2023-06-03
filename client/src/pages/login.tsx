@@ -22,8 +22,10 @@ export default () => {
     e.preventDefault()
 
     const response = await login({
-      username,
-      password,
+      params: {
+        username,
+        password,
+      },
     })
 
     if (!response.data && response.error) {

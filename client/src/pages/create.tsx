@@ -14,7 +14,6 @@ export default () => {
   })
   const uploaderOptions = {
     multi: false,
-
     styles: {
       colors: {
         primary: '#EC4899',
@@ -35,7 +34,12 @@ export default () => {
 
     if (!header || !content) setError('[no header or url] error')
 
-    const response = await create({ header, content })
+    const response = await create({
+      params: {
+        header,
+        content,
+      },
+    })
 
     if (response.error) {
       setError(response.error.message)

@@ -63,6 +63,7 @@ export default function UserData({ path }: { path: string }) {
                     width={500}
                     height={500}
                     className="max-h-[20rem] h-[20rem] rounded-lg"
+                    priority
                   />
                 </div>
               </Link>

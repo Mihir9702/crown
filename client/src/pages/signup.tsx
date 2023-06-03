@@ -15,8 +15,10 @@ export default () => {
     e.preventDefault()
 
     const response = await signup({
-      username: username,
-      password: password,
+      params: {
+        username: username,
+        password: password,
+      },
     })
 
     if (response.error) {
