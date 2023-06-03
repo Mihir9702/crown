@@ -158,7 +158,9 @@ export type PostFragmentFragment = {
   header: string
   content: string
   owner: string
+  likes?: Array<number> | null
   postid: number
+  createdAt: string
 }
 
 export type CreatePostMutationVariables = Exact<{
@@ -274,7 +276,9 @@ export type OwnerQuery = {
     header: string
     content: string
     owner: string
+    likes?: Array<number> | null
     postid: number
+    createdAt: string
   }>
 }
 
@@ -289,7 +293,9 @@ export type PostQuery = {
     header: string
     content: string
     owner: string
+    likes?: Array<number> | null
     postid: number
+    createdAt: string
   }
 }
 
@@ -318,7 +324,7 @@ export type PostsQuery = {
     content: string
     owner: string
     likes?: Array<number> | null
-    updatedAt: string
+    createdAt: string
   }>
 }
 
@@ -339,7 +345,9 @@ export type UserQuery = {
       header: string
       content: string
       owner: string
+      likes?: Array<number> | null
       postid: number
+      createdAt: string
     }> | null
   }
 }
@@ -363,7 +371,9 @@ export type UserSearchQuery = {
       header: string
       content: string
       owner: string
+      likes?: Array<number> | null
       postid: number
+      createdAt: string
     }> | null
   }
 }
@@ -382,7 +392,9 @@ export const PostFragmentFragmentDoc = gql`
     header
     content
     owner
+    likes
     postid
+    createdAt
   }
 `
 export const CreatePostDocument = gql`
@@ -568,7 +580,7 @@ export const PostsDocument = gql`
       content
       owner
       likes
-      updatedAt
+      createdAt
     }
   }
 `

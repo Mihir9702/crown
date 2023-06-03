@@ -18,7 +18,7 @@ export default function UserCard({ path }: { path: string }) {
   return (
     <section className="w-full flex justify-center items-center my-16">
       <div
-        className={`flex flex-col items-end w-full  max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl ${
+        className={`flex flex-col items-end w-full max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl ${
           !mine ? 'pt-12' : ''
         }`}
       >
@@ -47,6 +47,18 @@ export default function UserCard({ path }: { path: string }) {
           <h5 className="my-2 text-xl font-medium text-gray-900 dark:text-gray-300">
             {id?.nameid}
           </h5>
+          <p>
+            <span
+              className={
+                id?.likes && id?.likes >= 100
+                  ? 'text-green-500'
+                  : 'text-yellow-400'
+              }
+            >
+              {id?.likes}
+            </span>{' '}
+            pts
+          </p>
         </div>
       </div>
     </section>

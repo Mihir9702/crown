@@ -1,29 +1,21 @@
-import { useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import Modal from './Modal'
 import {
   useLikePostMutation,
   usePostsQuery,
   useUnlikePostMutation,
   useUserQuery,
 } from '@/graphql'
-import { Heart } from './Icons'
+import { Heart, RedHeart } from './Icons'
 
-interface Post {
-  header: string
-  content: string
-  owner: string
-}
 interface Props {
   state: boolean
   sort: string
   show: boolean
 }
 
-const filler = { header: '', content: '', owner: '' }
-
-function formatPostTime(milliseconds: number): string {
+export function formatPostTime(milliseconds: number): string {
   const currentTime = new Date().getTime()
   const timeDifference = currentTime - milliseconds
   const seconds = Math.floor(timeDifference / 1000)
@@ -49,9 +41,6 @@ export default (props: Props) => {
   const [{ data: user }] = useUserQuery()
   const id = user?.user!
 
-  const [open, isOpen] = useState(false)
-  const [post, isPost] = useState<Post>(filler)
-
   const [, like] = useLikePostMutation()
   const [, unlike] = useUnlikePostMutation()
 
@@ -63,24 +52,13 @@ export default (props: Props) => {
       card: `flex flex-col ${
         props.show ? 'min-h-[fit]' : 'min-h-[300px]'
       } max-w-[500px]`,
-      image: 'max-h-[400px] w-[400px]',
+      image: 'w-80 h-80',
     },
     col4: {
-      section: 'sm:grid-cols-3 md:grid-cols-4 grid-cols-1',
-      card: 'h-[325px] max-w-[500px]',
-      image: 'max-h-lg w-[250px]',
+      section: 'grid sm:grid-cols-2 md:grid-cols-3 gap-6 grid-cols-1',
+      card: 'min-h-[150px] max-h-[500px]',
+      image: 'w-80 h-80',
     },
-  }
-
-  const handleClick = (post: any) => {
-    const { header, content, owner } = post
-    isOpen(true)
-    isPost({ header, content, owner })
-  }
-
-  const handleClose = () => {
-    isOpen(false)
-    isPost(filler)
   }
 
   const handleLike = async (postid: number) => {
@@ -100,7 +78,7 @@ export default (props: Props) => {
   }
 
   if (props.sort === 'date') {
-    posts?.sort((a, b) => Number(b.updatedAt) - Number(a.updatedAt))
+    posts?.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
   } else if (props.sort === 'popular') {
     posts?.sort((a, b) => Number(b.likes?.length) - Number(a.likes?.length))
   }
@@ -113,7 +91,7 @@ export default (props: Props) => {
     >
       {posts &&
         posts.map(post => {
-          const date = formatPostTime(Number(post.updatedAt))
+          const date = formatPostTime(Number(post.createdAt))
           return (
             <section
               key={post.postid}
@@ -121,10 +99,7 @@ export default (props: Props) => {
                 props.state ? viewStates.col4.card : viewStates.col1.card
               }`}
             >
-              <button
-                onClick={() => handleClick(post)}
-                rel="noopener noreferrer"
-              >
+              <Link href={`/p/${post.postid}`} rel="noopener noreferrer">
                 {props.show && (
                   <>
                     <div className="flex justify-between w-full pt-3">
@@ -146,8 +121,8 @@ export default (props: Props) => {
                   <Image
                     src={post.content}
                     alt="photo-id"
-                    width={600}
-                    height={325}
+                    width={500}
+                    height={500}
                     content="fit"
                     className={`${
                       props.state
@@ -157,19 +132,21 @@ export default (props: Props) => {
                     priority
                   />
                 </div>
-              </button>
-              <div className="flex w-full justify-between items-center">
+              </Link>
+              <div className="flex w-full justify-between my-[2rem] z-50 bg-transparent items-center">
                 {id && post.likes?.includes(id?.userid) && (
                   <button
                     onClick={() => handleUnlike(post.postid)}
-                    className="z-200 mb-4"
-                  ></button>
+                    className="z-200"
+                  >
+                    {RedHeart}
+                  </button>
                 )}
 
                 {id && !post.likes?.includes(id?.userid) && (
                   <button
                     onClick={() => handleLike(post.postid)}
-                    className="z-200 py-2"
+                    className="z-200"
                   >
                     {Heart}
                   </button>
@@ -186,7 +163,6 @@ export default (props: Props) => {
             </section>
           )
         })}
-      <Modal open={open} onClose={handleClose} id={post!} />
     </section>
   )
 }

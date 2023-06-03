@@ -5,6 +5,6 @@ query Posts {
     content
     owner
     likes
-    updatedAt
+    createdAt
   }
 }

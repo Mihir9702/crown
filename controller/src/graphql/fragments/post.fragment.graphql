@@ -2,5 +2,7 @@ fragment PostFragment on Post {
   header
   content
   owner
+  likes
   postid
+  createdAt
 }

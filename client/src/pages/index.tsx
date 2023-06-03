@@ -14,7 +14,7 @@ export default () => {
       <Header home={false} create={true} search={true} />
 
       <Image
-        className="relative invert w-auto h-auto"
+        className="relative dark:invert w-auto h-auto select-none"
         src={ICrown}
         alt="Crown Logo"
         width={180}

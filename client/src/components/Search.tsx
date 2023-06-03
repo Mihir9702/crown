@@ -31,7 +31,7 @@ export function SearchForm(props: Props) {
         <input
           type="search"
           id="default-search"
-          className="block w-full p-4 pl-12 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block w-full p-4 pl-12 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1B1D1E] dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100 dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Search Names, Titles..."
           //  @ts-ignore
           onChange={x => props.setSearch(x.target.value)}

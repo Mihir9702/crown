@@ -1,7 +1,6 @@
 import Cols from './Cols'
 import Sort from './Sort'
 import Item from './Item'
-import Modal from './Modal'
 import Header from './Header'
 import Footer from './Footer'
 import UserCard from './UserCard'
@@ -12,7 +11,6 @@ export {
   Cols,
   Sort,
   Item,
-  Modal,
   Header,
   Footer,
   UserCard,
