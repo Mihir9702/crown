@@ -1,0 +1,6 @@
+query Users($nameid: String!) {
+  users(nameid: $nameid) {
+    nameid
+    photoid
+  }
+}

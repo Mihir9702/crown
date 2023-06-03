@@ -1,10 +1,23 @@
 import Cols from './Cols'
+import Sort from './Sort'
 import Item from './Item'
-import Crown from './Crown'
 import Modal from './Modal'
 import Header from './Header'
 import Footer from './Footer'
 import UserCard from './UserCard'
 import UserData from './UserData'
+import { SearchForm, SearchUser, SearchPost } from './Search'
 
-export { Cols, Item, Crown, Modal, Header, Footer, UserCard, UserData }
+export {
+  Cols,
+  Sort,
+  Item,
+  Modal,
+  Header,
+  Footer,
+  UserCard,
+  UserData,
+  SearchForm,
+  SearchUser,
+  SearchPost,
+}

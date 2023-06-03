@@ -175,7 +175,7 @@ export default (props: Props) => {
                   </button>
                 )}
 
-                <p className="">
+                <p className="text-gray-300">
                   {post.likes && post.likes?.length > 1
                     ? `${post.likes?.length} likes`
                     : post.likes?.length === 1

@@ -1,23 +1,26 @@
 import { useState } from 'react'
-import { Header, Crown, Cols, Item, Footer } from '@/components'
-import Sort from '@/components/Sort'
-import Image from 'next/image'
-import { usePostsQuery } from '@/graphql'
+import { Header, Cols, Sort, Item, Footer } from '@/components'
 import { EyeClose, EyeOpen } from '@/components/Icons'
+import Image from 'next/image'
+import ICrown from '@/assets/crown.png'
 
 export default () => {
   const [state, setState] = useState(false)
   const [sort, setSort] = useState('date')
   const [show, isShow] = useState(true)
 
-  const [{ data }] = usePostsQuery()
-  const posts = data?.posts
-
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center">
-      <Header home={false} create={true} />
+      <Header home={false} create={true} search={true} />
 
-      <Crown />
+      <Image
+        className="relative invert w-auto h-auto"
+        src={ICrown}
+        alt="Crown Logo"
+        width={180}
+        height={37}
+        priority
+      />
 
       <Cols setState={setState} />
       <div className="flex items-center justify-center gap-2">

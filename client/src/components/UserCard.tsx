@@ -2,7 +2,7 @@ import React from 'react'
 import { useUserSearchQuery, useUserQuery } from '@/graphql'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Door, Settings } from '@/components/Icons'
+import { Settings } from '@/components/Icons'
 
 export default function UserCard({ path }: { path: string }) {
   const [{ data }] = useUserSearchQuery({

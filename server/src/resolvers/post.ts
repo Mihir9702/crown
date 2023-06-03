@@ -32,16 +32,10 @@ export class PostResolver {
     return await Post.find({ where: { owner } })
   }
 
-  @Query(() => [[User], [Post]]) // !! doesn't work
-  async search(@Arg('search') search: string): Promise<[User[], Post[]]> {
-    if (!search) return
-
-    const users = await User.find({ where: { nameid: search } })
-    const posts =
-      (await Post.find({ where: { header: search } })) ||
-      (await Post.find({ where: { owner: search } }))
-
-    return [users, posts]
+  @Query(() => [Post])
+  async postSearch(@Arg('header') header: string): Promise<Post[]> {
+    if (!header) return
+    return await Post.find({ where: { header } })
   }
 
   @Mutation(() => Post)

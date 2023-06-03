@@ -7,9 +7,10 @@ import { Door, Home, Plus, Search } from '@/components/Icons'
 interface Props {
   home: boolean
   create: boolean
+  search: boolean
 }
 
-export default ({ home, create }: Props) => {
+export default ({ home, create, search }: Props) => {
   const [{ data }] = useUserQuery()
   const user = data?.user
 
@@ -28,7 +29,7 @@ export default ({ home, create }: Props) => {
       </p>
     </Link>
   ) : (
-    <p className="text-green-600 cursor-default">{Plus}</p>
+    <p className="text-green-400 cursor-default">{Plus}</p>
   )
 
   const useri = user && (
@@ -43,19 +44,27 @@ export default ({ home, create }: Props) => {
     </Link>
   )
 
+  const searchi = search ? (
+    <Link href="/search" className="text-gray-200 hover:text-gray-400 text-xs">
+      {Search}
+    </Link>
+  ) : (
+    <p className="text-gray-400 cursor-default">{Search}</p>
+  )
+
+  const login = (
+    <Link href="/login" className="text-gray-400 text-xs">
+      {Door}
+    </Link>
+  )
+
   if (!user)
     return (
       <div className="z-50 lg:max-w-5xl md:min-w-[500px] min-w-full text-sm bg-[#121516] rounded-xl">
         <div className="flex justify-between items-center gap-8 backdrop-blur-2xl static rounded-xl shadow-xl p-4 shadow-black">
           {homei}
-
-          <Link href="/search" className="text-gray-400 text-xs">
-            {Search}
-          </Link>
-
-          <Link href="/login" className="text-gray-400 text-xs">
-            {Door}
-          </Link>
+          {searchi}
+          {login}
         </div>
       </div>
     )
@@ -64,9 +73,7 @@ export default ({ home, create }: Props) => {
       <div className="flex justify-between items-center gap-8 backdrop-blur-2xl static rounded-xl shadow-xl p-4 shadow-black">
         {homei}
         {createi}
-        <Link href="/search" className="text-gray-400 text-xs">
-          {Search}
-        </Link>
+        {searchi}
         {useri}
       </div>
     </div>

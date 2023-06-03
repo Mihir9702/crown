@@ -8,7 +8,7 @@ export default () => {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
-      <Header home={true} create={true} />
+      <Header home={true} create={true} search={true} />
       <UserCard path={path} />
       <UserData path={path} />
       <Footer />

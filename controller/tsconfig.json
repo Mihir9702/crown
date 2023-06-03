@@ -14,7 +14,7 @@
   "include": [
     "./src/**/*.ts",
     "../web/src/graphql.ts",
-    "src/generated/graphql.ts"
+    "../client/src/graphql.ts"
   ],
   "exclude": ["./node_modules", "./src/**/*.graphql"]
 }

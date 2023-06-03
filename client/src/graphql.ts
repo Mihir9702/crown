@@ -100,8 +100,8 @@ export type Query = {
   __typename?: 'Query'
   owner: Array<Post>
   post: Post
+  postSearch: Array<Post>
   posts: Array<Post>
-  search: Array<Array<User>>
   user: User
   userSearch: User
   users: Array<User>
@@ -115,11 +115,15 @@ export type QueryPostArgs = {
   postid: Scalars['Float']
 }
 
-export type QuerySearchArgs = {
-  search: Scalars['String']
+export type QueryPostSearchArgs = {
+  header: Scalars['String']
 }
 
 export type QueryUserSearchArgs = {
+  nameid: Scalars['String']
+}
+
+export type QueryUsersArgs = {
   nameid: Scalars['String']
 }
 
@@ -289,6 +293,20 @@ export type PostQuery = {
   }
 }
 
+export type PostSearchQueryVariables = Exact<{
+  header: Scalars['String']
+}>
+
+export type PostSearchQuery = {
+  __typename?: 'Query'
+  postSearch: Array<{
+    __typename?: 'Post'
+    header: string
+    content: string
+    owner: string
+  }>
+}
+
 export type PostsQueryVariables = Exact<{ [key: string]: never }>
 
 export type PostsQuery = {
@@ -302,27 +320,6 @@ export type PostsQuery = {
     likes?: Array<number> | null
     updatedAt: string
   }>
-}
-
-export type SearchQueryVariables = Exact<{
-  search: Scalars['String']
-}>
-
-export type SearchQuery = {
-  __typename?: 'Query'
-  search: Array<
-    Array<{
-      __typename?: 'User'
-      nameid: string
-      photoid?: string | null
-      posts?: Array<{
-        __typename?: 'Post'
-        header: string
-        content: string
-        owner: string
-      }> | null
-    }>
-  >
 }
 
 export type UserQueryVariables = Exact<{ [key: string]: never }>
@@ -369,6 +366,15 @@ export type UserSearchQuery = {
       postid: number
     }> | null
   }
+}
+
+export type UsersQueryVariables = Exact<{
+  nameid: Scalars['String']
+}>
+
+export type UsersQuery = {
+  __typename?: 'Query'
+  users: Array<{ __typename?: 'User'; nameid: string; photoid?: string | null }>
 }
 
 export const PostFragmentFragmentDoc = gql`
@@ -536,6 +542,24 @@ export function usePostQuery(
     ...options,
   })
 }
+export const PostSearchDocument = gql`
+  query postSearch($header: String!) {
+    postSearch(header: $header) {
+      header
+      content
+      owner
+    }
+  }
+`
+
+export function usePostSearchQuery(
+  options: Omit<Urql.UseQueryArgs<PostSearchQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<PostSearchQuery, PostSearchQueryVariables>({
+    query: PostSearchDocument,
+    ...options,
+  })
+}
 export const PostsDocument = gql`
   query Posts {
     posts {
@@ -554,28 +578,6 @@ export function usePostsQuery(
 ) {
   return Urql.useQuery<PostsQuery, PostsQueryVariables>({
     query: PostsDocument,
-    ...options,
-  })
-}
-export const SearchDocument = gql`
-  query Search($search: String!) {
-    search(search: $search) {
-      nameid
-      photoid
-      posts {
-        header
-        content
-        owner
-      }
-    }
-  }
-`
-
-export function useSearchQuery(
-  options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<SearchQuery, SearchQueryVariables>({
-    query: SearchDocument,
     ...options,
   })
 }
@@ -626,6 +628,23 @@ export function useUserSearchQuery(
 ) {
   return Urql.useQuery<UserSearchQuery, UserSearchQueryVariables>({
     query: UserSearchDocument,
+    ...options,
+  })
+}
+export const UsersDocument = gql`
+  query Users($nameid: String!) {
+    users(nameid: $nameid) {
+      nameid
+      photoid
+    }
+  }
+`
+
+export function useUsersQuery(
+  options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<UsersQuery, UsersQueryVariables>({
+    query: UsersDocument,
     ...options,
   })
 }

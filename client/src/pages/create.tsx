@@ -54,7 +54,7 @@ export default () => {
   return (
     <main className="h-screen flex flex-col justify-center items-center">
       <div className="absolute top-0">
-        <Header home={true} create={false} />
+        <Header home={true} create={false} search={true} />
       </div>
 
       <form

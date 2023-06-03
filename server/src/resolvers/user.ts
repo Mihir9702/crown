@@ -16,8 +16,8 @@ import { COOKIE } from '../consts'
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  async users(): Promise<User[]> {
-    return await User.find()
+  async users(@Arg('nameid') nameid: string): Promise<User[]> {
+    return await User.find({ where: { nameid } })
   }
 
   @Query(() => User)
