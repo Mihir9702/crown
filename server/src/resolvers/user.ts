@@ -21,13 +21,16 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  async userSearch(@Arg('nameid') nameid: string): Promise<User> {
+  async userSearch(@Arg('nameid') nameid: string): Promise<User | null> {
     return await User.findOne({ where: { nameid } })
   }
 
-  @Query(() => User) // !! doesn't work
-  async user(@Ctx() { req }: MyContext): Promise<User> {
-    // 6442 not 5480 & null
+  @Query(() => User, { nullable: true })
+  @UseMiddleware(isAuth)
+  async user(@Ctx() { req }: MyContext): Promise<User | null> {
+    if (!req.session.id) return null
+
+    console.log('[UserQuery] - ', req.session.userid)
     return await User.findOne({ where: { userid: req.session.userid } })
   }
 
@@ -61,6 +64,7 @@ export class UserResolver {
     }).save()
 
     req.session.userid = user.userid
+    console.log('[Signup] - ', req.session.userid)
 
     return user
   }
@@ -83,8 +87,9 @@ export class UserResolver {
 
     if (!valid) throw new Error('Invalid username or password')
 
+    console.log('[Login] - ', req.session.userid)
     req.session.userid = user.userid
-    console.log(req.session)
+    console.log('[Login] - ', req.session.userid)
 
     return user
   }
@@ -98,24 +103,36 @@ export class UserResolver {
     const user = await User.findOne({ where: { userid: req.session.userid } })
     if (!user) throw new Error('[UpdateUser] - no user')
 
-    user.nameid = params.nameid
-    user.photoid = params.photoid
-    user.bio = params.bio
+    user.nameid = params.nameid ? params.nameid : user.nameid
+    user.photoid = params.photoid ? params.photoid : user.photoid
+    user.bio = params.bio ? params.bio : user.bio
 
+    console.log('update')
     return await User.save(user)
   }
 
   @Mutation(() => Boolean)
-  async logout(@Ctx() { req, res }: MyContext): Promise<boolean> {
-    res.clearCookie(COOKIE)
-    req.session.destroy(err => (err ? err : true))
-    return true
+  logout(@Ctx() { req, res }: MyContext) {
+    console.log('[Logout] - ', req.session.userid)
+
+    return new Promise(re =>
+      req.session.destroy(err => {
+        if (err) {
+          re(false)
+          return
+        }
+
+        res.clearCookie(COOKIE)
+        re(true)
+      })
+    )
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
     await User.remove(
+      // @ts-ignore
       await User.findOne({
         where: { userid: req.session.userid },
       })

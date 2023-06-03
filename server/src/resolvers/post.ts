@@ -13,12 +13,11 @@ import { Create, Delete, MyContext, Update } from '../types'
 import { randomNumber } from '../helpers'
 import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
-import axios from 'axios'
 
 @Resolver()
 export class PostResolver {
   @Query(() => Post)
-  async post(@Arg('postid') postid: number): Promise<Post> {
+  async post(@Arg('postid') postid: number): Promise<Post | null> {
     return await Post.findOne({ where: { postid } })
   }
 
@@ -34,7 +33,6 @@ export class PostResolver {
 
   @Query(() => [Post])
   async postSearch(@Arg('header') header: string): Promise<Post[]> {
-    if (!header) return
     return await Post.find({ where: { header } })
   }
 
@@ -45,20 +43,21 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     const apiKey = process.env.UPLOAD_PRIVATE_KEY
-    const accountId = process.env.UPLOAD_ACCOUNT_ID
 
     const user = await User.findOne({ where: { userid: req.session.userid } })
+    if (!user) throw new Error('[CreatePost] - No user session')
+
     const postid = randomNumber(4)
 
     // upload.io
     new Upload.UploadManager(
       new Upload.Configuration({
-        fetchApi: axios,
+        fetchApi: fetch,
         apiKey,
       })
     )
       .upload({
-        accountId,
+        accountId: String(process.env.UPLOAD_ACCOUNT_ID),
         data: 'image upload', //fileurl
       })
       .then(({ fileUrl, filePath }) => {
@@ -87,6 +86,8 @@ export class PostResolver {
       where: { postid: params.postid },
     })
 
+    if (!post) throw new Error('No post found')
+
     post.header = params.header
 
     return await Post.save(post)
@@ -99,11 +100,14 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
+    if (!post) throw new Error('No post found')
 
-    if (!post.likes) post.likes = [req.session.userid]
-    else post.likes.push(req.session.userid)
+    if (!post.likes) post.likes = [Number(req.session.userid)]
+    else post.likes.push(Number(req.session.userid))
 
     const user = await User.findOne({ where: { nameid: post.owner } })
+    if (!user) throw new Error('No user found')
+
     user.likes += 1
 
     await User.save(user)
@@ -117,13 +121,17 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     const post = await Post.findOne({ where: { postid } })
-    const idx = post.likes.indexOf(req.session.userid)
+    if (!post) throw new Error('No post found')
+
+    const idx = post.likes?.indexOf(Number(req.session.userid))
 
     if (idx) {
-      post.likes.splice(idx, 1)
+      post.likes?.splice(idx, 1)
     }
 
     const user = await User.findOne({ where: { nameid: post.owner } })
+    if (!user) throw new Error('No user found')
+
     user.likes -= 1
 
     await User.save(user)
@@ -139,7 +147,8 @@ export class PostResolver {
     const post = await Post.findOne({ where: { postid: params.postid } })
     const user = await User.findOne({ where: { userid: req.session.userid } })
 
-    if (post.owner !== user.nameid) return false
+    if (!post || !user) throw new Error('no post or user found')
+    else if (post.owner !== user.nameid) return false
 
     await Post.remove(post)
 

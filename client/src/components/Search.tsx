@@ -50,8 +50,8 @@ export function SearchForm(props: Props) {
 }
 
 export function SearchUser(props: Props) {
-  const [{ data: us }] = useUsersQuery({ variables: { nameid: props.search } })
-  const id = us?.users
+  const [{ data }] = useUsersQuery({ variables: { nameid: props.search } })
+  const id = data?.users
 
   return (
     <section className="w-full max-w-5xl">
@@ -76,10 +76,8 @@ export function SearchUser(props: Props) {
 }
 
 export function SearchPost(props: Props) {
-  const [{ data: ps }] = usePostSearchQuery({
-    variables: { header: props.search },
-  })
-  const id = ps?.postSearch
+  const [{ data }] = usePostSearchQuery({ variables: { header: props.search } })
+  const id = data?.postSearch
 
   return (
     <section className="w-full max-w-5xl">

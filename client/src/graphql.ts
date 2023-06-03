@@ -41,7 +41,7 @@ export type Mutation = {
   __typename?: 'Mutation'
   createPost: Post
   deletePost: Post
-  deleteUser: User
+  deleteUser: Scalars['Boolean']
   likePost: Post
   login: User
   logout: Scalars['Boolean']
@@ -102,7 +102,7 @@ export type Query = {
   post: Post
   postSearch: Array<Post>
   posts: Array<Post>
-  user: User
+  user?: Maybe<User>
   userSearch: User
   users: Array<User>
 }
@@ -143,7 +143,7 @@ export type User = {
   bio?: Maybe<Scalars['String']>
   createdAt: Scalars['String']
   id: Scalars['Float']
-  likes: Scalars['Float']
+  likes?: Maybe<Scalars['Float']>
   nameid: Scalars['String']
   password: Scalars['String']
   photoid?: Maybe<Scalars['String']>
@@ -332,14 +332,14 @@ export type UserQueryVariables = Exact<{ [key: string]: never }>
 
 export type UserQuery = {
   __typename?: 'Query'
-  user: {
+  user?: {
     __typename?: 'User'
     id: number
     nameid: string
     userid: number
     photoid?: string | null
     bio?: string | null
-    likes: number
+    likes?: number | null
     posts?: Array<{
       __typename?: 'Post'
       header: string
@@ -349,7 +349,7 @@ export type UserQuery = {
       postid: number
       createdAt: string
     }> | null
-  }
+  } | null
 }
 
 export type UserSearchQueryVariables = Exact<{
@@ -365,7 +365,7 @@ export type UserSearchQuery = {
     userid: number
     photoid?: string | null
     bio?: string | null
-    likes: number
+    likes?: number | null
     posts?: Array<{
       __typename?: 'Post'
       header: string

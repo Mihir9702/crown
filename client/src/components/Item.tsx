@@ -2,9 +2,9 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
-  useLikePostMutation,
   usePostsQuery,
   useUnlikePostMutation,
+  useLikePostMutation,
   useUserQuery,
 } from '@/graphql'
 import { Heart, RedHeart } from './Icons'
@@ -36,10 +36,10 @@ export function formatPostTime(milliseconds: number): string {
 }
 export default (props: Props) => {
   const [{ data }] = usePostsQuery()
-  const posts = data?.posts
+  const posts = data && data.posts ? [...data.posts] : []
 
-  const [{ data: user }] = useUserQuery()
-  const id = user?.user!
+  const [{ data: ud }] = useUserQuery()
+  const id = ud?.user
 
   const [, like] = useLikePostMutation()
   const [, unlike] = useUnlikePostMutation()
@@ -64,23 +64,23 @@ export default (props: Props) => {
   const handleLike = async (postid: number) => {
     const response = await like({ postid })
 
-    if (response.error?.graphQLErrors[0]) {
-      console.log(response.error.graphQLErrors[0].message)
+    if (response.error) {
+      console.log(response.error.message)
     }
   }
 
   const handleUnlike = async (postid: number) => {
     const response = await unlike({ postid })
 
-    if (response.error?.graphQLErrors[0]) {
-      console.log(response.error.graphQLErrors[0].message)
+    if (response.error) {
+      console.log(response.error.message)
     }
   }
 
-  if (props.sort === 'date') {
-    posts?.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+  if (props.sort === 'date' && data?.posts) {
+    posts.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
   } else if (props.sort === 'popular') {
-    posts?.sort((a, b) => Number(b.likes?.length) - Number(a.likes?.length))
+    posts.sort((a, b) => Number(b.likes?.length) - Number(a.likes?.length))
   }
 
   return (
@@ -134,7 +134,7 @@ export default (props: Props) => {
                 </div>
               </Link>
               <div className="flex w-full justify-between my-[2rem] z-50 bg-transparent items-center">
-                {id && post.likes?.includes(id?.userid) && (
+                {id && post.likes?.includes(id.userid) && (
                   <button
                     onClick={() => handleUnlike(post.postid)}
                     className="z-200"
@@ -143,7 +143,7 @@ export default (props: Props) => {
                   </button>
                 )}
 
-                {id && !post.likes?.includes(id?.userid) && (
+                {id && !post.likes?.includes(id.userid) && (
                   <button
                     onClick={() => handleLike(post.postid)}
                     className="z-200"
@@ -153,8 +153,8 @@ export default (props: Props) => {
                 )}
 
                 <p className="text-gray-300">
-                  {post.likes && post.likes?.length > 1
-                    ? `${post.likes?.length} likes`
+                  {post.likes && post.likes.length > 1
+                    ? `${post.likes.length} likes`
                     : post.likes?.length === 1
                     ? '1 like'
                     : '0 likes'}

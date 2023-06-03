@@ -1,5 +1,5 @@
 {
-  "name": "fullstack",
+  "name": "controller",
   "version": "0.1.0",
   "main": "generated/graphql.ts",
   "description": "A GraphQL API controller",
@@ -10,7 +10,7 @@
   "dependencies": {
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
-    "urql": "^4.0.2"
+    "urql": "^4.0.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.3.1",

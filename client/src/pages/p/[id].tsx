@@ -9,9 +9,7 @@ export default () => {
   const path = pathname?.split('/p/')[1]
 
   const [{ data }] = usePostQuery({ variables: { postid: Number(path) } })
-  const id = data?.post
-
-  if (!id) return <div>postid not found...</div>
+  const id = data?.post!
 
   return (
     <main className="flex flex-col justify-between items-center">

@@ -1,18 +1,21 @@
 {
   "compilerOptions": {
-    "rootDirs": ["src"],
-    "outDir": "dist",
-    "baseUrl": ".",
-    "skipLibCheck": true,
-    "lib": ["ES2016"],
-    "target": "es2020",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "types": ["node"],
+    "target": "es2016",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "incremental": true,
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules", "./dist"]
 }

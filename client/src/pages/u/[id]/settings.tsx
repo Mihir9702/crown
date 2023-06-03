@@ -30,9 +30,8 @@ export default () => {
       bio: bid,
     })
 
-    if (response.error?.graphQLErrors[0]) {
-      console.log(response.error.graphQLErrors[0].message)
-      isErr(response.error.graphQLErrors[0].message)
+    if (response.error) {
+      isErr(response.error.message)
     } else {
       return location.reload()
     }
@@ -40,7 +39,7 @@ export default () => {
   return (
     <section className="w-full flex justify-center items-center my-32">
       <div className="w-full py-8 max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl">
-        {err && <p className="text-red-500">err</p>}
+        {err && <p className="text-red-500">{err}</p>}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-6 items-center mt-4"

@@ -5,9 +5,9 @@ import Image from 'next/image'
 import ICrown from '@/assets/crown.png'
 
 export default () => {
-  const [state, setState] = useState(false)
-  const [sort, setSort] = useState('date')
-  const [show, isShow] = useState(true)
+  const [state, setState] = useState<boolean>(false)
+  const [sort, setSort] = useState<string>('date')
+  const [show, isShow] = useState<boolean>(true)
 
   return (
     <main className="flex min-h-screen flex-col w-full gap-8 items-center">

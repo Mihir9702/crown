@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { useCreatePostMutation, useUserQuery } from '@/graphql'
+import { useCreatePostMutation } from '@/graphql'
 import { useRouter } from 'next/navigation'
 import { Header } from '@/components'
 import { Uploader } from 'uploader'
 import { UploadDropzone } from 'react-uploader'
 
 export default () => {
-  const [{ data, fetching }] = useUserQuery()
   const PUBLIC_KEY = process.env.NEXT_PUBLIC_UPLOAD_KEY || ''
 
   // Initialize once (at the start of your app).
@@ -36,20 +35,14 @@ export default () => {
 
     if (!header || !content) setError('[no header or url] error')
 
-    const response = await create({
-      header,
-      content,
-    })
+    const response = await create({ header, content })
 
-    if (response.error?.graphQLErrors[0]) {
-      setError(response.error?.graphQLErrors[0].message)
+    if (response.error) {
+      setError(response.error.message)
     } else {
-      router.push('/home')
+      router.push('/')
     }
   }
-
-  if (fetching) return <div>Loading...</div>
-  else if (!data?.user) router.push('/login')
 
   return (
     <main className="h-screen flex flex-col justify-center items-center">

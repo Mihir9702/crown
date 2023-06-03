@@ -1,34 +1,33 @@
+import 'reflect-metadata'
 import express from 'express'
-import { COOKIE, PORT, __prod__ } from './consts'
+import session from 'express-session'
 import db from './conn'
 import cors from 'cors'
-import session from 'express-session'
+import path from 'path'
+// import { createClient } from 'redis'
+// import connectRedis from 'connect-redis'
+import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
-import logger from 'morgan'
-import cookieParser from 'cookie-parser'
-import { json } from 'body-parser'
-
-import { UserResolver } from './resolvers/user'
-import { PostResolver } from './resolvers/post'
-import { ApolloServer } from '@apollo/server'
-import { expressMiddleware } from '@apollo/server/express4'
+import { __prod__, COOKIE } from './consts'
 import { MyContext } from './types'
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
 const main = async () => {
+  // Connect to Database
   await db.initialize()
   await db.runMigrations()
 
   const app = express()
 
-  app.use(logger('dev'))
-  app.use(cookieParser())
+  // const RedisStore = connectRedis(session)
+  // const RedisClient = createClient({ legacyMode: true })
+  // await RedisClient.connect()
 
-  // might have to set to 1
-  app.set('trust proxy', 1)
+  app.set('trust proxy', __prod__)
+
   app.use(
     cors({
-      // frontend url
-      origin: `http://localhost:3001`,
+      origin: 'http://localhost:3001',
       credentials: true,
     })
   )
@@ -48,26 +47,21 @@ const main = async () => {
     })
   )
 
-  const apolloServer = new ApolloServer<MyContext>({
+  const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, PostResolver],
+      resolvers: [path.join(__dirname + '/resolvers/*.ts')],
       validate: false,
     }),
+    context: ({ req, res }): MyContext => ({ req, res }),
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground],
   })
 
   await apolloServer.start()
 
-  app.use(
-    '/graphql',
-    cors<cors.CorsRequest>(),
-    json(),
-    expressMiddleware(apolloServer, {
-      context: async ({ req, res }): Promise<MyContext> => ({ req, res }),
-    })
-  )
+  apolloServer.applyMiddleware({ app, cors: false })
 
-  app.listen(PORT, () =>
-    console.log(`🚀 Server started on http://localhost:${PORT}/graphql`)
+  app.listen(3000, () =>
+    console.log('🚀 Server started on http://localhost:3000')
   )
 }
 

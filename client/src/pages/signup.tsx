@@ -19,10 +19,10 @@ export default () => {
       password: password,
     })
 
-    if (response.error?.graphQLErrors[0]) {
-      setError(response.error?.graphQLErrors[0].message)
+    if (response.error) {
+      setError(response.error.message)
     } else {
-      router.push('/home')
+      router.push('/')
     }
   }
   return (

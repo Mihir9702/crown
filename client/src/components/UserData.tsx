@@ -11,35 +11,38 @@ import { Heart, Plus, RedHeart } from './Icons'
 import { formatPostTime } from './Item'
 
 export default function UserData({ path }: { path: string }) {
+  const [{ data: ud }] = useUserQuery()
+  const [{ data }] = useOwnerQuery({ variables: { owner: path } })
+
   const [, like] = useLikePostMutation()
   const [, unlike] = useUnlikePostMutation()
-  const [{ data: ud }] = useUserQuery()
-  const [{ data: od }] = useOwnerQuery({ variables: { owner: path } })
 
-  const me = od?.owner
+  const posts = data && data.owner ? [...data.owner] : []
   const id = ud?.user
 
   const handleLike = async (postid: number) => {
     const response = await like({ postid })
 
-    if (response.error?.graphQLErrors[0]) {
-      console.log(response.error.graphQLErrors[0].message)
+    if (response.error) {
+      console.log(response.error.message)
     }
   }
 
   const handleUnlike = async (postid: number) => {
     const response = await unlike({ postid })
 
-    if (response.error?.graphQLErrors[0]) {
-      console.log(response.error.graphQLErrors[0].message)
+    if (response.error) {
+      console.log(response.error.message)
     }
   }
 
-  const ime = me?.sort((a, b) => Number(a.createdAt) - Number(b.createdAt))
+  const x = posts
+    ? posts.sort((a: any, b: any) => Number(a.createdAt) - Number(b.createdAt))
+    : []
   return (
     <main className="grid md:grid-cols-3 gap-6">
-      {ime &&
-        ime.map(post => {
+      {x &&
+        x.map(post => {
           const date = formatPostTime(Number(post.createdAt))
           return (
             <section

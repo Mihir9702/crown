@@ -6,10 +6,12 @@ import Link from 'next/link'
 export default () => {
   const [{ data }] = useUserQuery()
   const router = useRouter()
+  const userid = data?.user
 
-  if (data?.user) {
+  if (userid) {
     router.push('/')
   }
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | undefined>(undefined)
@@ -24,12 +26,12 @@ export default () => {
       password,
     })
 
-    if (!response.data && response.error?.graphQLErrors[0]) {
-      const { message } = response.error.graphQLErrors[0]
-      setError(message)
+    if (!response.data && response.error) {
+      setError(response.error.message)
     } else {
       console.log('Logged in', response.data)
-      router.push('/')
+      location.reload()
+      return router.push('/')
     }
   }
   return (
