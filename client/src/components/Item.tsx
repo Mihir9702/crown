@@ -18,24 +18,10 @@ interface Post {
 interface Props {
   state: boolean
   sort: string
+  show: boolean
 }
 
 const filler = { header: '', content: '', owner: '' }
-
-const viewStates = {
-  section: 'grid gap-6 max-w-[960px]',
-  card: 'bg-[#181A1B] rounded-xl px-4 py-4 shadow-lg shadow-black cursor-default hover:bg-[#121516]',
-  col1: {
-    section: 'grid-cols-1',
-    card: 'flex flex-col min-h-[350px] md:h-[525px] max-w-[500px]',
-    image: 'max-h-[400px] w-[400px]',
-  },
-  col4: {
-    section: 'sm:grid-cols-3 md:grid-cols-4 grid-cols-1',
-    card: 'h-[325px] max-w-[500px]',
-    image: 'max-h-lg w-[250px]',
-  },
-}
 
 function formatPostTime(milliseconds: number): string {
   const currentTime = new Date().getTime()
@@ -68,6 +54,23 @@ export default (props: Props) => {
 
   const [, like] = useLikePostMutation()
   const [, unlike] = useUnlikePostMutation()
+
+  const viewStates = {
+    section: 'grid gap-6 max-w-[960px] py-1',
+    card: 'bg-[#181A1B] rounded-xl px-4 shadow-lg shadow-black cursor-default hover:bg-[#121516]',
+    col1: {
+      section: 'grid-cols-1',
+      card: `flex flex-col ${
+        props.show ? 'min-h-[fit]' : 'min-h-[300px]'
+      } max-w-[500px]`,
+      image: 'max-h-[400px] w-[400px]',
+    },
+    col4: {
+      section: 'sm:grid-cols-3 md:grid-cols-4 grid-cols-1',
+      card: 'h-[325px] max-w-[500px]',
+      image: 'max-h-lg w-[250px]',
+    },
+  }
 
   const handleClick = (post: any) => {
     const { header, content, owner } = post
@@ -122,19 +125,23 @@ export default (props: Props) => {
                 onClick={() => handleClick(post)}
                 rel="noopener noreferrer"
               >
-                <div className="flex justify-between w-full">
-                  <Link href={`/u/${post.owner}`}>
-                    <p
-                      className={`mb-2 text-sm w-max text-left opacity-50 hover:underline`}
-                    >
-                      {post.owner}
-                    </p>
-                  </Link>
-                  {date.toString()}
-                </div>
-                <h1 className={`mb-3 text-xl text-left font-semibold`}>
-                  {post.header}
-                </h1>
+                {props.show && (
+                  <>
+                    <div className="flex justify-between w-full pt-3">
+                      <Link href={`/u/${post.owner}`}>
+                        <p
+                          className={`mb-2 text-sm w-max text-left opacity-50 hover:underline`}
+                        >
+                          {post.owner}
+                        </p>
+                      </Link>
+                      {date.toString()}
+                    </div>
+                    <h1 className={`mb-3 text-xl text-left font-semibold`}>
+                      {post.header}
+                    </h1>
+                  </>
+                )}
                 <div className="flex min-h-[325px] justify-center">
                   <Image
                     src={post.content}

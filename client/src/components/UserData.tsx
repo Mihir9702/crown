@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { useOwnerQuery } from '@/graphql'
+import { useOwnerQuery, useUserQuery } from '@/graphql'
 import { PostIdProps } from '@/types'
 import { Modal } from '@/components'
 import Image from 'next/image'
+import Link from 'next/link'
+import { Plus } from './Icons'
 
 export default function UserData({ path }: { path: string }) {
   const filler = { header: '', content: '', owner: '' }
@@ -22,11 +24,14 @@ export default function UserData({ path }: { path: string }) {
     isPost(filler)
   }
 
+  const [{ data: ud }] = useUserQuery()
   const [{ data: od }] = useOwnerQuery({ variables: { owner: path } })
 
   const me = od?.owner
+  const id = ud?.user.nameid
+
   return (
-    <section className="grid md:grid-cols-2 gap-6">
+    <section className="grid md:grid-cols-3 gap-6">
       {me &&
         me.map(post => (
           <button
@@ -51,6 +56,13 @@ export default function UserData({ path }: { path: string }) {
             </div>
           </button>
         ))}
+      {id === path && (
+        <Link href="/create">
+          <div className="min-w-[200px] min-h-[325px] hover:border-gray-600 border-gray-400 text-green-400 hover:text-green-600  flex justify-center items-center rounded-lg px-5 py-4 border">
+            <p className="animate-pulse cursor-pointer">{Plus}</p>
+          </div>
+        </Link>
+      )}
       <Modal open={open} onClose={handleClose} id={post} />
     </section>
   )

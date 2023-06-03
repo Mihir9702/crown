@@ -25,7 +25,7 @@ export class UserResolver {
     return await User.findOne({ where: { nameid } })
   }
 
-  @Query(() => User)
+  @Query(() => User) // !! doesn't work
   async user(@Ctx() { req }: MyContext): Promise<User> {
     // 6442 not 5480 & null
     return await User.findOne({ where: { userid: req.session.userid } })

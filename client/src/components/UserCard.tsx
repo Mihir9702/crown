@@ -17,7 +17,11 @@ export default function UserCard({ path }: { path: string }) {
 
   return (
     <section className="w-full flex justify-center items-center my-16">
-      <div className="flex flex-col items-end w-full max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl">
+      <div
+        className={`flex flex-col items-end w-full  max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl ${
+          !mine ? 'pt-12' : ''
+        }`}
+      >
         {mine && (
           <div className="flex flex-col items-center gap-2">
             <Link

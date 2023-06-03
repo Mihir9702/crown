@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { Session, SessionData } from 'express-session'
 import { Field, InputType } from 'type-graphql'
+import { User } from './model/User'
+import { Post } from './model/Post'
 
 export type MyContext = {
   req: Request & {

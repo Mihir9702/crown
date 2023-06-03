@@ -101,6 +101,7 @@ export type Query = {
   owner: Array<Post>
   post: Post
   posts: Array<Post>
+  search: Array<Array<User>>
   user: User
   userSearch: User
   users: Array<User>
@@ -112,6 +113,10 @@ export type QueryOwnerArgs = {
 
 export type QueryPostArgs = {
   postid: Scalars['Float']
+}
+
+export type QuerySearchArgs = {
+  search: Scalars['String']
 }
 
 export type QueryUserSearchArgs = {
@@ -297,6 +302,27 @@ export type PostsQuery = {
     likes?: Array<number> | null
     updatedAt: string
   }>
+}
+
+export type SearchQueryVariables = Exact<{
+  search: Scalars['String']
+}>
+
+export type SearchQuery = {
+  __typename?: 'Query'
+  search: Array<
+    Array<{
+      __typename?: 'User'
+      nameid: string
+      photoid?: string | null
+      posts?: Array<{
+        __typename?: 'Post'
+        header: string
+        content: string
+        owner: string
+      }> | null
+    }>
+  >
 }
 
 export type UserQueryVariables = Exact<{ [key: string]: never }>
@@ -528,6 +554,28 @@ export function usePostsQuery(
 ) {
   return Urql.useQuery<PostsQuery, PostsQueryVariables>({
     query: PostsDocument,
+    ...options,
+  })
+}
+export const SearchDocument = gql`
+  query Search($search: String!) {
+    search(search: $search) {
+      nameid
+      photoid
+      posts {
+        header
+        content
+        owner
+      }
+    }
+  }
+`
+
+export function useSearchQuery(
+  options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<SearchQuery, SearchQueryVariables>({
+    query: SearchDocument,
     ...options,
   })
 }
