@@ -5,6 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <title>Crown</title>
       </Head>
       <body>
         <Main />

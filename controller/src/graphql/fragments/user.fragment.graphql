@@ -1,0 +1,9 @@
+fragment UserFragment on User {
+  id
+  nameid
+  userid
+  photoid
+  bio
+  likes
+  createdAt
+}

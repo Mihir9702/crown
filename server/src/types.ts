@@ -11,51 +11,34 @@ export type MyContext = {
 
 @InputType()
 export class Input {
-  @Field()
-  username!: string
-
-  @Field({ nullable: true })
-  nameid?: string
-
-  @Field()
-  password!: string
+  @Field() username!: string
+  @Field() password!: string
+  @Field({ nullable: true }) nameid?: string
+  @Field({ nullable: true }) photoid?: string
+  @Field({ nullable: true }) bio?: string
 }
 
 @InputType()
 export class Create {
-  @Field()
-  header!: string
-
-  @Field()
-  content!: string
+  @Field() header!: string
+  @Field() content!: string
 }
 
 @InputType()
 export class Update {
-  @Field()
-  postid!: number
-
-  @Field()
-  header!: string
+  @Field() postid!: number
+  @Field() header!: string
 }
 
 @InputType()
 export class UpdateUser {
-  @Field({ nullable: true })
-  nameid?: string
-
-  @Field({ nullable: true })
-  photoid?: string
-
-  @Field({ nullable: true })
-  bio?: string
+  @Field({ nullable: true }) nameid?: string
+  @Field({ nullable: true }) photoid?: string
+  @Field({ nullable: true }) bio?: string
 }
 
 @InputType()
 export class Delete {
-  @Field()
-  nameid!: string
-
-  @Field()
-  postid!: number
+  @Field() nameid!: string
+  @Field() postid!: number
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLoginMutation, useUserQuery } from '@/graphql'
 import Link from 'next/link'
+import { responseHandler } from '@/components'
 
 export default () => {
   const [{ data }] = useUserQuery()
@@ -28,19 +29,14 @@ export default () => {
       },
     })
 
-    if (!response.data && response.error) {
-      setError(response.error.message)
-    } else {
-      console.log('Logged in', response.data)
-      location.reload()
-      return router.push('/')
-    }
+    responseHandler(response, setError, router)
   }
+
   return (
-    <main className="flex justify-center items-center bg-[#0e1111] h-screen w-full">
+    <main className="flex justify-center items-start bg-[#0e1111] h-screen w-full">
       <form
         onSubmit={handleSubmit}
-        className="border-2 border-[#101110] p-8 rounded-xl shadow-lg shadow-black py-12 lg:scale-150 flex flex-col items-start text-gray-300"
+        className="border-2 border-[#101110] p-8 mt-8 rounded-xl shadow-lg shadow-black py-12 flex flex-col items-start text-gray-300"
       >
         <h1 className="font-bold text-2xl text-gray-200">Login</h1>
         {error && <p className="text-red-500 my-4">{error}</p>}
@@ -61,13 +57,11 @@ export default () => {
           />
         </div>
         <Link href={'/signup'} legacyBehavior>
-          <a className="text-gray-400 hover:text-gray-500 mt-4 text-sm">
-            Create Account
-          </a>
+          <a className="text-gray-400 hover:text-gray-500 mt-4 text-sm">Create Account</a>
         </Link>
         <button
           type="submit"
-          className="bg-pink-500 hover:bg-pink-700 transition-all duration-500 text-white shadow-lg font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-blue-600 hover:bg-blue-700 transition-all text-white shadow-lg font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Login
         </button>

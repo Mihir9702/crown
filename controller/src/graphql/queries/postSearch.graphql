@@ -1,7 +1,5 @@
 query postSearch($header: String!) {
   postSearch(header: $header) {
-    header
-    content
-    owner
+    ...PostFragment
   }
 }

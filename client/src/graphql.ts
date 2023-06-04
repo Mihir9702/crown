@@ -123,10 +123,6 @@ export type QueryUserSearchArgs = {
   nameid: Scalars['String']
 }
 
-export type QueryUsersArgs = {
-  nameid: Scalars['String']
-}
-
 export type Update = {
   header: Scalars['String']
   postid: Scalars['Float']
@@ -147,7 +143,6 @@ export type User = {
   nameid: Scalars['String']
   password: Scalars['String']
   photoid?: Maybe<Scalars['String']>
-  posts?: Maybe<Array<Post>>
   updatedAt: Scalars['String']
   userid: Scalars['Float']
   username: Scalars['String']
@@ -160,6 +155,17 @@ export type PostFragmentFragment = {
   owner: string
   likes?: Array<number> | null
   postid: number
+  createdAt: string
+}
+
+export type UserFragmentFragment = {
+  __typename?: 'User'
+  id: number
+  nameid: string
+  userid: number
+  photoid?: string | null
+  bio?: string | null
+  likes?: number | null
   createdAt: string
 }
 
@@ -205,7 +211,16 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = {
   __typename?: 'Mutation'
-  login: { __typename?: 'User'; username: string }
+  login: {
+    __typename?: 'User'
+    id: number
+    nameid: string
+    userid: number
+    photoid?: string | null
+    bio?: string | null
+    likes?: number | null
+    createdAt: string
+  }
 }
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>
@@ -302,6 +317,9 @@ export type PostSearchQuery = {
     header: string
     content: string
     owner: string
+    likes?: Array<number> | null
+    postid: number
+    createdAt: string
   }>
 }
 
@@ -311,11 +329,11 @@ export type PostsQuery = {
   __typename?: 'Query'
   posts: Array<{
     __typename?: 'Post'
-    postid: number
     header: string
     content: string
     owner: string
     likes?: Array<number> | null
+    postid: number
     createdAt: string
   }>
 }
@@ -332,15 +350,7 @@ export type UserQuery = {
     photoid?: string | null
     bio?: string | null
     likes?: number | null
-    posts?: Array<{
-      __typename?: 'Post'
-      header: string
-      content: string
-      owner: string
-      likes?: Array<number> | null
-      postid: number
-      createdAt: string
-    }> | null
+    createdAt: string
   } | null
 }
 
@@ -358,25 +368,24 @@ export type UserSearchQuery = {
     photoid?: string | null
     bio?: string | null
     likes?: number | null
-    posts?: Array<{
-      __typename?: 'Post'
-      header: string
-      content: string
-      owner: string
-      likes?: Array<number> | null
-      postid: number
-      createdAt: string
-    }> | null
+    createdAt: string
   }
 }
 
-export type UsersQueryVariables = Exact<{
-  nameid: Scalars['String']
-}>
+export type UsersQueryVariables = Exact<{ [key: string]: never }>
 
 export type UsersQuery = {
   __typename?: 'Query'
-  users: Array<{ __typename?: 'User'; nameid: string; photoid?: string | null }>
+  users: Array<{
+    __typename?: 'User'
+    id: number
+    nameid: string
+    userid: number
+    photoid?: string | null
+    bio?: string | null
+    likes?: number | null
+    createdAt: string
+  }>
 }
 
 export const PostFragmentFragmentDoc = gql`
@@ -386,6 +395,17 @@ export const PostFragmentFragmentDoc = gql`
     owner
     likes
     postid
+    createdAt
+  }
+`
+export const UserFragmentFragmentDoc = gql`
+  fragment UserFragment on User {
+    id
+    nameid
+    userid
+    photoid
+    bio
+    likes
     createdAt
   }
 `
@@ -435,9 +455,10 @@ export function useLikePostMutation() {
 export const LoginDocument = gql`
   mutation Login($params: Input!) {
     login(params: $params) {
-      username
+      ...UserFragment
     }
   }
+  ${UserFragmentFragmentDoc}
 `
 
 export function useLoginMutation() {
@@ -547,11 +568,10 @@ export function usePostQuery(
 export const PostSearchDocument = gql`
   query postSearch($header: String!) {
     postSearch(header: $header) {
-      header
-      content
-      owner
+      ...PostFragment
     }
   }
+  ${PostFragmentFragmentDoc}
 `
 
 export function usePostSearchQuery(
@@ -565,14 +585,10 @@ export function usePostSearchQuery(
 export const PostsDocument = gql`
   query Posts {
     posts {
-      postid
-      header
-      content
-      owner
-      likes
-      createdAt
+      ...PostFragment
     }
   }
+  ${PostFragmentFragmentDoc}
 `
 
 export function usePostsQuery(
@@ -586,18 +602,10 @@ export function usePostsQuery(
 export const UserDocument = gql`
   query User {
     user {
-      id
-      nameid
-      userid
-      photoid
-      bio
-      likes
-      posts {
-        ...PostFragment
-      }
+      ...UserFragment
     }
   }
-  ${PostFragmentFragmentDoc}
+  ${UserFragmentFragmentDoc}
 `
 
 export function useUserQuery(
@@ -611,18 +619,10 @@ export function useUserQuery(
 export const UserSearchDocument = gql`
   query UserSearch($nameid: String!) {
     userSearch(nameid: $nameid) {
-      id
-      nameid
-      userid
-      photoid
-      bio
-      likes
-      posts {
-        ...PostFragment
-      }
+      ...UserFragment
     }
   }
-  ${PostFragmentFragmentDoc}
+  ${UserFragmentFragmentDoc}
 `
 
 export function useUserSearchQuery(
@@ -634,16 +634,16 @@ export function useUserSearchQuery(
   })
 }
 export const UsersDocument = gql`
-  query Users($nameid: String!) {
-    users(nameid: $nameid) {
-      nameid
-      photoid
+  query Users {
+    users {
+      ...UserFragment
     }
   }
+  ${UserFragmentFragmentDoc}
 `
 
 export function useUsersQuery(
-  options: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>
+  options?: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>
 ) {
   return Urql.useQuery<UsersQuery, UsersQueryVariables>({
     query: UsersDocument,

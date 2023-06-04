@@ -1,6 +1,5 @@
-query Users($nameid: String!) {
-  users(nameid: $nameid) {
-    nameid
-    photoid
+query Users {
+  users {
+    ...UserFragment
   }
 }

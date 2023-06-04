@@ -1,11 +1,6 @@
-import {
-  Footer,
-  Header,
-  SearchForm,
-  SearchPost,
-  SearchUser,
-} from '@/components'
 import { useState } from 'react'
+import { Header } from '@/components'
+import { SearchForm, SearchPost, SearchUser } from '@/components/Search'
 
 export default () => {
   const [s, is] = useState<string>('')
@@ -22,7 +17,6 @@ export default () => {
           </section>
         )}
       </div>
-      <Footer />
     </main>
   )
 }

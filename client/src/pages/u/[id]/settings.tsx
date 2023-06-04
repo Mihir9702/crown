@@ -1,10 +1,11 @@
 import { useUpdateUserMutation, useUserQuery } from '@/graphql'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { UploadButton } from 'react-uploader'
-import { Uploader } from 'uploader'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
+import { responseHandler } from '@/components'
+import { uploader, uploaderOptions } from '@/pages/_app'
 
 export default () => {
   const [{ data }] = useUserQuery()
@@ -13,13 +14,9 @@ export default () => {
   const [photo, setPhoto] = useState<string>('')
   const [nid, isNid] = useState<string>(id?.nameid)
   const [bid, isBid] = useState<string>(id?.bio || '')
-  const [err, isErr] = useState<string>('')
+  const [err, isErr] = useState<string | undefined>('')
   const [, update] = useUpdateUserMutation()
   const router = useRouter()
-
-  const uploader = Uploader({
-    apiKey: process.env.NEXT_PUBLIC_UPLOAD_KEY || '',
-  })
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -33,12 +30,7 @@ export default () => {
       },
     })
 
-    if (response.error) {
-      isErr(response.error.message)
-    } else {
-      location.reload()
-      return router.back()
-    }
+    responseHandler(response, isErr, router, 'back')
   }
   return (
     <section className="w-full flex justify-center items-center my-32">
@@ -50,7 +42,7 @@ export default () => {
         >
           <UploadButton
             uploader={uploader}
-            options={{ multi: false }}
+            options={uploaderOptions}
             onComplete={files => files.map(x => setPhoto(x.fileUrl))}
           >
             {({ onClick }) => (
@@ -82,26 +74,26 @@ export default () => {
               className="bg-[#121516] text-gray-100 text-md text-center focus:outline-none focus:border-none"
             />
           </label>
-          <label className="flex p-2 rounded-md">
-            Bio:
+          <label className="flex items-start p-2 rounded-md">
+            <span className="mt-2">Bio: </span>
             <textarea
               name={bid}
               value={bid}
-              placeholder={id?.bio!}
+              placeholder={id?.bio! || 'Write something here...'}
               onChange={e => isBid(e.target.value)}
-              className="bg-[#121516] text-gray-100 px-1 text-md md:max-h-[150px] w-full max-w-[225px] text-center focus:outline-none focus:border-none"
+              className="bg-[#121516] text-gray-100 border-none px-1 text-md md:max-h-[150px] w-full max-w-[225px] text-center focus:outline-none focus:border-none"
             />
           </label>
           <div className="flex justify-center gap-8 mt-6">
             <button
-              className="border border-red-500 text-red-500 rounded-md transition-all hover:bg-red-500 dark:hover:text-gray-200 p-2"
+              className="text-gray-300 rounded-md bg-violet-600 hover:bg-violet-700 hover:transition-all p-2"
               onClick={() => router.back()}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="text-gray-300 rounded-md transition-all dark:bg-green-800 dark:hover:bg-green-900 p-2"
+              className="text-gray-300 rounded-md bg-blue-600 hover:bg-blue-700 hover:transition-all p-2"
             >
               Save Changes
             </button>

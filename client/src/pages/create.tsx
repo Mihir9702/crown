@@ -1,28 +1,12 @@
 import { useState } from 'react'
 import { useCreatePostMutation } from '@/graphql'
 import { useRouter } from 'next/navigation'
-import { Header } from '@/components'
-import { Uploader } from 'uploader'
+import { Header, responseHandler } from '@/components'
 import { UploadDropzone } from 'react-uploader'
+import { uploader, uploaderOptions } from './_app'
 
 export default () => {
-  const PUBLIC_KEY = process.env.NEXT_PUBLIC_UPLOAD_KEY || ''
-
-  // Initialize once (at the start of your app).
-  const uploader = Uploader({
-    apiKey: PUBLIC_KEY,
-  })
-  const uploaderOptions = {
-    multi: false,
-    styles: {
-      colors: {
-        primary: '#EC4899',
-        active: '#EC4899',
-      },
-    },
-  }
-
-  const [error, setError] = useState('')
+  const [error, setError] = useState<string | undefined>('')
   const [header, setHeader] = useState<string>('')
   const [content, setContent] = useState<string>('')
 
@@ -32,8 +16,6 @@ export default () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (!header || !content) setError('[no header or url] error')
-
     const response = await create({
       params: {
         header,
@@ -41,11 +23,8 @@ export default () => {
       },
     })
 
-    if (response.error) {
-      setError(response.error.message)
-    } else {
-      router.push('/')
-    }
+    responseHandler(response, setError, router)
+    router.replace('/')
   }
 
   return (
@@ -62,8 +41,9 @@ export default () => {
         <input
           name={header}
           type="text"
+          maxLength={35}
           placeholder="Title of your content"
-          className="text-[#d6d6d6] text-md md:text-lg border-2 border-[#232b2b] bg-[#0e1111] md:w-[93.333%] px-4 outline-none py-2 rounded-md"
+          className="text-gray-200 text-md md:text-lg border-2 border-[#232b2b] bg-[#0e1111] md:w-[93.333%] px-4 outline-none py-2 rounded-md"
           onChange={e => setHeader(e.target.value)}
           required
         />
@@ -74,12 +54,10 @@ export default () => {
           // width="600px"
           // height="375px"
         />
-
-        <span className="whitespace-nowrap text-yellow-400">225 x 225</span>
         {content && (
           <button
             type="submit"
-            className="bg-[#EC4899] px-4 py-2 hover:bg-pink-500 rounded-lg shadow-md shadow-black"
+            className="bg-blue-600 px-4 py-2 hover:bg-blue-700 hover:transition-all rounded-lg"
           >
             Upload
           </button>

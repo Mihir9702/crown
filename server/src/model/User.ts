@@ -6,10 +6,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm'
-
-import { Post } from './Post'
 
 @ObjectType()
 @Entity()
@@ -27,7 +24,7 @@ export class User extends BaseEntity {
   password!: string
 
   @Field(() => String)
-  @Column({ type: 'text', unique: true })
+  @Column({ type: 'text' })
   nameid!: string
 
   @Field(() => Number)
@@ -46,9 +43,15 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   likes!: number
 
-  @Field(() => [Post], { nullable: true })
-  @OneToMany(() => Post, post => post.owner)
-  posts?: Post[]
+  //  ** owner
+  // @Field(() => [Post], { nullable: true })
+  // @Column('text', { array: true, nullable: true })
+  // posts?: Post[]
+
+  // ** post filter
+  // @Field(() => [Post], { nullable: true })
+  // @Column('text', { array: true, nullable: true })
+  // liked?: Post[]
 
   @Field(() => String)
   @CreateDateColumn()

@@ -1,13 +1,5 @@
 query UserSearch($nameid: String!) {
   userSearch(nameid: $nameid) {
-    id
-    nameid
-    userid
-    photoid
-    bio
-    likes
-    posts {
-      ...PostFragment
-    }
+    ...UserFragment
   }
 }

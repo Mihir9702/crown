@@ -16,12 +16,9 @@ export function SearchForm(props: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full md:max-w-3xl max-w-xl my-12 rounded-md dark:shadow-lg dark:shadow-black"
+      className="w-full md:max-w-3xl max-w-xl my-12 rounded-md shadow-lg shadow-black"
     >
-      <label
-        htmlFor="default-search"
-        className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-      >
+      <label htmlFor="default-search" className="mb-2 text-sm font-medium sr-only text-white">
         Search
       </label>
       <div className="relative">
@@ -31,7 +28,7 @@ export function SearchForm(props: Props) {
         <input
           type="search"
           id="default-search"
-          className="block w-full p-4 pl-12 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-[#1B1D1E] dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block w-full p-4 pl-12 text-sm border border-gray-400 rounded-lg  focus:ring-blue-500 focus:border-blue-500 bg-[#1B1D1E] placeholder-gray-400 text-gray-100"
           placeholder="Search Names, Titles..."
           //  @ts-ignore
           onChange={x => props.setSearch(x.target.value)}
@@ -40,7 +37,7 @@ export function SearchForm(props: Props) {
         />
         <button
           type="submit"
-          className="text-white absolute right-2.5 bottom-2.5 bg-blue-800 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-800 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="text-white absolute right-2.5 bottom-2.5 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 bg-blue-800  hover:bg-blue-600"
         >
           Search
         </button>
@@ -50,19 +47,34 @@ export function SearchForm(props: Props) {
 }
 
 export function SearchUser(props: Props) {
-  const [{ data }] = useUsersQuery({ variables: { nameid: props.search } })
+  const [{ data }] = useUsersQuery()
   const id = data?.users
+
+  const match: any[] = []
+
+  if (!id)
+    return (
+      <section className="w-full max-w-5xl">
+        <h1 className="text-3xl mb-8 mx-[-2rem]">Users - 0</h1>
+      </section>
+    )
+
+  id.map(x => {
+    if (x.nameid.includes(props.search)) {
+      match.push(x)
+    }
+  })
 
   return (
     <section className="w-full max-w-5xl">
-      <h1 className="text-3xl mb-8 mx-[-2rem]">Users - {id && id.length}</h1>
+      <h1 className="text-3xl mb-8 mx-[-2rem]">Users - {match.length}</h1>
       <div className="w-full grid grid-cols-3">
-        {id &&
-          id.map(z => (
+        {match &&
+          match.map(x => (
             <div className="flex flex-col items-center w-max hover:bg-gray-800 rounded-xl p-2 px-4">
-              <h1>{z.nameid}</h1>
+              <h1>{x.nameid}</h1>
               <Image
-                src={z.photoid || ''}
+                src={x.photoid || ''}
                 alt="id"
                 width={120}
                 height={120}
@@ -79,16 +91,31 @@ export function SearchPost(props: Props) {
   const [{ data }] = usePostSearchQuery({ variables: { header: props.search } })
   const id = data?.postSearch
 
+  const match: any[] = []
+
+  if (!id)
+    return (
+      <section className="w-full max-w-5xl">
+        <h1 className="text-3xl mb-8 mx-[-2rem]">Posts - 0</h1>
+      </section>
+    )
+
+  id.map(x => {
+    if (x.header.includes(props.search)) {
+      match.push(x)
+    }
+  })
+
   return (
     <section className="w-full max-w-5xl">
-      <h1 className="text-3xl my-8 mx-[-2rem]">Posts - {id && id.length}</h1>
+      <h1 className="text-3xl my-8 mx-[-2rem]">Posts - {match.length}</h1>
       <div className="w-full grid grid-cols-3">
-        {id &&
-          id.map(z => (
+        {match &&
+          match.map(x => (
             <div className="flex flex-col items-center hover:bg-gray-800 rounded-xl p-2 px-4">
-              <h1>{z.header}</h1>
+              <h1>{x.header}</h1>
               <Image
-                src={z.content || ''}
+                src={x.content || ''}
                 alt="id"
                 width={120}
                 height={120}

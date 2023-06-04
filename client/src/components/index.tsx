@@ -1,21 +1,8 @@
-import Cols from './Cols'
-import Sort from './Sort'
-import Item from './Item'
+import responseHandler from './responseHandler'
 import Header from './Header'
 import Footer from './Footer'
 import UserCard from './UserCard'
-import UserData from './UserData'
-import { SearchForm, SearchUser, SearchPost } from './Search'
+import Card from './Card'
+import { ItemDisplay } from './ItemDisplay'
 
-export {
-  Cols,
-  Sort,
-  Item,
-  Header,
-  Footer,
-  UserCard,
-  UserData,
-  SearchForm,
-  SearchUser,
-  SearchPost,
-}
+export { responseHandler, Header, Footer, UserCard, Card, ItemDisplay }

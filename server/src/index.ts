@@ -8,7 +8,7 @@ import path from 'path'
 // import connectRedis from 'connect-redis'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
-import { __prod__, COOKIE } from './consts'
+import { __prod__, COOKIE, PORT } from './consts'
 import { MyContext } from './types'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
@@ -27,7 +27,7 @@ const main = async () => {
 
   app.use(
     cors({
-      origin: 'http://localhost:3001',
+      origin: ['http://localhost:3001'],
       credentials: true,
     })
   )
@@ -60,8 +60,8 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: false })
 
-  app.listen(3000, () =>
-    console.log('🚀 Server started on http://localhost:3000')
+  app.listen(PORT, () =>
+    console.log(`🚀 Server started on http://localhost:${PORT}`)
   )
 }
 

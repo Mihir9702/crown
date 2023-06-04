@@ -16,6 +16,7 @@
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "feather-icons": "^4.29.0",
+    "flowbite": "^1.6.5",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "next": "13.4.3",

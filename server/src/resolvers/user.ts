@@ -6,18 +6,20 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql'
-import { User } from '../model/User'
-import { Input, MyContext, UpdateUser } from '../types'
 import { hash, genSalt, compare } from 'bcryptjs'
 import { isAuth } from '../middleware/isAuth'
-import { randomName, randomNumber } from '../helpers'
+import { User } from '../model/User'
+import { Post } from '../model/Post'
+import { randomName, randomNumber } from '../helpers/rand'
+import { validate } from '../helpers/validate'
+import { Input, MyContext, UpdateUser } from '../types'
 import { COOKIE } from '../consts'
 
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  async users(@Arg('nameid') nameid: string): Promise<User[]> {
-    return await User.find({ where: { nameid } })
+  async users(): Promise<User[]> {
+    return await User.find({ order: { createdAt: -1 } })
   }
 
   @Query(() => User)
@@ -30,7 +32,7 @@ export class UserResolver {
   async user(@Ctx() { req }: MyContext): Promise<User | null> {
     if (!req.session.id) return null
 
-    console.log('[UserQuery] - ', req.session.userid)
+    console.log('[User] - ', req.session.userid)
     return await User.findOne({ where: { userid: req.session.userid } })
   }
 
@@ -39,32 +41,29 @@ export class UserResolver {
     @Arg('params') params: Input,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    const { username } = params
-    if (username.length < 2)
-      throw new Error('Username must be at least 2 characters')
-    if (params.password.length < 4)
-      throw new Error('Password must be at least 4 characters')
+    if (!validate(params)) console.log('[Signup] - attempt failed validation')
 
     const usernameTaken = await User.findOne({
       where: { username: params.username },
     })
 
-    if (usernameTaken) throw new Error('Username already taken')
+    if (usernameTaken) throw new Error('[Signup] - username already taken')
 
+    const { username } = params
     const password = await hash(params.password, await genSalt(10))
+    const nameid = params.nameid || randomName()
+    const photoid = process.env.DEFAULT_IMG
+    const userid = randomNumber(4)
+    const bio = params.bio || ''
 
-    const nameid: string = params.nameid || randomName()
-    const userid: number = randomNumber(4)
+    const userCreation = { username, password, nameid, photoid, userid, bio }
 
-    const user = await User.create({
-      username,
-      password,
-      nameid,
-      userid,
-    }).save()
+    const user = await User.create(userCreation).save()
+
+    if (!user) console.log('[Signup] - error creating user')
 
     req.session.userid = user.userid
-    console.log('[Signup] - ', req.session.userid)
+    console.log('[Signup] - created user', req.session.userid)
 
     return user
   }
@@ -74,21 +73,18 @@ export class UserResolver {
     @Arg('params') params: Input,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    if (!params.username) throw new Error('Username not provided')
-    if (!params.password) throw new Error('Password not provided')
+    if (!validate(params)) console.log('[Login] - Invalid username or password')
 
-    const user = await User.findOne({
-      where: { username: params.username },
-    })
-
-    if (!user) throw new Error('User not found')
+    const user =
+      (await User.findOne({ where: { username: params.username } })) ||
+      (await User.findOne({ where: { nameid: params.nameid } }))
+    if (!user) throw new Error('[Login] - User not found')
 
     const valid = await compare(params.password, user.password)
-
-    if (!valid) throw new Error('Invalid username or password')
+    if (!valid) throw new Error('[Login] - Invalid username or password')
 
     req.session.userid = user.userid
-    console.log('[Login] - ', req.session.userid)
+    console.log('[Login] - user session id', req.session.userid)
 
     return user
   }
@@ -102,11 +98,18 @@ export class UserResolver {
     const user = await User.findOne({ where: { userid: req.session.userid } })
     if (!user) throw new Error('[UpdateUser] - no user')
 
+    if (params && params.nameid) {
+      const posts = await Post.find({ where: { owner: user.nameid } })
+      posts.forEach(async post => {
+        post.owner = params.nameid!
+        await Post.save(post)
+      })
+    }
+
     user.nameid = params.nameid ? params.nameid : user.nameid
     user.photoid = params.photoid ? params.photoid : user.photoid
     user.bio = params.bio ? params.bio : user.bio
 
-    console.log('update')
     return await User.save(user)
   }
 
