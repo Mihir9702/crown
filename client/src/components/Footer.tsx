@@ -5,16 +5,16 @@ import Link from 'next/link'
 
 export default () => {
   return (
-    <footer className="bg-transparent rounded-lg shadow w-full mt-32">
-      <div className="mx-auto max-w-xl">
+    <footer className="rounded-lg shadow-xl w-full bg-transparent shadow-black max-w-screen mt-32">
+      <section>
         <div className="sm:flex sm:items-center py-4 sm:justify-between">
-          <a href="#" className="flex items-center">
+          <p className="flex items-center mx-16 my-4 sm:my-0">
             <Image src={Crown} className="h-8 mr-3 w-8 invert" alt="logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">
               Crown
             </span>
-          </a>
-          <ul className="flex flex-wrap gap-6 items-center text-sm font-medium text-gray-500">
+          </p>
+          <ul className="flex flex-wrap gap-6 items-center text-sm font-medium text-gray-500 mx-16">
             <li>
               <Link href="#" className="hover:text-gray-400">
                 About
@@ -41,7 +41,7 @@ export default () => {
         <span className="block text-sm font-medium text-gray-500 text-center my-4">
           © 2023 Crown™ All Rights Reserved.
         </span>
-      </div>
+      </section>
     </footer>
   )
 }

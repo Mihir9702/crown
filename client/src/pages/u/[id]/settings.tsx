@@ -1,105 +1,184 @@
-import { useUpdateUserMutation, useUserQuery } from '@/graphql'
+import { useUpdatePassMutation, useUpdateUserMutation, useUserQuery } from '@/graphql'
 import Image from 'next/image'
 import { useState } from 'react'
 import { UploadButton } from 'react-uploader'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
-import { responseHandler } from '@/components'
+import { Button, Header, responseHandler } from '@/components'
 import { uploader, uploaderOptions } from '@/pages/_app'
+import { Cross } from '@/components/Icons'
 
 export default () => {
   const [{ data }] = useUserQuery()
   const id = data?.user!
 
+  const [varx, ivarx] = useState(true)
   const [photo, setPhoto] = useState<string>('')
   const [nid, isNid] = useState<string>(id?.nameid)
   const [bid, isBid] = useState<string>(id?.bio || '')
   const [err, isErr] = useState<string | undefined>('')
   const [, update] = useUpdateUserMutation()
+  const [, pass] = useUpdatePassMutation()
   const router = useRouter()
+
+  if (!id) {
+    router.push('/')
+  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
     console.log('uploaded img')
 
-    const response = await update({
+    const params = { nameid: nid, photoid: photo, bio: bid }
+    const response = await update({ params: { ...params } })
+
+    responseHandler(response, isErr, router, 'back')
+  }
+
+  const [currPass, iCurrPass] = useState('')
+  const [newPass, iNewPass] = useState('')
+  const [rePass, iRePass] = useState('')
+
+  const formPass = async (e: any) => {
+    e.preventDefault()
+    console.log('updated pwd')
+
+    if (newPass !== rePass) {
+      isErr('re-re enter pwd')
+      return
+    }
+
+    const response = await pass({
       params: {
-        nameid: nid,
-        photoid: photo,
-        bio: bid,
+        currPass,
+        newPass,
       },
     })
 
     responseHandler(response, isErr, router, 'back')
   }
-  return (
-    <section className="w-full flex justify-center items-center my-32">
-      <div className="w-full py-8 max-w-sm bg-[#121516] shadow-xl shadow-black rounded-xl">
-        {err && <p className="text-red-500">{err}</p>}
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-6 items-center mt-4"
-        >
-          <UploadButton
-            uploader={uploader}
-            options={uploaderOptions}
-            onComplete={files => files.map(x => setPhoto(x.fileUrl))}
-          >
-            {({ onClick }) => (
-              <button onClick={onClick} className="flex flex-col items-center">
-                {photo && (
-                  <h1 className="mb-4 text-green-400">
-                    Photo successfully submitted!
-                  </h1>
-                )}
 
-                <Image
-                  src={photo || id?.photoid! || Icon}
-                  alt="photo-id"
-                  width={96}
-                  height={96}
-                  className="rounded-full"
-                  priority
-                />
-              </button>
-            )}
-          </UploadButton>
-          <label className="p-2 rounded-md">
-            Name:
-            <input
-              name={nid}
-              value={nid}
-              placeholder={id?.nameid}
-              onChange={e => isNid(e.target.value)}
-              className="bg-[#121516] text-gray-100 text-md text-center focus:outline-none focus:border-none"
-            />
-          </label>
-          <label className="flex items-start p-2 rounded-md">
-            <span className="mt-2">Bio: </span>
-            <textarea
-              name={bid}
-              value={bid}
-              placeholder={id?.bio! || 'Write something here...'}
-              onChange={e => isBid(e.target.value)}
-              className="bg-[#121516] text-gray-100 border-none px-1 text-md md:max-h-[150px] w-full max-w-[225px] text-center focus:outline-none focus:border-none"
-            />
-          </label>
-          <div className="flex justify-center gap-8 mt-6">
-            <button
-              className="text-gray-300 rounded-md bg-violet-600 hover:bg-violet-700 hover:transition-all p-2"
-              onClick={() => router.back()}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="text-gray-300 rounded-md bg-blue-600 hover:bg-blue-700 hover:transition-all p-2"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+  return (
+    <main className="w-screen flex flex-wrap flex-col justify-center items-center gap-[5rem]">
+      <div className="flex justify-center items-center">
+        <Header home={true} search={true} create={true} />
       </div>
-    </section>
+      <section className="flex flex-col justify-around items-center w-auto py-8 px-16 bg-[#121516] shadow-xl shadow-black rounded-xl">
+        <div className="flex ml-4 my-4 items-center relative justify-center">
+          <ul className="text-white flex mt-2 gap-4">
+            <li
+              onClick={() => ivarx(true)}
+              className={`${varx ? 'text-gray-500' : 'text-gray-100'} hover:text-gray-500`}
+            >
+              Account
+            </li>
+            |
+            <li
+              onClick={() => ivarx(false)}
+              className={`${!varx ? 'text-gray-500' : 'text-gray-100'} hover:text-gray-500`}
+            >
+              Security
+            </li>
+          </ul>
+          <button
+            className="absolute right-0 top-0 -mx-24 -my-6 text-gray-500 hover:text-gray-700"
+            onClick={() => router.back()}
+          >
+            {Cross}
+          </button>
+        </div>
+        {err && <p className="text-red-500">{err}</p>}
+        {varx && (
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-6 justify-center items-center mt-4"
+          >
+            <UploadButton
+              uploader={uploader}
+              options={uploaderOptions}
+              onComplete={files => files.map(x => setPhoto(x.fileUrl))}
+            >
+              {({ onClick }) => (
+                <button onClick={onClick} className="flex flex-col items-center">
+                  {photo && <h1 className="mb-4 text-green-400">Photo successfully submitted!</h1>}
+
+                  <Image
+                    src={photo || id?.photoid! || Icon}
+                    alt="photo-id"
+                    width={96}
+                    height={96}
+                    className="rounded-full"
+                    priority
+                  />
+                </button>
+              )}
+            </UploadButton>
+            <label className="text-white text-lg">
+              Name:
+              <input
+                name={nid}
+                value={nid}
+                placeholder={id?.nameid}
+                maxLength={18}
+                onChange={e => isNid(e.target.value)}
+                className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+              />
+            </label>
+            <label className="flex justify-start rounded-md">
+              <span className="">Bio: </span>
+              <textarea
+                name={bid}
+                value={bid}
+                placeholder={id?.bio! || 'Write something here...'}
+                maxLength={100}
+                onChange={e => isBid(e.target.value)}
+                className="bg-[#121516] text-gray-100 px-1 mx-2 border border-gray-600 p-2 rounded-lg text-md  w-full text-left"
+              />
+            </label>
+            <div className="flex justify-center gap-8 mt-6">
+              <Button type="submit">Save Changes</Button>
+            </div>
+          </form>
+        )}
+        {!varx && (
+          <form onSubmit={formPass}>
+            <section className="flex flex-col items-end gap-4">
+              <label className="text-white text-lg">
+                <h1 className="my-8 text-2xl font-bold">Change Password</h1>
+                Current Password:
+                <input
+                  name={currPass}
+                  value={currPass}
+                  type="password"
+                  onChange={e => iCurrPass(e.target.value)}
+                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                />
+              </label>
+              <label className="text-white text-lg">
+                New Password:
+                <input
+                  name={newPass}
+                  value={newPass}
+                  type="password"
+                  onChange={e => iNewPass(e.target.value)}
+                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                />
+              </label>
+              <label className="text-white text-lg">
+                Re-Enter Password:
+                <input
+                  name={rePass}
+                  value={rePass}
+                  type="password"
+                  onChange={e => iRePass(e.target.value)}
+                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                />
+              </label>
+              <Button type="submit">Confirm</Button>
+            </section>
+          </form>
+        )}
+      </section>
+    </main>
   )
 }

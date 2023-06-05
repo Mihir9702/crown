@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { usePostSearchQuery, useUsersQuery } from '@/graphql'
 import { Search } from './Icons'
+import Button from './Button'
 
 interface Props {
   search: string
@@ -16,7 +17,7 @@ export function SearchForm(props: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full md:max-w-3xl max-w-xl my-12 rounded-md shadow-lg shadow-black"
+      className="w-full md:max-w-3xl relative max-w-xl my-12 rounded-md shadow-lg shadow-black"
     >
       <label htmlFor="default-search" className="mb-2 text-sm font-medium sr-only text-white">
         Search
@@ -28,19 +29,17 @@ export function SearchForm(props: Props) {
         <input
           type="search"
           id="default-search"
-          className="block w-full p-4 pl-12 text-sm border border-gray-400 rounded-lg  focus:ring-blue-500 focus:border-blue-500 bg-[#1B1D1E] placeholder-gray-400 text-gray-100"
+          className="w-screen sm:w-full p-4 pl-12 text-sm border border-gray-400 rounded-lg bg-[#1B1D1E] placeholder-gray-400 text-gray-100"
           placeholder="Search Names, Titles..."
           //  @ts-ignore
           onChange={x => props.setSearch(x.target.value)}
+          name={props.search}
           value={props.search}
           required
         />
-        <button
-          type="submit"
-          className="text-white absolute right-2.5 bottom-2.5 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 bg-blue-800  hover:bg-blue-600"
-        >
+        <Button type="submit" className="absolute right-2.5 bottom-2.5">
           Search
-        </button>
+        </Button>
       </div>
     </form>
   )
@@ -66,9 +65,9 @@ export function SearchUser(props: Props) {
   })
 
   return (
-    <section className="w-full max-w-5xl">
-      <h1 className="text-3xl mb-8 mx-[-2rem]">Users - {match.length}</h1>
-      <div className="w-full grid grid-cols-3">
+    <main className="w-full max-w-5xl">
+      <title className="text-3xl mb-8 mx-[-2rem]">Users - {match.length}</title>
+      <section className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
             <div className="flex flex-col items-center w-max hover:bg-gray-800 rounded-xl p-2 px-4">
@@ -82,8 +81,8 @@ export function SearchUser(props: Props) {
               />
             </div>
           ))}
-      </div>
-    </section>
+      </section>
+    </main>
   )
 }
 
@@ -107,9 +106,9 @@ export function SearchPost(props: Props) {
   })
 
   return (
-    <section className="w-full max-w-5xl">
+    <main className="w-full max-w-5xl">
       <h1 className="text-3xl my-8 mx-[-2rem]">Posts - {match.length}</h1>
-      <div className="w-full grid grid-cols-3">
+      <title className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
             <div className="flex flex-col items-center hover:bg-gray-800 rounded-xl p-2 px-4">
@@ -123,7 +122,7 @@ export function SearchPost(props: Props) {
               />
             </div>
           ))}
-      </div>
-    </section>
+      </title>
+    </main>
   )
 }

@@ -1,5 +1,6 @@
 import { useState, Dispatch, SetStateAction } from 'react'
 import { Clock, Col, EyeClose, EyeOpen, Grid, Heart } from './Icons'
+import { helpid } from './index'
 
 type IsShow = Dispatch<SetStateAction<boolean>>
 type DispatchElement = Dispatch<SetStateAction<string>>
@@ -14,13 +15,9 @@ function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
   const [co, ico] = useState('text-gray-400')
   const [act, iact] = useState('')
   return (
-    <div className="flex gap-2">
-      <p
-        data-te-toggle="tooltip"
-        data-te-placement="top"
-        data-te-ripple-init
-        data-te-ripple-color="light"
-        title="1-col"
+    <p className="flex gap-2">
+      <span
+        {...helpid('1-col')}
         className={`${co} hover:text-gray-400 p-1 rounded-lg cursor-default`}
         onClick={() => {
           ico('text-gray-400')
@@ -29,14 +26,10 @@ function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
         }}
       >
         {Col}
-      </p>
+      </span>
 
-      <p
-        data-te-toggle="tooltip"
-        data-te-placement="top"
-        data-te-ripple-init
-        data-te-ripple-color="light"
-        title="4-col"
+      <span
+        {...helpid('4-col')}
         className={`${act} hover:text-gray-400 rounded-lg cursor-default p-1`}
         onClick={() => {
           ico('')
@@ -45,8 +38,8 @@ function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
         }}
       >
         {Grid}
-      </p>
-    </div>
+      </span>
+    </p>
   )
 }
 
@@ -54,13 +47,9 @@ function SortDisplay({ setSort }: { setSort: DispatchElement }) {
   const [co, ico] = useState('text-gray-400')
   const [act, iact] = useState('')
   return (
-    <div className="flex gap-2">
-      <p
-        data-te-toggle="tooltip"
-        data-te-placement="bottom"
-        data-te-ripple-init
-        data-te-ripple-color="light"
-        title="recently"
+    <p className="flex gap-2">
+      <span
+        {...helpid('recently')}
         className={`${co} hover:text-gray-400 p-1 rounded-lg cursor-default`}
         onClick={() => {
           ico('text-gray-400')
@@ -69,14 +58,10 @@ function SortDisplay({ setSort }: { setSort: DispatchElement }) {
         }}
       >
         {Clock}
-      </p>
+      </span>
 
-      <p
-        data-te-toggle="tooltip"
-        data-te-placement="bottom"
-        data-te-ripple-init
-        data-te-ripple-color="light"
-        title="popular"
+      <span
+        {...helpid('popular')}
         className={`${act} hover:text-gray-400 p-1 rounded-lg cursor-default`}
         onClick={() => {
           ico('')
@@ -85,8 +70,8 @@ function SortDisplay({ setSort }: { setSort: DispatchElement }) {
         }}
       >
         {Heart}
-      </p>
-    </div>
+      </span>
+    </p>
   )
 }
 

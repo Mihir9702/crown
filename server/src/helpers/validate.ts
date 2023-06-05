@@ -16,14 +16,19 @@ export const validateUsername = (id: string): boolean => {
   return true
 }
 
+export const validatePassword = (id: string): string => {
+  if (!passwordRegex.test(id)) {
+    return passwordError
+  }
+  return ''
+}
+
 export const validate = (options: Input) => {
   if (!validateUsername(options.username)) {
     return usernameError
   }
 
-  if (!passwordRegex.test(options.password)) {
-    return passwordError
-  }
+  validatePassword(options.password)
 
   return null
 }

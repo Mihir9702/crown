@@ -9,15 +9,11 @@ export default () => {
   const [opts, isOpts] = useState('posts')
 
   const [{ data: posts }] = usePostsQuery()
-  const [{ data: owner }] = useOwnerQuery({
-    variables: { owner: path },
-  })
-  const [{ data: userData }] = useUserSearchQuery({
-    variables: { nameid: path },
-  })
+  const [{ data: own }] = useOwnerQuery({ variables: { owner: path } })
+  const [{ data: user }] = useUserSearchQuery({ variables: { nameid: path } })
 
-  const idx = owner?.owner.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
-  const uid = userData?.userSearch.userid
+  const idx = own?.owner.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+  const uid = user?.userSearch.userid
   const uidx = posts?.posts.filter(post => post.likes?.includes(uid as number))
 
   return (
@@ -26,30 +22,8 @@ export default () => {
       <UserCard path={path} isOpts={isOpts} />
       <section className="my-8 grid grid-cols-1 gap-6">
         {opts === 'posts' ? idx?.length : uidx?.length} posts
-        {idx &&
-          opts === 'posts' &&
-          idx.map(p => (
-            <Card
-              nameid={p.owner}
-              header={p.header}
-              content={p.content}
-              createdAt={p.createdAt}
-              lid={p.likes?.length || 0}
-              postid={p.postid}
-            />
-          ))}
-        {uidx &&
-          opts === 'posts.liked' &&
-          uidx.map(p => (
-            <Card
-              nameid={p.owner}
-              header={p.header}
-              content={p.content}
-              createdAt={p.createdAt}
-              lid={p.likes?.length || 0}
-              postid={p.postid}
-            />
-          ))}
+        {idx && opts === 'posts' && idx.map(p => <Card key={p.id} {...p} />)}
+        {uidx && opts === 'posts.liked' && uidx.map(p => <Card key={p.id} {...p} />)}
       </section>
     </main>
   )

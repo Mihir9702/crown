@@ -2,22 +2,21 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLoginMutation, useUserQuery } from '@/graphql'
 import Link from 'next/link'
-import { responseHandler } from '@/components'
+import { Button, responseHandler } from '@/components'
 
 export default () => {
-  const [{ data }] = useUserQuery()
-  const router = useRouter()
-  const userid = data?.user
-
-  if (userid) {
-    router.push('/')
-  }
-
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | undefined>(undefined)
 
+  const [{ data }] = useUserQuery()
+  const idx = data?.user
   const [, login] = useLoginMutation()
+  const router = useRouter()
+
+  if (idx) {
+    router.push('/')
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -57,14 +56,11 @@ export default () => {
           />
         </div>
         <Link href={'/signup'} legacyBehavior>
-          <a className="text-gray-400 hover:text-gray-500 mt-4 text-sm">Create Account</a>
+          <a className="text-gray-400 hover:text-gray-500 my-4 text-sm">Create Account</a>
         </Link>
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 transition-all text-white shadow-lg font-bold mt-4 w-full py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
+        <Button type="submit" className="w-full">
           Login
-        </button>
+        </Button>
       </form>
     </main>
   )

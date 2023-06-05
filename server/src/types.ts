@@ -38,6 +38,12 @@ export class UpdateUser {
 }
 
 @InputType()
+export class UpdatePass {
+  @Field() currPass!: string
+  @Field() newPass!: string
+}
+
+@InputType()
 export class Delete {
   @Field() nameid!: string
   @Field() postid!: number

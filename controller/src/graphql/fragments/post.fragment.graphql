@@ -1,8 +1,10 @@
 fragment PostFragment on Post {
+  id
   header
   content
   owner
   likes
   postid
   createdAt
+  updatedAt
 }

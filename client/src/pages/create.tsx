@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useCreatePostMutation } from '@/graphql'
+import { useCreatePostMutation, useUserQuery } from '@/graphql'
 import { useRouter } from 'next/navigation'
-import { Header, responseHandler } from '@/components'
+import { Header, Button, responseHandler } from '@/components'
 import { UploadDropzone } from 'react-uploader'
 import { uploader, uploaderOptions } from './_app'
 
@@ -10,8 +10,14 @@ export default () => {
   const [header, setHeader] = useState<string>('')
   const [content, setContent] = useState<string>('')
 
+  const [{ data }] = useUserQuery()
+  const idx = data?.user
   const [, create] = useCreatePostMutation()
   const router = useRouter()
+
+  if (!idx) {
+    router.push('/')
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -24,7 +30,6 @@ export default () => {
     })
 
     responseHandler(response, setError, router)
-    router.replace('/')
   }
 
   return (
@@ -51,17 +56,9 @@ export default () => {
           uploader={uploader}
           options={uploaderOptions}
           onUpdate={files => files.map(x => setContent(x.fileUrl))}
-          // width="600px"
-          // height="375px"
+          // width="600px" height="375px"
         />
-        {content && (
-          <button
-            type="submit"
-            className="bg-blue-600 px-4 py-2 hover:bg-blue-700 hover:transition-all rounded-lg"
-          >
-            Upload
-          </button>
-        )}
+        {content && <Button type="submit">Upload</Button>}
       </form>
     </main>
   )

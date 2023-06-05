@@ -11,8 +11,8 @@ import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
 import { Post } from '../model/Post'
 import { randomName, randomNumber } from '../helpers/rand'
-import { validate } from '../helpers/validate'
-import { Input, MyContext, UpdateUser } from '../types'
+import { validate, validatePassword } from '../helpers/validate'
+import { Input, MyContext, UpdatePass, UpdateUser } from '../types'
 import { COOKIE } from '../consts'
 
 @Resolver()
@@ -113,6 +113,26 @@ export class UserResolver {
     return await User.save(user)
   }
 
+  @Mutation(() => User)
+  @UseMiddleware(isAuth)
+  async updatePass(
+    @Arg('params') params: UpdatePass,
+    @Ctx() { req }: MyContext
+  ): Promise<User> {
+    const user = await User.findOne({ where: { userid: req.session.userid } })
+    if (!user) throw new Error('[UpdatePass] - no user')
+
+    const valid = await compare(params.currPass, user.password)
+    if (!valid) throw new Error('[UpdatePass] - invalid password')
+
+    validatePassword(params.newPass)
+
+    const password = await hash(params.newPass, await genSalt(10))
+
+    user.password = password
+    return await User.save(user)
+  }
+
   @Mutation(() => Boolean)
   logout(@Ctx() { req, res }: MyContext) {
     console.log('[Logout] - ', req.session.userid)
@@ -134,10 +154,8 @@ export class UserResolver {
   @UseMiddleware(isAuth)
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
     await User.remove(
-      // @ts-ignore
-      await User.findOne({
-        where: { userid: req.session.userid },
-      })
+      //  @ts-ignore
+      await User.findOne({ where: { userid: req.session.userid } })
     )
     return true
   }

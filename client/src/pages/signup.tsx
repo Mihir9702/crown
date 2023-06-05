@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSignupMutation } from '@/graphql'
+import { useSignupMutation, useUserQuery } from '@/graphql'
 import Link from 'next/link'
 import { ArrowRight } from '@/components/Icons'
-import { responseHandler } from '@/components'
-import Icon from '@/assets/id.png'
+import { Button, responseHandler } from '@/components'
+import DefaultImg from '@/assets/id.png'
 import Image from 'next/image'
 
 export default () => {
@@ -15,8 +15,14 @@ export default () => {
   const [error, setError] = useState<string | undefined>(undefined)
   const [num, iNum] = useState<number>(1)
 
+  const [{ data }] = useUserQuery()
+  const idx = data?.user
   const [, signup] = useSignupMutation()
   const router = useRouter()
+
+  if (idx) {
+    router.push('/')
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -38,8 +44,8 @@ export default () => {
       >
         <h1 className="font-bold text-2xl text-gray-200">Signup</h1>
         {error && <p className="text-red-500 my-4 text-sm">{error}</p>}
-        <div className="flex flex-col gap-12 transition-all duration-1000 md:flex-row">
-          <div className="flex flex-col gap-6 mt-6 p-2">
+        <section className="flex flex-col gap-12 transition-all duration-1000 md:flex-row">
+          <article className="flex flex-col gap-6 mt-6 p-2">
             <div className="flex gap-2">
               <input
                 name={username}
@@ -62,11 +68,11 @@ export default () => {
               />
               <span className="text-red-600">*</span>
             </div>
-          </div>
+          </article>
           {num === 2 && (
             <div className="flex flex-col items-center gap-6 p-2">
               <Image
-                src={Icon}
+                src={DefaultImg}
                 alt="photo-id"
                 width={96}
                 height={96}
@@ -88,28 +94,17 @@ export default () => {
               />
             </div>
           )}
-        </div>
+        </section>
         <Link href={'/login'} legacyBehavior>
           <a className="text-gray-400 hover:text-gray-500 transition-all mt-4 text-sm">
             Already have an Account?
           </a>
         </Link>
-        <div className="flex gap-4 mt-7 whitespace-nowrap w-full">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 transition-all text-white font-bold w-full text-md py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            onClick={() => handleSubmit}
-          >
+        <div className="flex gap-4 mt-7 items-center whitespace-nowrap w-full">
+          <Button type="submit" onClick={() => handleSubmit} className="w-full">
             {num <= 1 ? 'Quick Signup' : 'Signup'}
-          </button>
-          {num === 1 && (
-            <button
-              className="bg-blue-600 hover:bg-blue-700 transition-all text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={() => iNum(2)}
-            >
-              {ArrowRight}
-            </button>
-          )}
+          </Button>
+          {num === 1 && <span onClick={() => iNum(num + 1)}>{ArrowRight}</span>}
         </div>
       </form>
     </main>

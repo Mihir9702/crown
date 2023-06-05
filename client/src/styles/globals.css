@@ -18,6 +18,10 @@
   .item-card {
     @apply grid-cols-1;
   }
+
+  .header {
+    @apply fixed bottom-0;
+  }
 }
 
 body {
@@ -42,4 +46,8 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #444;
+}
+
+.header {
+  @apply static top-0;
 }

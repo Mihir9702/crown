@@ -6,6 +6,7 @@ import { Settings } from '@/components/Icons'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
 import responseHandler from './responseHandler'
+import { Button, helpid } from '.'
 
 interface Props {
   path: string
@@ -32,8 +33,8 @@ export default function UserCard(props: Props) {
   }
 
   return (
-    <section className="w-full flex justify-center items-center mt-16">
-      <div
+    <main className="w-full flex justify-center items-center mt-16">
+      <section
         className={`flex flex-col items-end w-full max-w-sm pb-8 bg-[#121516] shadow-xl shadow-black rounded-xl ${
           !mine ? 'pt-12' : ''
         }`}
@@ -42,11 +43,7 @@ export default function UserCard(props: Props) {
         {mine && (
           <div className="flex flex-col items-center gap-2">
             <Link
-              data-te-toggle="tooltip"
-              data-te-placement="bottom"
-              data-te-ripple-init
-              data-te-ripple-color="light"
-              title="settings"
+              {...helpid('Settings')}
               href={`/u/${id?.nameid}/settings`}
               className="text-gray-400 hover:text-gray-600 m-2 cursor-default"
             >
@@ -54,11 +51,7 @@ export default function UserCard(props: Props) {
             </Link>
 
             <button
-              data-te-toggle="tooltip"
-              data-te-placement="bottom"
-              data-te-ripple-init
-              data-te-ripple-color="light"
-              title="logout"
+              {...helpid('Logout')}
               className="text-transparent bg-red-500 hover:bg-red-800 rounded-full p-2 cursor-default"
               onClick={() => handleLogout()}
             />
@@ -91,24 +84,19 @@ export default function UserCard(props: Props) {
           </p>
           <p className="mt-4 text-center">{id?.bio}</p>
           {mine && (
-            <div className="flex mt-4 gap-4">
-              <button
-                className="font-bold bg-blue-600 hover:bg-blue-700 hover:transition-all py-1 px-3 rounded-md"
+            <section className="flex mt-4 gap-4">
+              <Button onClick={() => props.isOpts('posts')}>Your Posts</Button>
+
+              <Button
+                className="bg-violet-600 hover:bg-violet-700"
                 onClick={() => props.isOpts('posts')}
               >
-                Your Posts
-              </button>
-
-              <button
-                className="font-bold bg-violet-600 hover:bg-violet-700 hover:transition-all py-1 px-3 rounded-md"
-                onClick={() => props.isOpts('posts.liked')}
-              >
                 Saved
-              </button>
-            </div>
+              </Button>
+            </section>
           )}
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   )
 }

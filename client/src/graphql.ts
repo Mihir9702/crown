@@ -2,15 +2,9 @@ import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K]
-}
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]?: Maybe<T[SubKey]>
-}
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
-  [SubKey in K]: Maybe<T[SubKey]>
-}
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -32,8 +26,10 @@ export type Delete = {
 }
 
 export type Input = {
+  bio?: InputMaybe<Scalars['String']>
   nameid?: InputMaybe<Scalars['String']>
   password: Scalars['String']
+  photoid?: InputMaybe<Scalars['String']>
   username: Scalars['String']
 }
 
@@ -47,6 +43,7 @@ export type Mutation = {
   logout: Scalars['Boolean']
   signup: User
   unlikePost: Post
+  updatePass: User
   updatePost: Post
   updateUser: User
 }
@@ -73,6 +70,10 @@ export type MutationSignupArgs = {
 
 export type MutationUnlikePostArgs = {
   postid: Scalars['Float']
+}
+
+export type MutationUpdatePassArgs = {
+  params: UpdatePass
 }
 
 export type MutationUpdatePostArgs = {
@@ -128,6 +129,11 @@ export type Update = {
   postid: Scalars['Float']
 }
 
+export type UpdatePass = {
+  currPass: Scalars['String']
+  newPass: Scalars['String']
+}
+
 export type UpdateUser = {
   bio?: InputMaybe<Scalars['String']>
   nameid?: InputMaybe<Scalars['String']>
@@ -150,12 +156,14 @@ export type User = {
 
 export type PostFragmentFragment = {
   __typename?: 'Post'
+  id: number
   header: string
   content: string
   owner: string
   likes?: Array<number> | null
   postid: number
   createdAt: string
+  updatedAt: string
 }
 
 export type UserFragmentFragment = {
@@ -175,12 +183,7 @@ export type CreatePostMutationVariables = Exact<{
 
 export type CreatePostMutation = {
   __typename?: 'Mutation'
-  createPost: {
-    __typename?: 'Post'
-    header: string
-    content: string
-    owner: string
-  }
+  createPost: { __typename?: 'Post'; header: string; content: string; owner: string }
 }
 
 export type DeletePostMutationVariables = Exact<{
@@ -198,11 +201,7 @@ export type LikePostMutationVariables = Exact<{
 
 export type LikePostMutation = {
   __typename?: 'Mutation'
-  likePost: {
-    __typename?: 'Post'
-    postid: number
-    likes?: Array<number> | null
-  }
+  likePost: { __typename?: 'Post'; postid: number; likes?: Array<number> | null }
 }
 
 export type LoginMutationVariables = Exact<{
@@ -242,10 +241,24 @@ export type UnlikePostMutationVariables = Exact<{
 
 export type UnlikePostMutation = {
   __typename?: 'Mutation'
-  unlikePost: {
-    __typename?: 'Post'
-    postid: number
-    likes?: Array<number> | null
+  unlikePost: { __typename?: 'Post'; postid: number; likes?: Array<number> | null }
+}
+
+export type UpdatePassMutationVariables = Exact<{
+  params: UpdatePass
+}>
+
+export type UpdatePassMutation = {
+  __typename?: 'Mutation'
+  updatePass: {
+    __typename?: 'User'
+    id: number
+    nameid: string
+    userid: number
+    photoid?: string | null
+    bio?: string | null
+    likes?: number | null
+    createdAt: string
   }
 }
 
@@ -264,12 +277,7 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = {
   __typename?: 'Mutation'
-  updateUser: {
-    __typename?: 'User'
-    nameid: string
-    photoid?: string | null
-    bio?: string | null
-  }
+  updateUser: { __typename?: 'User'; nameid: string; photoid?: string | null; bio?: string | null }
 }
 
 export type OwnerQueryVariables = Exact<{
@@ -280,12 +288,14 @@ export type OwnerQuery = {
   __typename?: 'Query'
   owner: Array<{
     __typename?: 'Post'
+    id: number
     header: string
     content: string
     owner: string
     likes?: Array<number> | null
     postid: number
     createdAt: string
+    updatedAt: string
   }>
 }
 
@@ -297,12 +307,14 @@ export type PostQuery = {
   __typename?: 'Query'
   post: {
     __typename?: 'Post'
+    id: number
     header: string
     content: string
     owner: string
     likes?: Array<number> | null
     postid: number
     createdAt: string
+    updatedAt: string
   }
 }
 
@@ -314,12 +326,14 @@ export type PostSearchQuery = {
   __typename?: 'Query'
   postSearch: Array<{
     __typename?: 'Post'
+    id: number
     header: string
     content: string
     owner: string
     likes?: Array<number> | null
     postid: number
     createdAt: string
+    updatedAt: string
   }>
 }
 
@@ -329,12 +343,14 @@ export type PostsQuery = {
   __typename?: 'Query'
   posts: Array<{
     __typename?: 'Post'
+    id: number
     header: string
     content: string
     owner: string
     likes?: Array<number> | null
     postid: number
     createdAt: string
+    updatedAt: string
   }>
 }
 
@@ -390,12 +406,14 @@ export type UsersQuery = {
 
 export const PostFragmentFragmentDoc = gql`
   fragment PostFragment on Post {
+    id
     header
     content
     owner
     likes
     postid
     createdAt
+    updatedAt
   }
 `
 export const UserFragmentFragmentDoc = gql`
@@ -420,9 +438,7 @@ export const CreatePostDocument = gql`
 `
 
 export function useCreatePostMutation() {
-  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(
-    CreatePostDocument
-  )
+  return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument)
 }
 export const DeletePostDocument = gql`
   mutation DeletePost($params: Delete!) {
@@ -434,9 +450,7 @@ export const DeletePostDocument = gql`
 `
 
 export function useDeletePostMutation() {
-  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(
-    DeletePostDocument
-  )
+  return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument)
 }
 export const LikePostDocument = gql`
   mutation LikePost($postid: Float!) {
@@ -448,9 +462,7 @@ export const LikePostDocument = gql`
 `
 
 export function useLikePostMutation() {
-  return Urql.useMutation<LikePostMutation, LikePostMutationVariables>(
-    LikePostDocument
-  )
+  return Urql.useMutation<LikePostMutation, LikePostMutationVariables>(LikePostDocument)
 }
 export const LoginDocument = gql`
   mutation Login($params: Input!) {
@@ -471,9 +483,7 @@ export const LogoutDocument = gql`
 `
 
 export function useLogoutMutation() {
-  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(
-    LogoutDocument
-  )
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument)
 }
 export const SignupDocument = gql`
   mutation Signup($params: Input!) {
@@ -485,9 +495,7 @@ export const SignupDocument = gql`
 `
 
 export function useSignupMutation() {
-  return Urql.useMutation<SignupMutation, SignupMutationVariables>(
-    SignupDocument
-  )
+  return Urql.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument)
 }
 export const UnlikePostDocument = gql`
   mutation UnlikePost($postid: Float!) {
@@ -499,9 +507,19 @@ export const UnlikePostDocument = gql`
 `
 
 export function useUnlikePostMutation() {
-  return Urql.useMutation<UnlikePostMutation, UnlikePostMutationVariables>(
-    UnlikePostDocument
-  )
+  return Urql.useMutation<UnlikePostMutation, UnlikePostMutationVariables>(UnlikePostDocument)
+}
+export const UpdatePassDocument = gql`
+  mutation UpdatePass($params: UpdatePass!) {
+    updatePass(params: $params) {
+      ...UserFragment
+    }
+  }
+  ${UserFragmentFragmentDoc}
+`
+
+export function useUpdatePassMutation() {
+  return Urql.useMutation<UpdatePassMutation, UpdatePassMutationVariables>(UpdatePassDocument)
 }
 export const UpdatePostDocument = gql`
   mutation UpdatePost($params: Update!) {
@@ -512,9 +530,7 @@ export const UpdatePostDocument = gql`
 `
 
 export function useUpdatePostMutation() {
-  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
-    UpdatePostDocument
-  )
+  return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument)
 }
 export const UpdateUserDocument = gql`
   mutation UpdateUser($params: UpdateUser!) {
@@ -527,9 +543,7 @@ export const UpdateUserDocument = gql`
 `
 
 export function useUpdateUserMutation() {
-  return Urql.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(
-    UpdateUserDocument
-  )
+  return Urql.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument)
 }
 export const OwnerDocument = gql`
   query Owner($owner: String!) {
@@ -540,13 +554,8 @@ export const OwnerDocument = gql`
   ${PostFragmentFragmentDoc}
 `
 
-export function useOwnerQuery(
-  options: Omit<Urql.UseQueryArgs<OwnerQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<OwnerQuery, OwnerQueryVariables>({
-    query: OwnerDocument,
-    ...options,
-  })
+export function useOwnerQuery(options: Omit<Urql.UseQueryArgs<OwnerQueryVariables>, 'query'>) {
+  return Urql.useQuery<OwnerQuery, OwnerQueryVariables>({ query: OwnerDocument, ...options })
 }
 export const PostDocument = gql`
   query Post($postid: Float!) {
@@ -557,13 +566,8 @@ export const PostDocument = gql`
   ${PostFragmentFragmentDoc}
 `
 
-export function usePostQuery(
-  options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<PostQuery, PostQueryVariables>({
-    query: PostDocument,
-    ...options,
-  })
+export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'>) {
+  return Urql.useQuery<PostQuery, PostQueryVariables>({ query: PostDocument, ...options })
 }
 export const PostSearchDocument = gql`
   query postSearch($header: String!) {
@@ -591,13 +595,8 @@ export const PostsDocument = gql`
   ${PostFragmentFragmentDoc}
 `
 
-export function usePostsQuery(
-  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<PostsQuery, PostsQueryVariables>({
-    query: PostsDocument,
-    ...options,
-  })
+export function usePostsQuery(options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'>) {
+  return Urql.useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument, ...options })
 }
 export const UserDocument = gql`
   query User {
@@ -608,13 +607,8 @@ export const UserDocument = gql`
   ${UserFragmentFragmentDoc}
 `
 
-export function useUserQuery(
-  options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<UserQuery, UserQueryVariables>({
-    query: UserDocument,
-    ...options,
-  })
+export function useUserQuery(options?: Omit<Urql.UseQueryArgs<UserQueryVariables>, 'query'>) {
+  return Urql.useQuery<UserQuery, UserQueryVariables>({ query: UserDocument, ...options })
 }
 export const UserSearchDocument = gql`
   query UserSearch($nameid: String!) {
@@ -642,11 +636,6 @@ export const UsersDocument = gql`
   ${UserFragmentFragmentDoc}
 `
 
-export function useUsersQuery(
-  options?: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<UsersQuery, UsersQueryVariables>({
-    query: UsersDocument,
-    ...options,
-  })
+export function useUsersQuery(options?: Omit<Urql.UseQueryArgs<UsersQueryVariables>, 'query'>) {
+  return Urql.useQuery<UsersQuery, UsersQueryVariables>({ query: UsersDocument, ...options })
 }
