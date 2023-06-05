@@ -16,7 +16,7 @@ export default () => {
           </p>
           <ul className="flex flex-wrap gap-6 items-center text-sm font-medium text-gray-500 mx-16">
             <li>
-              <Link href="#" className="hover:text-gray-400">
+              <Link href="/about" className="hover:text-gray-400">
                 About
               </Link>
             </li>
