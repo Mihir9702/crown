@@ -48,3 +48,15 @@ export class Delete {
   @Field() nameid!: string
   @Field() postid!: number
 }
+
+@InputType()
+export class CreateComment {
+  @Field() content!: string
+  @Field() postid!: number
+}
+
+@InputType()
+export class UpdateComment {
+  @Field() commentid!: number
+  @Field() content!: string
+}

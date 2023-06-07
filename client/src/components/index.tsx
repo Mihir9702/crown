@@ -4,6 +4,7 @@ import Footer from './Footer'
 import UserCard from './UserCard'
 import Card from './Card'
 import Button from './Button'
+import Comment from './Comment'
 import { ItemDisplay } from './ItemDisplay'
 
 export const helpid = (title: string) => {
@@ -36,4 +37,4 @@ export function formatPostTime(milliseconds: number): string {
   }
 }
 
-export { responseHandler, Header, Footer, UserCard, Card, Button, ItemDisplay }
+export { responseHandler, Header, Footer, UserCard, Card, Button, Comment, ItemDisplay }

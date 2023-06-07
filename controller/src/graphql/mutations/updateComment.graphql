@@ -1,0 +1,5 @@
+mutation UpdateComment($params: UpdateComment!) {
+  updateComment(params: $params) {
+    content
+  }
+}

@@ -1,7 +1,5 @@
 mutation CreatePost($params: Create!) {
   createPost(params: $params) {
-    header
-    content
-    owner
+    ...PostFragment
   }
 }

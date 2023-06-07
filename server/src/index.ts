@@ -21,6 +21,7 @@ const main = async () => {
 
   // const RedisStore = connectRedis(session)
   // const RedisClient = createClient({ legacyMode: true })
+
   // await RedisClient.connect()
 
   app.set('trust proxy', __prod__)

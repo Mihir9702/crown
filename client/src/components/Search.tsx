@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { usePostSearchQuery, useUsersQuery } from '@/graphql'
+import { usePostsQuery, useUsersQuery } from '@/graphql'
 import { Search } from './Icons'
 import Button from './Button'
 
@@ -66,7 +66,7 @@ export function SearchUser(props: Props) {
 
   return (
     <main className="w-full max-w-5xl">
-      <title className="text-3xl mb-8 mx-[-2rem]">Users - {match.length}</title>
+      <h1 className="text-3xl mb-8 mx-[-2rem]">Users - {match.length}</h1>
       <section className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
@@ -87,28 +87,15 @@ export function SearchUser(props: Props) {
 }
 
 export function SearchPost(props: Props) {
-  const [{ data }] = usePostSearchQuery({ variables: { header: props.search } })
-  const id = data?.postSearch
+  const [{ data }] = usePostsQuery()
+  const id = data?.posts
 
-  const match: any[] = []
-
-  if (!id)
-    return (
-      <section className="w-full max-w-5xl">
-        <h1 className="text-3xl mb-8 mx-[-2rem]">Posts - 0</h1>
-      </section>
-    )
-
-  id.map(x => {
-    if (x.header.includes(props.search)) {
-      match.push(x)
-    }
-  })
+  const match = id?.filter(item => item.header.toLowerCase().includes(props.search.toLowerCase()))
 
   return (
     <main className="w-full max-w-5xl">
-      <h1 className="text-3xl my-8 mx-[-2rem]">Posts - {match.length}</h1>
-      <title className="w-full grid grid-cols-3">
+      <h1 className="text-3xl my-8 mx-[-2rem]">Posts - {match?.length}</h1>
+      <section className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
             <div className="flex flex-col items-center hover:bg-gray-800 rounded-xl p-2 px-4">
@@ -122,7 +109,7 @@ export function SearchPost(props: Props) {
               />
             </div>
           ))}
-      </title>
+      </section>
     </main>
   )
 }

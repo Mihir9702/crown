@@ -10,14 +10,10 @@ export default () => {
   const [header, setHeader] = useState<string>('')
   const [content, setContent] = useState<string>('')
 
-  const [{ data }] = useUserQuery()
+  const [{ data, fetching }] = useUserQuery()
   const idx = data?.user
   const [, create] = useCreatePostMutation()
   const router = useRouter()
-
-  if (!idx) {
-    router.push('/')
-  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -30,6 +26,10 @@ export default () => {
     })
 
     responseHandler(response, setError, router)
+  }
+  if (fetching) return <></>
+  if (!idx) {
+    router.push('/')
   }
 
   return (

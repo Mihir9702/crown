@@ -1,0 +1,5 @@
+mutation LikeComment($commentid: Float!) {
+  likeComment(commentid: $commentid) {
+    ...CommentFragment
+  }
+}

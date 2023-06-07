@@ -1,0 +1,8 @@
+fragment CommentFragment on Comment {
+  owner
+  content
+  likes
+  postid
+  commentid
+  createdAt
+}

@@ -21,17 +21,12 @@ export default () => {
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-400">
-                Privacy Policy
+              <Link href="/legal" className="hover:text-gray-400">
+                Legal
               </Link>
             </li>
             <li>
-              <Link href="#" className="hover:text-gray-400">
-                Licensing
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:text-gray-400">
+              <Link href="mailto:lemonmc66@gmail.com" className="hover:text-gray-400">
                 Contact
               </Link>
             </li>

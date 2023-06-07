@@ -1,5 +1,0 @@
-query postSearch($header: String!) {
-  postSearch(header: $header) {
-    ...PostFragment
-  }
-}

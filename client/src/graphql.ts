@@ -15,9 +15,26 @@ export type Scalars = {
   Float: number
 }
 
+export type Comment = {
+  __typename?: 'Comment'
+  commentid: Scalars['Float']
+  content: Scalars['String']
+  createdAt: Scalars['String']
+  id: Scalars['Float']
+  likes?: Maybe<Array<Scalars['Float']>>
+  owner: Scalars['String']
+  postid: Scalars['Float']
+  updatedAt: Scalars['String']
+}
+
 export type Create = {
   content: Scalars['String']
   header: Scalars['String']
+}
+
+export type CreateComment = {
+  content: Scalars['String']
+  postid: Scalars['Float']
 }
 
 export type Delete = {
@@ -35,25 +52,42 @@ export type Input = {
 
 export type Mutation = {
   __typename?: 'Mutation'
+  createComment: Comment
   createPost: Post
+  deleteComment: Scalars['Boolean']
   deletePost: Post
   deleteUser: Scalars['Boolean']
+  likeComment: Comment
   likePost: Post
   login: User
   logout: Scalars['Boolean']
   signup: User
+  unlikeComment: Comment
   unlikePost: Post
+  updateComment: Comment
   updatePass: User
   updatePost: Post
   updateUser: User
+}
+
+export type MutationCreateCommentArgs = {
+  params: CreateComment
 }
 
 export type MutationCreatePostArgs = {
   params: Create
 }
 
+export type MutationDeleteCommentArgs = {
+  commentid: Scalars['Float']
+}
+
 export type MutationDeletePostArgs = {
   params: Delete
+}
+
+export type MutationLikeCommentArgs = {
+  commentid: Scalars['Float']
 }
 
 export type MutationLikePostArgs = {
@@ -68,8 +102,16 @@ export type MutationSignupArgs = {
   params: Input
 }
 
+export type MutationUnlikeCommentArgs = {
+  commentid: Scalars['Float']
+}
+
 export type MutationUnlikePostArgs = {
   postid: Scalars['Float']
+}
+
+export type MutationUpdateCommentArgs = {
+  params: UpdateComment
 }
 
 export type MutationUpdatePassArgs = {
@@ -99,6 +141,8 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query'
+  comment: Comment
+  comments: Array<Comment>
   owner: Array<Post>
   post: Post
   postSearch: Array<Post>
@@ -106,6 +150,14 @@ export type Query = {
   user?: Maybe<User>
   userSearch: User
   users: Array<User>
+}
+
+export type QueryCommentArgs = {
+  postid: Scalars['Float']
+}
+
+export type QueryCommentsArgs = {
+  postid: Scalars['Float']
 }
 
 export type QueryOwnerArgs = {
@@ -127,6 +179,11 @@ export type QueryUserSearchArgs = {
 export type Update = {
   header: Scalars['String']
   postid: Scalars['Float']
+}
+
+export type UpdateComment = {
+  commentid: Scalars['Float']
+  content: Scalars['String']
 }
 
 export type UpdatePass = {
@@ -154,6 +211,16 @@ export type User = {
   username: Scalars['String']
 }
 
+export type CommentFragmentFragment = {
+  __typename?: 'Comment'
+  owner: string
+  content: string
+  likes?: Array<number> | null
+  postid: number
+  commentid: number
+  createdAt: string
+}
+
 export type PostFragmentFragment = {
   __typename?: 'Post'
   id: number
@@ -177,13 +244,40 @@ export type UserFragmentFragment = {
   createdAt: string
 }
 
+export type CreateCommentMutationVariables = Exact<{
+  params: CreateComment
+}>
+
+export type CreateCommentMutation = {
+  __typename?: 'Mutation'
+  createComment: {
+    __typename?: 'Comment'
+    owner: string
+    content: string
+    likes?: Array<number> | null
+    postid: number
+    commentid: number
+    createdAt: string
+  }
+}
+
 export type CreatePostMutationVariables = Exact<{
   params: Create
 }>
 
 export type CreatePostMutation = {
   __typename?: 'Mutation'
-  createPost: { __typename?: 'Post'; header: string; content: string; owner: string }
+  createPost: {
+    __typename?: 'Post'
+    id: number
+    header: string
+    content: string
+    owner: string
+    likes?: Array<number> | null
+    postid: number
+    createdAt: string
+    updatedAt: string
+  }
 }
 
 export type DeletePostMutationVariables = Exact<{
@@ -193,6 +287,23 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = {
   __typename?: 'Mutation'
   deletePost: { __typename?: 'Post'; postid: number; owner: string }
+}
+
+export type LikeCommentMutationVariables = Exact<{
+  commentid: Scalars['Float']
+}>
+
+export type LikeCommentMutation = {
+  __typename?: 'Mutation'
+  likeComment: {
+    __typename?: 'Comment'
+    owner: string
+    content: string
+    likes?: Array<number> | null
+    postid: number
+    commentid: number
+    createdAt: string
+  }
 }
 
 export type LikePostMutationVariables = Exact<{
@@ -235,6 +346,23 @@ export type SignupMutation = {
   signup: { __typename?: 'User'; nameid: string; userid: number }
 }
 
+export type UnlikeCommentMutationVariables = Exact<{
+  commentid: Scalars['Float']
+}>
+
+export type UnlikeCommentMutation = {
+  __typename?: 'Mutation'
+  unlikeComment: {
+    __typename?: 'Comment'
+    owner: string
+    content: string
+    likes?: Array<number> | null
+    postid: number
+    commentid: number
+    createdAt: string
+  }
+}
+
 export type UnlikePostMutationVariables = Exact<{
   postid: Scalars['Float']
 }>
@@ -242,6 +370,15 @@ export type UnlikePostMutationVariables = Exact<{
 export type UnlikePostMutation = {
   __typename?: 'Mutation'
   unlikePost: { __typename?: 'Post'; postid: number; likes?: Array<number> | null }
+}
+
+export type UpdateCommentMutationVariables = Exact<{
+  params: UpdateComment
+}>
+
+export type UpdateCommentMutation = {
+  __typename?: 'Mutation'
+  updateComment: { __typename?: 'Comment'; content: string }
 }
 
 export type UpdatePassMutationVariables = Exact<{
@@ -280,6 +417,40 @@ export type UpdateUserMutation = {
   updateUser: { __typename?: 'User'; nameid: string; photoid?: string | null; bio?: string | null }
 }
 
+export type CommentQueryVariables = Exact<{
+  postid: Scalars['Float']
+}>
+
+export type CommentQuery = {
+  __typename?: 'Query'
+  comment: {
+    __typename?: 'Comment'
+    owner: string
+    content: string
+    likes?: Array<number> | null
+    postid: number
+    commentid: number
+    createdAt: string
+  }
+}
+
+export type CommentsQueryVariables = Exact<{
+  postid: Scalars['Float']
+}>
+
+export type CommentsQuery = {
+  __typename?: 'Query'
+  comments: Array<{
+    __typename?: 'Comment'
+    owner: string
+    content: string
+    likes?: Array<number> | null
+    postid: number
+    commentid: number
+    createdAt: string
+  }>
+}
+
 export type OwnerQueryVariables = Exact<{
   owner: Scalars['String']
 }>
@@ -316,25 +487,6 @@ export type PostQuery = {
     createdAt: string
     updatedAt: string
   }
-}
-
-export type PostSearchQueryVariables = Exact<{
-  header: Scalars['String']
-}>
-
-export type PostSearchQuery = {
-  __typename?: 'Query'
-  postSearch: Array<{
-    __typename?: 'Post'
-    id: number
-    header: string
-    content: string
-    owner: string
-    likes?: Array<number> | null
-    postid: number
-    createdAt: string
-    updatedAt: string
-  }>
 }
 
 export type PostsQueryVariables = Exact<{ [key: string]: never }>
@@ -404,6 +556,16 @@ export type UsersQuery = {
   }>
 }
 
+export const CommentFragmentFragmentDoc = gql`
+  fragment CommentFragment on Comment {
+    owner
+    content
+    likes
+    postid
+    commentid
+    createdAt
+  }
+`
 export const PostFragmentFragmentDoc = gql`
   fragment PostFragment on Post {
     id
@@ -427,14 +589,27 @@ export const UserFragmentFragmentDoc = gql`
     createdAt
   }
 `
+export const CreateCommentDocument = gql`
+  mutation CreateComment($params: CreateComment!) {
+    createComment(params: $params) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragmentFragmentDoc}
+`
+
+export function useCreateCommentMutation() {
+  return Urql.useMutation<CreateCommentMutation, CreateCommentMutationVariables>(
+    CreateCommentDocument
+  )
+}
 export const CreatePostDocument = gql`
   mutation CreatePost($params: Create!) {
     createPost(params: $params) {
-      header
-      content
-      owner
+      ...PostFragment
     }
   }
+  ${PostFragmentFragmentDoc}
 `
 
 export function useCreatePostMutation() {
@@ -451,6 +626,18 @@ export const DeletePostDocument = gql`
 
 export function useDeletePostMutation() {
   return Urql.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument)
+}
+export const LikeCommentDocument = gql`
+  mutation LikeComment($commentid: Float!) {
+    likeComment(commentid: $commentid) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragmentFragmentDoc}
+`
+
+export function useLikeCommentMutation() {
+  return Urql.useMutation<LikeCommentMutation, LikeCommentMutationVariables>(LikeCommentDocument)
 }
 export const LikePostDocument = gql`
   mutation LikePost($postid: Float!) {
@@ -497,6 +684,20 @@ export const SignupDocument = gql`
 export function useSignupMutation() {
   return Urql.useMutation<SignupMutation, SignupMutationVariables>(SignupDocument)
 }
+export const UnlikeCommentDocument = gql`
+  mutation UnlikeComment($commentid: Float!) {
+    unlikeComment(commentid: $commentid) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragmentFragmentDoc}
+`
+
+export function useUnlikeCommentMutation() {
+  return Urql.useMutation<UnlikeCommentMutation, UnlikeCommentMutationVariables>(
+    UnlikeCommentDocument
+  )
+}
 export const UnlikePostDocument = gql`
   mutation UnlikePost($postid: Float!) {
     unlikePost(postid: $postid) {
@@ -508,6 +709,19 @@ export const UnlikePostDocument = gql`
 
 export function useUnlikePostMutation() {
   return Urql.useMutation<UnlikePostMutation, UnlikePostMutationVariables>(UnlikePostDocument)
+}
+export const UpdateCommentDocument = gql`
+  mutation UpdateComment($params: UpdateComment!) {
+    updateComment(params: $params) {
+      content
+    }
+  }
+`
+
+export function useUpdateCommentMutation() {
+  return Urql.useMutation<UpdateCommentMutation, UpdateCommentMutationVariables>(
+    UpdateCommentDocument
+  )
 }
 export const UpdatePassDocument = gql`
   mutation UpdatePass($params: UpdatePass!) {
@@ -545,6 +759,35 @@ export const UpdateUserDocument = gql`
 export function useUpdateUserMutation() {
   return Urql.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument)
 }
+export const CommentDocument = gql`
+  query Comment($postid: Float!) {
+    comment(postid: $postid) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragmentFragmentDoc}
+`
+
+export function useCommentQuery(options: Omit<Urql.UseQueryArgs<CommentQueryVariables>, 'query'>) {
+  return Urql.useQuery<CommentQuery, CommentQueryVariables>({ query: CommentDocument, ...options })
+}
+export const CommentsDocument = gql`
+  query Comments($postid: Float!) {
+    comments(postid: $postid) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragmentFragmentDoc}
+`
+
+export function useCommentsQuery(
+  options: Omit<Urql.UseQueryArgs<CommentsQueryVariables>, 'query'>
+) {
+  return Urql.useQuery<CommentsQuery, CommentsQueryVariables>({
+    query: CommentsDocument,
+    ...options,
+  })
+}
 export const OwnerDocument = gql`
   query Owner($owner: String!) {
     owner(owner: $owner) {
@@ -568,23 +811,6 @@ export const PostDocument = gql`
 
 export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'>) {
   return Urql.useQuery<PostQuery, PostQueryVariables>({ query: PostDocument, ...options })
-}
-export const PostSearchDocument = gql`
-  query postSearch($header: String!) {
-    postSearch(header: $header) {
-      ...PostFragment
-    }
-  }
-  ${PostFragmentFragmentDoc}
-`
-
-export function usePostSearchQuery(
-  options: Omit<Urql.UseQueryArgs<PostSearchQueryVariables>, 'query'>
-) {
-  return Urql.useQuery<PostSearchQuery, PostSearchQueryVariables>({
-    query: PostSearchDocument,
-    ...options,
-  })
 }
 export const PostsDocument = gql`
   query Posts {

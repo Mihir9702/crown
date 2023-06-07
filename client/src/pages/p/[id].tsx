@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useDeletePostMutation, usePostQuery, useUserQuery } from '@/graphql'
-import { Header, responseHandler } from '@/components'
-import Card from '@/components/Card'
+import { Header, responseHandler, Card, Comment } from '@/components'
 import { ArrowLeft, Check, Cross, Trash } from '@/components/Icons'
 
 export default () => {
@@ -20,11 +19,15 @@ export default () => {
   const idx = uid?.user
 
   const [, dp] = useDeletePostMutation()
+
   const mine = id?.owner === idx?.nameid
 
   const uiTemplate = {
     remove: (
-      <span className="my-16 text-gray-100 hover:text-gray-400" onClick={() => isPositive(true)}>
+      <span
+        className="absolute my-16 top-16 text-gray-100 hover:text-gray-400"
+        onClick={() => isPositive(true)}
+      >
         {Trash}
       </span>
     ),
@@ -40,7 +43,7 @@ export default () => {
     ),
     returnKey: (
       <span
-        className="absolute left-1/4 bottom-1/2 text-gray-100 hover:text-gray-400"
+        className="lg:absolute mt-7 left-1/4 bottom-1/2 text-gray-100 hover:text-gray-400"
         onClick={() => router.back()}
       >
         {ArrowLeft}
@@ -69,7 +72,10 @@ export default () => {
       {err && <p className="text-red-500">{err}</p>}
       {mine && !positive && uiTemplate.remove}
       {mine && positive && uiTemplate.remove100}
-      <Card {...id} />
+      <div className="flex flex-col w-full justify-center items-center pb-16 gap-32">
+        <Card {...id} />
+        <Comment postid={Number(path)} />
+      </div>
     </main>
   )
 }
