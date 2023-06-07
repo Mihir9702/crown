@@ -6,7 +6,7 @@ import { usePostsQuery, useUsersQuery } from '@/graphql'
 import { ArrowUp } from '@/components/Icons'
 
 export default () => {
-  const [grid, isGrid] = useState<string>('grid-cols-1')
+  const [gridCols, isGrid] = useState<string>('grid-cols-1')
   const [sort, setSort] = useState<string>('date')
   const [show, isShow] = useState<boolean>(true)
   const [scrollBehavior, xScrollBehavior] = useState<boolean>(false)
@@ -31,7 +31,7 @@ export default () => {
       <Image className="invert w-64" src={ICrown} alt="Crown Logo" priority />
       {users ? users.length : 0} users | {posts ? posts.length : 0} posts
       <ItemDisplay show={show} setSort={setSort} isGrid={isGrid} isShow={isShow} />
-      <section className={`grid ${grid} items-center w-auto justify-center gap-8 pb-4`}>
+      <section className={`grid ${gridCols} items-center w-auto justify-center gap-8 pb-4`}>
         {posts &&
           posts.map(p => {
             let img = 225

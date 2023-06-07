@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { Settings } from '@/components/Icons'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
-import responseHandler from './responseHandler'
-import { Button, helpid } from '.'
+import { Button, helpid, responseHandler } from '.'
 
 interface Props {
   path: string
@@ -29,7 +28,7 @@ export default function UserCard(props: Props) {
 
   const handleLogout = async () => {
     const response = await logout({})
-    responseHandler(response, ier, router)
+    responseHandler({ response, setError: ier, router })
   }
 
   return (

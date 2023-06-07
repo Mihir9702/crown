@@ -28,13 +28,10 @@ export default () => {
     e.preventDefault()
 
     const response = await signup({
-      params: {
-        username: username,
-        password: password,
-      },
+      params: { username, password, nameid, bio },
     })
 
-    responseHandler(response, setError, router)
+    responseHandler({ response, setError, router })
   }
   return (
     <main className="flex justify-center items-start h-screen w-full">
@@ -45,7 +42,7 @@ export default () => {
         <h1 className="font-bold text-2xl text-gray-200">Signup</h1>
         {error && <p className="text-red-500 my-4 text-sm">{error}</p>}
         <section className="flex flex-col gap-12 transition-all duration-1000 md:flex-row">
-          <article className="flex flex-col gap-6 mt-6 p-2">
+          <div className="flex flex-col gap-6 mt-6 p-2">
             <div className="flex gap-2">
               <input
                 name={username}
@@ -68,7 +65,7 @@ export default () => {
               />
               <span className="text-red-600">*</span>
             </div>
-          </article>
+          </div>
           {num === 2 && (
             <div className="flex flex-col items-center gap-6 p-2">
               <Image

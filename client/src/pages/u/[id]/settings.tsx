@@ -32,7 +32,7 @@ export default () => {
     const params = { nameid: nid, photoid: photo, bio: bid }
     const response = await update({ params: { ...params } })
 
-    responseHandler(response, isErr, router, 'back')
+    responseHandler({ response, setError: isErr, router, action: 'back' })
   }
 
   const [currPass, iCurrPass] = useState('')
@@ -49,13 +49,10 @@ export default () => {
     }
 
     const response = await pass({
-      params: {
-        currPass,
-        newPass,
-      },
+      params: { currPass, newPass },
     })
 
-    responseHandler(response, isErr, router, 'back')
+    responseHandler({ response, setError: isErr, router, action: 'back' })
   }
 
   return (

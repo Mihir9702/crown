@@ -19,13 +19,10 @@ export default () => {
     e.preventDefault()
 
     const response = await create({
-      params: {
-        header,
-        content,
-      },
+      params: { header, content },
     })
 
-    responseHandler(response, setError, router)
+    responseHandler({ response, setError, router })
   }
   if (fetching) return <></>
   if (!idx) {

@@ -22,13 +22,10 @@ export default () => {
     e.preventDefault()
 
     const response = await login({
-      params: {
-        username,
-        password,
-      },
+      params: { username, password },
     })
 
-    responseHandler(response, setError, router)
+    responseHandler({ response, setError, router })
   }
 
   return (

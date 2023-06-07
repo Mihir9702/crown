@@ -1,4 +1,3 @@
-import responseHandler from './responseHandler'
 import Header from './Header'
 import Footer from './Footer'
 import UserCard from './UserCard'
@@ -7,6 +6,7 @@ import Button from './Button'
 import Comment from './Comment'
 import { ItemDisplay } from './ItemDisplay'
 import { Post } from '@/graphql'
+import { ResponseHandler } from '@/types'
 
 export const helpid = (title: string) => {
   return {
@@ -38,6 +38,15 @@ export function formatPostTime(milliseconds: number): string {
   }
 }
 
+export function responseHandler(props: ResponseHandler) {
+  if (props.response.error?.graphQLErrors) {
+    props.setError(props.response.error.graphQLErrors[0].message)
+  } else {
+    location.reload()
+    props.action === 'back' ? props.router.back() : props.router.push('/')
+  }
+}
+
 export function formatDisplay(items: any[] | undefined, sort: string): Post[] | Comment[] {
   if (!items) return []
 
@@ -54,4 +63,4 @@ export function formatDisplay(items: any[] | undefined, sort: string): Post[] | 
   return items
 }
 
-export { responseHandler, Header, Footer, UserCard, Card, Button, Comment, ItemDisplay }
+export { Header, Footer, UserCard, Card, Button, Comment, ItemDisplay }

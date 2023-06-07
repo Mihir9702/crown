@@ -62,7 +62,7 @@ export default () => {
         },
       })
 
-      responseHandler(response, isErr, router, 'back')
+      responseHandler({ response, setError: isErr, router, action: 'back' })
     }
   }
 

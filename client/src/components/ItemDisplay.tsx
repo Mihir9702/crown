@@ -11,6 +11,8 @@ interface ItemProps {
   isShow: IsShow
 }
 
+const icon = 'hover:text-gray-400 p-1 rounded-lg cursor-default'
+
 export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
   const [co, ico] = useState('text-gray-400')
   const [act, iact] = useState('')
@@ -18,7 +20,7 @@ export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
     <p className="flex gap-2">
       <span
         {...helpid('1-col')}
-        className={`${co} hover:text-gray-400 p-1 rounded-lg cursor-default`}
+        className={`${co} ${icon}`}
         onClick={() => {
           ico('text-gray-400')
           iact('')
@@ -30,7 +32,7 @@ export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
 
       <span
         {...helpid('4-col')}
-        className={`${act} hover:text-gray-400 rounded-lg cursor-default p-1`}
+        className={`${act} ${icon}`}
         onClick={() => {
           ico('')
           iact('text-gray-400')
@@ -50,7 +52,7 @@ export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
     <p className="flex gap-2">
       <span
         {...helpid('recently')}
-        className={`${co} hover:text-gray-400 p-1 rounded-lg cursor-default`}
+        className={`${co} ${icon}`}
         onClick={() => {
           ico('text-gray-400')
           iact('')
@@ -62,7 +64,7 @@ export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
 
       <span
         {...helpid('popular')}
-        className={`${act} hover:text-gray-400 p-1 rounded-lg cursor-default`}
+        className={`${act} ${icon}`}
         onClick={() => {
           ico('')
           iact('text-gray-400')
@@ -76,20 +78,22 @@ export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
 }
 
 function ShowDisplay({ show, isShow }: { show: boolean; isShow: IsShow }) {
+  const hrClass = 'border border-white max-w-md min-w-[2rem]'
   return (
     <div className="flex items-center justify-center gap-2">
-      <hr className="border border-white max-w-md min-w-[2rem]" />
+      <hr className={hrClass} />
       <p className="text-gray-200 hover:text-gray-400" onClick={() => isShow(!show)}>
         {show ? EyeOpen : EyeClose}
       </p>
-      <hr className="border border-white max-w-md min-w-[2rem]" />
+      <hr className={hrClass} />
     </div>
   )
 }
 
 export function ItemDisplay({ show, isShow, isGrid, setSort }: ItemProps) {
+  const mainClass = 'flex flex-col items-center gap-1'
   return (
-    <main className="flex flex-col items-center gap-1">
+    <main className={mainClass}>
       <GridDisplay isGrid={isGrid} />
       <ShowDisplay show={show} isShow={isShow} />
       <SortDisplay setSort={setSort} />
