@@ -3,6 +3,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useDeletePostMutation, usePostQuery, useUserQuery } from '@/graphql'
 import { Header, responseHandler, Card, Comment } from '@/components'
 import { ArrowLeft, Check, Cross, Trash } from '@/components/Icons'
+import { SortDisplay } from '@/components/ItemDisplay'
 
 export default () => {
   const pathname = usePathname()
@@ -11,6 +12,7 @@ export default () => {
 
   const [err, isErr] = useState<string | undefined>('')
   const [positive, isPositive] = useState<boolean>(false)
+  const [sort, setSort] = useState<string>('date')
 
   const [{ data }] = usePostQuery({ variables: { postid: Number(path) } })
   const id = data?.post!
@@ -65,6 +67,7 @@ export default () => {
   }
 
   if (!id) return <main>Nothing was found...</main>
+
   return (
     <main className="flex flex-col justify-between items-center gap-32">
       <Header home={true} create={true} search={true} />
@@ -74,7 +77,10 @@ export default () => {
       {mine && positive && uiTemplate.remove100}
       <div className="flex flex-col w-full justify-center items-center pb-16 gap-32">
         <Card {...id} />
-        <Comment postid={Number(path)} />
+        <div className="flex flex-col gap-4">
+          <SortDisplay setSort={setSort} />
+          <Comment sort={sort} postid={Number(path)} />
+        </div>
       </div>
     </main>
   )

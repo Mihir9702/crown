@@ -23,7 +23,7 @@ export class PostResolver {
 
   @Query(() => [Post])
   async posts(): Promise<Post[]> {
-    return await Post.find({ order: { createdAt: -1 } })
+    return await Post.find()
   }
 
   @Query(() => [Post])

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Header, Card, ItemDisplay, Footer } from '@/components'
+import { Header, Card, ItemDisplay, Footer, formatDisplay } from '@/components'
 import Image from 'next/image'
 import ICrown from '@/assets/crown.png'
 import { usePostsQuery, useUsersQuery } from '@/graphql'
@@ -17,18 +17,8 @@ export default () => {
   const [{ data: pd }] = usePostsQuery()
   const posts = pd?.posts
 
-  if (sort === 'date' && posts) {
-    posts.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
-  } else if (sort === 'popular' && posts) {
-    posts.sort((a, b) => Number(b.likes?.length) - Number(a.likes?.length))
-  }
+  formatDisplay(posts, sort)
 
-  const scrollTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
-  }
   useEffect(() => {
     const visibile = () => (window.scrollY > 300 ? xScrollBehavior(true) : xScrollBehavior(false))
     window.addEventListener('scroll', visibile)
@@ -62,7 +52,7 @@ export default () => {
       </section>
       {scrollBehavior && (
         <button
-          onClick={scrollTop}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="fixed text-gray-600 hover:text-gray-700 top-4 left-2"
         >
           {ArrowUp}

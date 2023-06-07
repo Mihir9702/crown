@@ -11,7 +11,7 @@ interface ItemProps {
   isShow: IsShow
 }
 
-function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
+export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
   const [co, ico] = useState('text-gray-400')
   const [act, iact] = useState('')
   return (
@@ -43,7 +43,7 @@ function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
   )
 }
 
-function SortDisplay({ setSort }: { setSort: DispatchElement }) {
+export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
   const [co, ico] = useState('text-gray-400')
   const [act, iact] = useState('')
   return (

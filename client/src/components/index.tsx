@@ -6,6 +6,7 @@ import Card from './Card'
 import Button from './Button'
 import Comment from './Comment'
 import { ItemDisplay } from './ItemDisplay'
+import { Post } from '@/graphql'
 
 export const helpid = (title: string) => {
   return {
@@ -35,6 +36,22 @@ export function formatPostTime(milliseconds: number): string {
   } else {
     return `${minutes}m`
   }
+}
+
+export function formatDisplay(items: any[] | undefined, sort: string): Post[] | Comment[] {
+  if (!items) return []
+
+  if (sort === 'popular') {
+    items?.sort((a, b) => {
+      const likesA = a.likes ? a.likes.length : 0
+      const likesB = b.likes ? b.likes.length : 0
+      return likesB - likesA
+    })
+  } else if (sort === 'date') {
+    items?.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+  }
+
+  return items
 }
 
 export { responseHandler, Header, Footer, UserCard, Card, Button, Comment, ItemDisplay }
