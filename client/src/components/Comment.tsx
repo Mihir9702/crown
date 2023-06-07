@@ -7,7 +7,6 @@ import {
   useUnlikeCommentMutation,
   useUserQuery,
 } from '@/graphql'
-import path from 'path'
 
 const Heart = (
   <svg
