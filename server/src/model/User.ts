@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Post } from './Post'
 
 @ObjectType()
 @Entity()
@@ -43,16 +44,6 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   likes!: number
 
-  //  ** owner
-  // @Field(() => [Post], { nullable: true })
-  // @Column('text', { array: true, nullable: true })
-  // posts?: Post[]
-
-  // ** post filter
-  // @Field(() => [Post], { nullable: true })
-  // @Column('text', { array: true, nullable: true })
-  // liked?: Post[]
-
   @Field(() => String)
   @CreateDateColumn()
   createdAt?: Date = new Date()
@@ -60,4 +51,12 @@ export class User extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt?: Date = new Date()
+
+  async getPosts() {
+    return await Post.find({ where: { owner: this.nameid } })
+  }
+
+  async getLiked() {
+    return await (await Post.find()).map(p => p.likes?.includes(this.userid))
+  }
 }

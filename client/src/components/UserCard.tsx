@@ -70,7 +70,9 @@ export default function UserCard(props: Props) {
           <p>
             <span
               className={
-                id?.likes! >= 500
+                id?.likes! >= 1000
+                  ? 'text-purple-700'
+                  : id?.likes! >= 500
                   ? 'text-green-500'
                   : id?.likes! >= 100
                   ? 'text-yellow-400'

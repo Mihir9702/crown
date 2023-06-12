@@ -7,3 +7,8 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-urql"
+  ../client/src/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-urql"

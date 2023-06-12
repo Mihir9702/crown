@@ -47,6 +47,7 @@ export class PostResolver {
 
     const postid = randomNumber(5)
 
+    // todo swap
     // upload.io
     const apiKey = process.env.UPLOAD_PRIVATE_KEY
     new Upload.UploadManager(

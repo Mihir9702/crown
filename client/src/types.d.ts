@@ -1,13 +1,13 @@
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context'
 import { Dispatch, SetStateAction } from 'react'
 
-export type PostIdProps = {
+export declare type PostIdProps = {
   header: string
   content: string
   owner: string
 }
 
-export type User = {
+export declare type User = {
   __typename?: User | undefined
   id: number
   nameid: string
@@ -17,7 +17,7 @@ export type User = {
   likes: number | null | undefined
 }
 
-export type ResponseHandler = {
+export declare type ResponseHandler = {
   response: any
   setError: Dispatch<SetStateAction<string | undefined>>
   router: AppRouterInstance
