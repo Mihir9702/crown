@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useUserQuery } from '@/graphql'
 import { Door, Home, Plus, Search } from '@/components/Icons'
-import { helpid } from '.'
+import { tooltip } from '@/utils/Tooltip'
 
 interface Props {
   home: boolean
@@ -20,11 +20,11 @@ export default ({ home, create, search }: Props) => {
   const searchLink = <MyLink active={search} link="/search" item={Search} />
   const loginLink = <MyLink active={true} link="/login" item={Door} />
   const userLink = user && (
-    <Link href={`/u/${user?.nameid}`}>
+    <Link href={`/u/${user.nameid}`}>
       <Image
-        src={user?.photoid as string}
-        className="rounded-full hover:border"
-        alt="photo-id"
+        src={user.photoid as string}
+        className="rounded-full hover:ring-1 hover:ring-blue-600"
+        alt="user.photoid"
         width={24}
         height={24}
       />
@@ -32,9 +32,9 @@ export default ({ home, create, search }: Props) => {
   )
 
   const hrClass =
-    'z-50 lg:max-w-5xl fixed md:static bottom-0 md:top-0 md:min-w-[500px] min-w-full text-sm bg-[#121516] rounded-xl'
+    'z-50 lg:max-w-5xl fixed md:static bottom-0 md:top-0 md:min-w-[500px] min-w-full text-sm bg-dark rounded-xl'
   const nvClass =
-    'flex justify-between items-center gap-8 z-200 w-full bg-[#040508] shadow-xl p-4 shadow-black'
+    'flex-center justify-between gap-8 z-200 w-full bg-[#040508] shadow-xl p-4 shadow-black'
 
   if (!user)
     return (
@@ -63,7 +63,7 @@ function MyLink({ active, link, item }: { active: boolean; link: string; item: J
   const Gray = 'text-gray-400 hover:text-gray-600'
   return active ? (
     <Link
-      {...helpid(link.split('/')[1] || 'home')}
+      {...tooltip(link.split('/')[1] || 'home')}
       className={link === '/create' ? Green + 'animate-pulse' : Gray}
       href={link}
     >

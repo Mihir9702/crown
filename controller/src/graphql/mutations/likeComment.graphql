@@ -1,5 +1,6 @@
 mutation LikeComment($commentid: Float!) {
   likeComment(commentid: $commentid) {
-    ...CommentFragment
+    commentid
+    likes
   }
 }

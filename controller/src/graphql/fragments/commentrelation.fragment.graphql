@@ -1,0 +1,23 @@
+fragment CommentRelationFragment on Comment {
+  user {
+    id
+    nameid
+    posts {
+      id
+    }
+    comments {
+      id
+    }
+  }
+  post {
+    id
+    postid
+    user {
+      id
+      nameid
+    }
+    comments {
+      id
+    }
+  }
+}

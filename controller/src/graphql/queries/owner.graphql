@@ -1,5 +1,0 @@
-query Owner($owner: String!) {
-  owner(owner: $owner) {
-    ...PostFragment
-  }
-}

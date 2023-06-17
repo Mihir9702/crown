@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useCreatePostMutation, useUserQuery } from '@/graphql'
 import { useRouter } from 'next/navigation'
-import { Header, Button, responseHandler } from '@/components'
+import { Header, Button } from '@/components'
 import { UploadDropzone } from 'react-uploader'
 import { uploader, uploaderOptions } from './_app'
+import DropDown from '@/components/DropDown'
+import jsont from '@/utils/tags.json'
+import { responseHandler } from '@/utils/responseHandler'
 
 export default () => {
   const [error, setError] = useState<string | undefined>('')
@@ -18,26 +21,35 @@ export default () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    const tags = localStorage
+      .getItem('tags')
+      ?.replace('[', '')
+      .replace(']', '')
+      .replace(/"/g, '')
+      .split(',')
+
     const response = await create({
-      params: { header, content },
+      params: { header, content, tags },
     })
 
     responseHandler({ response, setError, router })
   }
-  if (fetching) return <></>
-  if (!idx) {
+
+  if (fetching) {
+    return <div>Loading...</div>
+  } else if (!idx) {
     router.push('/')
   }
 
   return (
-    <main className="h-screen flex flex-col justify-center items-center">
-      <div className="absolute top-0">
+    <main className="h-screen flex-center-col justify-center">
+      <section className="header">
         <Header home={true} create={false} search={true} />
-      </div>
+      </section>
 
       <form
         onSubmit={handleSubmit}
-        className="py-8 px-32 shadow-lg w-full max-w-2xl shadow-black rounded-lg flex flex-col gap-4 items-center"
+        className="py-8 px-32 shadow-lg w-full max-w-2xl shadow-black flex-center-col rounded-lg gap-4"
       >
         {error && <p className="text-red-500">{error}</p>}
         <input
@@ -45,7 +57,7 @@ export default () => {
           type="text"
           maxLength={35}
           placeholder="Title of your content"
-          className="text-gray-200 text-md md:text-lg border-2 border-[#232b2b] bg-[#0e1111] md:w-[93.333%] px-4 outline-none py-2 rounded-md"
+          className="text-text text-md md:text-lg border-2 border-border bg-background md:w-[93.333%] px-4 outline-none py-2 rounded-md"
           onChange={e => setHeader(e.target.value)}
           required
         />
@@ -55,7 +67,12 @@ export default () => {
           onUpdate={files => files.map(x => setContent(x.fileUrl))}
           // width="600px" height="375px"
         />
-        {content && <Button type="submit">Upload</Button>}
+        <DropDown name="Tags" items={jsont} />
+        {content && (
+          <Button type="submit" color="blue">
+            Upload
+          </Button>
+        )}
       </form>
     </main>
   )

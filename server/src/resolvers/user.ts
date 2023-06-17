@@ -9,7 +9,6 @@ import {
 import { hash, genSalt, compare } from 'bcryptjs'
 import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
-import { Post } from '../model/Post'
 import { randomName, randomNumber } from '../helpers/rand'
 import { validate, validatePassword } from '../helpers/validate'
 import { Input, MyContext, UpdatePass, UpdateUser } from '../types'
@@ -24,7 +23,10 @@ export class UserResolver {
 
   @Query(() => User)
   async userSearch(@Arg('nameid') nameid: string): Promise<User | null> {
-    return await User.findOne({ where: { nameid } })
+    return await User.findOne({
+      where: { nameid },
+      relations: ['posts', 'comments'],
+    })
   }
 
   @Query(() => User, { nullable: true })
@@ -33,7 +35,10 @@ export class UserResolver {
     if (!req.session.id) return null
 
     console.log('[User] - ', req.session.userid)
-    return await User.findOne({ where: { userid: req.session.userid } })
+    return await User.findOne({
+      where: { userid: req.session.userid },
+      relations: ['posts', 'comments'],
+    })
   }
 
   @Mutation(() => User)
@@ -41,10 +46,12 @@ export class UserResolver {
     @Arg('params') params: Input,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    if (!validate(params)) console.log('[Signup] - attempt failed validation')
+    if (!validate(params))
+      throw new Error('[Signup] - attempt failed validation')
 
     const usernameTaken = await User.findOne({
       where: { username: params.username },
+      relations: ['posts', 'comments'],
     })
 
     if (usernameTaken) throw new Error('[Signup] - username already taken')
@@ -60,7 +67,7 @@ export class UserResolver {
 
     const user = await User.create(userCreation).save()
 
-    if (!user) console.log('[Signup] - error creating user')
+    if (!user) throw new Error('[Signup] - error creating user')
 
     req.session.userid = user.userid
     console.log('[Signup] - created user', req.session.userid)
@@ -75,9 +82,10 @@ export class UserResolver {
   ): Promise<User> {
     if (!validate(params)) console.log('[Login] - Invalid username or password')
 
-    const user =
-      (await User.findOne({ where: { username: params.username } })) ||
-      (await User.findOne({ where: { nameid: params.nameid } }))
+    const user = await User.findOne({
+      where: { username: params.username } || { nameid: params.nameid },
+      relations: ['posts', 'comments'],
+    })
     if (!user) throw new Error('[Login] - User not found')
 
     const valid = await compare(params.password, user.password)
@@ -95,20 +103,19 @@ export class UserResolver {
     @Arg('params') params: UpdateUser,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    const user = await User.findOne({ where: { userid: req.session.userid } })
+    const user = await User.findOne({
+      where: { userid: req.session.userid },
+      relations: ['posts', 'comments'],
+    })
     if (!user) throw new Error('[UpdateUser] - no user')
-
-    if (params && params.nameid) {
-      const posts = await Post.find({ where: { owner: user.nameid } })
-      posts.forEach(async post => {
-        post.owner = params.nameid!
-        await Post.save(post)
-      })
-    }
 
     user.nameid = params.nameid ? params.nameid : user.nameid
     user.photoid = params.photoid ? params.photoid : user.photoid
     user.bio = params.bio ? params.bio : user.bio
+
+    user.posts?.forEach(post => {
+      post.user = user
+    })
 
     return await User.save(user)
   }
@@ -119,7 +126,10 @@ export class UserResolver {
     @Arg('params') params: UpdatePass,
     @Ctx() { req }: MyContext
   ): Promise<User> {
-    const user = await User.findOne({ where: { userid: req.session.userid } })
+    const user = await User.findOne({
+      where: { userid: req.session.userid },
+      relations: ['posts', 'comments'],
+    })
     if (!user) throw new Error('[UpdatePass] - no user')
 
     const valid = await compare(params.currPass, user.password)
@@ -155,7 +165,10 @@ export class UserResolver {
   async deleteUser(@Ctx() { req }: MyContext): Promise<boolean> {
     await User.remove(
       //  @ts-ignore
-      await User.findOne({ where: { userid: req.session.userid } })
+      await User.findOne({
+        where: { userid: req.session.userid },
+        relations: ['posts', 'comments'],
+      })
     )
     return true
   }

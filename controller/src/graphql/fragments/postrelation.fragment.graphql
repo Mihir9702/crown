@@ -1,0 +1,26 @@
+fragment PostRelationFragment on Post {
+  user {
+    id
+    nameid
+    posts {
+      id
+      postid
+      createdAt
+    }
+    comments {
+      id
+    }
+  }
+  comments {
+    id
+    user {
+      id
+    }
+    post {
+      id
+      postid
+      likes
+    }
+    createdAt
+  }
+}

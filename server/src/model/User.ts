@@ -6,8 +6,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm'
 import { Post } from './Post'
+import { Comment } from './Comment'
 
 @ObjectType()
 @Entity()
@@ -25,7 +27,7 @@ export class User extends BaseEntity {
   password!: string
 
   @Field(() => String)
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   nameid!: string
 
   @Field(() => Number)
@@ -44,6 +46,14 @@ export class User extends BaseEntity {
   @Column({ default: 0 })
   likes!: number
 
+  @Field(() => [Post], { nullable: true })
+  @OneToMany(() => Post, post => post.user)
+  posts?: Post[]
+
+  @Field(() => [Comment], { nullable: true })
+  @OneToMany(() => Comment, comments => comments.user)
+  comments?: Comment[]
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt?: Date = new Date()
@@ -51,12 +61,4 @@ export class User extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt?: Date = new Date()
-
-  async getPosts() {
-    return await Post.find({ where: { owner: this.nameid } })
-  }
-
-  async getLiked() {
-    return await (await Post.find()).map(p => p.likes?.includes(this.userid))
-  }
 }

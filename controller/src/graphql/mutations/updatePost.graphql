@@ -1,5 +1,5 @@
 mutation UpdatePost($params: Update!) {
   updatePost(params: $params) {
-    header
+    id
   }
 }

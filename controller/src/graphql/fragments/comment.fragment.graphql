@@ -1,8 +1,8 @@
 fragment CommentFragment on Comment {
-  owner
+  id
   content
   likes
-  postid
   commentid
   createdAt
+  updatedAt
 }

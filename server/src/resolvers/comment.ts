@@ -12,20 +12,16 @@ import { isAuth } from '../middleware/isAuth'
 import { User } from '../model/User'
 import { Comment } from '../model/Comment'
 import { randomNumber } from '../helpers/rand'
+import { Post } from '../model/Post'
 
 @Resolver()
 export class CommentResolver {
   @Query(() => [Comment])
   async comments(@Arg('postid') postid: number): Promise<Comment[] | null> {
-    return await Comment.find({ where: { postid }, order: { createdAt: -1 } })
-  }
-
-  @Query(() => Comment)
-  async comment(@Arg('postid') postid: number): Promise<Comment | null> {
-    return await Comment.findOne({
+    return await Post.findOne({
       where: { postid },
-      order: { createdAt: -1 },
-    })
+      relations: ['user', 'post'],
+    }).then(post => post?.comments!)
   }
 
   @Mutation(() => Comment)
@@ -34,12 +30,14 @@ export class CommentResolver {
     @Arg('params') params: CreateComment,
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
-    const owner = await User.findOne({
+    const user = await User.findOne({
       where: { userid: req.session.userid },
-    }).then(r => r?.nameid)
-    if (!owner) throw new Error('[CC] - no user')
+      relations: ['posts', 'comments'],
+    })
+    if (!user) throw new Error('[CC] - no user')
+
     const commentid = randomNumber(4)
-    return await Comment.create({ ...params, owner, commentid }).save()
+    return await Comment.create({ ...params, user, commentid }).save()
   }
 
   @Mutation(() => Comment)
@@ -48,20 +46,21 @@ export class CommentResolver {
     @Arg('params') params: UpdateComment,
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
-    if (!req.session.userid) throw new Error('[UpdateComment] - No session id')
+    if (!req.session.userid) throw new Error('[UC] - No session id')
 
     const comment = await Comment.findOne({
       where: { commentid: params.commentid },
+      relations: ['user', 'post'],
     })
 
     const user = await User.findOne({
       where: { userid: req.session.userid },
     })
 
-    if (!user) throw new Error('[UpdateComment] - No user found')
-    else if (!comment) throw new Error('[UpdateComment] - No comment found')
-    else if (comment.owner !== user.nameid)
-      throw new Error('[UpdateComment] - user did not create comment')
+    if (!user) throw new Error('[UC] - No user found')
+    else if (!comment) throw new Error('[UC] - No comment found')
+    else if (comment.user !== user)
+      throw new Error('[UC] - user did not create comment')
 
     comment.content = params.content
 
@@ -74,21 +73,21 @@ export class CommentResolver {
     @Arg('commentid') commentid: number,
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
-    if (!req.session.userid) throw new Error('[LikeComment] - No session id')
+    if (!req.session.userid) throw new Error('[LC] - No session id')
 
-    const comment = await Comment.findOne({ where: { commentid } })
-    if (!comment) throw new Error('[LikeComment] - No comment found')
+    const comment = await Comment.findOne({
+      where: { commentid },
+      relations: ['user', 'post'],
+    })
+    if (!comment) throw new Error('[LC] - No comment found')
 
     if (!comment.likes) comment.likes = [req.session.userid]
     else comment.likes.push(req.session.userid)
-    console.log('[comment] - comment.likes', comment.likes)
+    console.log('[LC] - comment.likes', comment.likes)
 
-    const owner = await User.findOne({ where: { nameid: comment.owner } })
-    if (!owner) throw new Error('[LikePost] - No user found')
+    comment.user.likes += 1
 
-    owner.likes += 1
-
-    await User.save(owner)
+    await User.save(comment.user)
     return await Comment.save(comment)
   }
 
@@ -98,10 +97,13 @@ export class CommentResolver {
     @Arg('commentid') commentid: number,
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
-    if (!req.session.userid) throw new Error('[UnlikeComment] - Please log in')
+    if (!req.session.userid) throw new Error('[ULC] - Please log in')
 
-    const comment = await Comment.findOne({ where: { commentid } })
-    if (!comment) throw new Error('[Unlikecomment] - No comment found')
+    const comment = await Comment.findOne({
+      where: { commentid },
+      relations: ['user', 'post'],
+    })
+    if (!comment) throw new Error('[ULC] - No comment found')
 
     const idx = comment.likes?.indexOf(req.session.userid)
 
@@ -109,12 +111,9 @@ export class CommentResolver {
       comment.likes?.splice(idx, 1)
     }
 
-    const owner = await User.findOne({ where: { nameid: comment.owner } })
-    if (!owner) throw new Error('[UnlikeComment] - No owner found')
+    comment.user.likes -= 1
 
-    owner.likes -= 1
-
-    await User.save(owner)
+    await User.save(comment.user)
     return await Comment.save(comment)
   }
 
@@ -124,12 +123,14 @@ export class CommentResolver {
     @Arg('commentid') commentid: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    const comment = await Comment.findOne({ where: { commentid } })
+    const comment = await Comment.findOne({
+      where: { commentid },
+      relations: ['user', 'post'],
+    })
     const user = await User.findOne({ where: { userid: req.session.userid } })
 
-    if (!comment || !user)
-      throw new Error('[DeleteComment] - no post or user found')
-    else if (comment.owner !== user.nameid) return false
+    if (!comment || !user) throw new Error('[DC] - no post or user found')
+    else if (comment.user !== user) return false
 
     await Comment.remove(comment)
     return true

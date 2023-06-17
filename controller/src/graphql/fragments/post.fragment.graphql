@@ -2,9 +2,9 @@ fragment PostFragment on Post {
   id
   header
   content
-  owner
-  likes
   postid
+  likes
+  tags
   createdAt
   updatedAt
 }

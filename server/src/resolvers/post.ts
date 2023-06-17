@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import * as Upload from 'upload-js-full'
 import {
   Resolver,
   Query,
@@ -16,19 +15,17 @@ import { User } from '../model/User'
 
 @Resolver()
 export class PostResolver {
-  @Query(() => Post)
+  @Query(() => Post, { nullable: true })
   async post(@Arg('postid') postid: number): Promise<Post | null> {
-    return await Post.findOne({ where: { postid } })
+    return await Post.findOne({
+      where: { postid },
+      relations: ['user', 'comments'],
+    })
   }
 
-  @Query(() => [Post])
-  async posts(): Promise<Post[]> {
-    return await Post.find()
-  }
-
-  @Query(() => [Post])
-  async owner(@Arg('owner') owner: string): Promise<Post[]> {
-    return await Post.find({ where: { owner } })
+  @Query(() => [Post], { nullable: true })
+  async posts(): Promise<Post[] | null> {
+    return await Post.find({ relations: ['user', 'comments'] })
   }
 
   @Query(() => [Post])
@@ -47,30 +44,7 @@ export class PostResolver {
 
     const postid = randomNumber(5)
 
-    // todo swap
-    // upload.io
-    const apiKey = process.env.UPLOAD_PRIVATE_KEY
-    new Upload.UploadManager(
-      new Upload.Configuration({
-        fetchApi: fetch,
-        apiKey,
-      })
-    )
-      .upload({
-        accountId: String(process.env.UPLOAD_ACCOUNT_ID),
-        data: 'image upload',
-      })
-      .then(({ fileUrl }) => {
-        console.log('[FILE UPLOAD] - ', fileUrl)
-      })
-      .catch(x => console.log('[CreatePost] - uploading error', x))
-
-    const post = await Post.create({
-      ...params,
-      owner: user.nameid,
-      pinned: false,
-      postid,
-    }).save()
+    const post = await Post.create({ ...params, user, postid }).save()
 
     await User.save(user)
     return post
@@ -98,19 +72,21 @@ export class PostResolver {
   ): Promise<Post> {
     if (!req.session.userid) throw new Error('[LikePost] - Please log in')
 
-    const post = await Post.findOne({ where: { postid } })
+    const post = await Post.findOne({
+      where: { postid },
+      relations: ['user', 'comments'],
+    })
     if (!post) throw new Error('[LikePost] - No post found')
 
     if (!post.likes) post.likes = [req.session.userid]
     else post.likes.push(req.session.userid)
     console.log('[LikePost] - post.likes', post.likes)
 
-    const owner = await User.findOne({ where: { nameid: post.owner } })
-    if (!owner) throw new Error('[LikePost] - No user found')
+    if (!post.user) throw new Error('[LikePost] - No user found')
 
-    owner.likes += 1
+    post.user.likes += 1
 
-    await User.save(owner)
+    await User.save(post.user)
     return await Post.save(post)
   }
 
@@ -120,7 +96,10 @@ export class PostResolver {
     @Arg('postid') postid: number,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
-    const post = await Post.findOne({ where: { postid } })
+    const post = await Post.findOne({
+      where: { postid },
+      relations: ['user', 'comments'],
+    })
     if (!post) throw new Error('[UnlikePost] - No post found')
 
     if (!req.session.userid) throw new Error('[UnlikePost] - Please log in')
@@ -130,12 +109,11 @@ export class PostResolver {
       post.likes?.splice(idx, 1)
     }
 
-    const owner = await User.findOne({ where: { nameid: post.owner } })
-    if (!owner) throw new Error('[UnlikePost] - No owner found')
+    if (!post.user) throw new Error('[UnlikePost] - No post.owner found')
 
-    owner.likes -= 1
+    post.user.likes -= 1
 
-    await User.save(owner)
+    await User.save(post.user)
     return await Post.save(post)
   }
 
@@ -145,11 +123,14 @@ export class PostResolver {
     @Arg('params') params: Delete,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    const post = await Post.findOne({ where: { postid: params.postid } })
+    const post = await Post.findOne({
+      where: { postid: params.postid },
+      relations: ['user', 'comments'],
+    })
     const user = await User.findOne({ where: { userid: req.session.userid } })
 
     if (!post || !user) throw new Error('[DeletePost] - no post or user found')
-    else if (post.owner !== user.nameid) return false
+    else if (post.user !== user) return false
 
     await Post.remove(post)
     return true

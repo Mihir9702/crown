@@ -6,7 +6,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm'
+import { Post } from './Post'
+import { User } from './User'
 
 @ObjectType()
 @Entity()
@@ -19,17 +22,17 @@ export class Comment extends BaseEntity {
   @Column({ type: 'text' })
   content!: string
 
-  @Field(() => String)
-  @Column({ type: 'text' })
-  owner!: string
-
-  @Field(() => Number)
-  @Column()
-  postid!: number
-
   @Field(() => [Number], { nullable: true })
   @Column('text', { array: true, nullable: true })
   likes?: number[]
+
+  @Field(() => User)
+  @ManyToOne(() => User, user => user.comments)
+  user!: User
+
+  @Field(() => Post)
+  @ManyToOne(() => Post, post => post.comments)
+  post!: Post
 
   @Field(() => Number)
   @Column()

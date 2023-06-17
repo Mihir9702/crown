@@ -1,5 +1,6 @@
 mutation UnlikeComment($commentid: Float!) {
   unlikeComment(commentid: $commentid) {
-    ...CommentFragment
+    commentid
+    likes
   }
 }

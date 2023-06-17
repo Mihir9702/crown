@@ -22,8 +22,7 @@
     "reflect-metadata": "^0.1.13",
     "type-graphql": "1.1.1",
     "typeorm": "^0.3.6",
-    "unique-names-generator": "^4.7.1",
-    "upload-js-full": "^2.14.0"
+    "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

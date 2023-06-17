@@ -1,6 +1,5 @@
 mutation DeletePost($params: Delete!) {
   deletePost(params: $params) {
-    postid
-    owner
+    id
   }
 }

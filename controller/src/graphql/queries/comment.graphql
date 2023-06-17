@@ -1,5 +1,0 @@
-query Comment($postid: Float!) {
-  comment(postid: $postid) {
-    ...CommentFragment
-  }
-}

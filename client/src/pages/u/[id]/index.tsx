@@ -1,29 +1,30 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Header, UserCard, Card } from '@/components'
-import { useOwnerQuery, usePostsQuery, useUserSearchQuery } from '@/graphql'
+import { useUserSearchQuery } from '@/graphql'
 
 export default () => {
   const pathname = usePathname()
   const path = pathname?.split('/u/')[1]
-  const [opts, isOpts] = useState('posts')
+  const [opts, isOpts] = useState<'all' | 'likes'>('all')
 
-  const [{ data: posts }] = usePostsQuery()
-  const [{ data: own }] = useOwnerQuery({ variables: { owner: path } })
-  const [{ data: user }] = useUserSearchQuery({ variables: { nameid: path } })
+  const [{ data }] = useUserSearchQuery({ variables: { nameid: path } })
+  const user = data?.userSearch
 
-  const idx = own?.owner.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
-  const uid = user?.userSearch.userid
-  const uidx = posts?.posts.filter(post => post.likes?.includes(uid as number))
+  const idx = user?.posts?.sort((a, b) => Number(b.createdAt) - Number(a.createdAt))
+  const uid = user?.userid
+  const uidx = user?.posts?.filter(post => post.likes?.includes(Number(uid)))
 
   return (
-    <main className="flex flex-col gap-12 items-center min-h-screen">
+    <main className="flex-center-col gap-12 min-h-screen">
       <Header home={true} create={true} search={true} />
       <UserCard path={path} isOpts={isOpts} />
       <section className="my-8 grid grid-cols-1 gap-6">
-        {opts === 'posts' ? idx?.length : uidx?.length} posts
-        {idx && opts === 'posts' && idx.map(p => <Card key={p.id} {...p} />)}
-        {uidx && opts === 'posts.liked' && uidx.map(p => <Card key={p.id} {...p} />)}
+        <div className="text-center">
+          {opts === 'all' ? idx?.length || 0 : uidx?.length || 0} posts
+        </div>
+        {idx && opts === 'all' && idx.map(p => <Card key={p.id} {...p} />)}
+        {uidx && opts === 'likes' && uidx.map(p => <Card key={p.id} {...p} />)}
       </section>
     </main>
   )

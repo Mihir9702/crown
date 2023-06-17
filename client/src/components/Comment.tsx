@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import React from 'react'
-import { formatDisplay, formatPostTime } from '.'
 import {
   useCommentsQuery,
   useLikeCommentMutation,
@@ -8,6 +7,8 @@ import {
   useUserQuery,
 } from '@/graphql'
 import { Icons20 } from './Icons'
+import { formatDisplay } from '@/utils/formatDisplay'
+import { formatPostTime } from '@/utils/formatPostTime'
 
 export default ({ sort, postid }: { sort: string; postid: number }) => {
   const [{ data: id }] = useUserQuery()
@@ -22,7 +23,7 @@ export default ({ sort, postid }: { sort: string; postid: number }) => {
   formatDisplay(uidx, sort)
 
   return (
-    <main className="bg-[#0e1111] flex justify-center w-full overflow-auto overflow-x-hidden pb-7">
+    <main className="bg-background flex justify-center w-full overflow-auto overflow-x-hidden pb-7">
       <section className="w-full max-w-3xl flex flex-col items-center rounded-lg border border-gray-600 overflow-auto overflow-x-hidden min-h-[575px] max-h-[575px] gap-3 p-4 mx-3 md:mx-0 lg:mx-0">
         {uidx &&
           uidx.map(uid => (
@@ -43,10 +44,10 @@ export default ({ sort, postid }: { sort: string; postid: number }) => {
                 )}
                 <span className="text-gray-600">{(uid && uid.likes && uid.likes.length) || 0}</span>
                 <Link
-                  href={`/u/${uid.owner}`}
+                  href={`/u/${uid.user.nameid}`}
                   className="text-left min-w-[5.5rem] hover:text-gray-400"
                 >
-                  {uid.owner}
+                  {uid.user.nameid}
                 </Link>
                 :<p className="text-left">{uid.content}</p>
               </div>

@@ -4,9 +4,10 @@ import { useState } from 'react'
 import { UploadButton } from 'react-uploader'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
-import { Button, Header, responseHandler } from '@/components'
+import { Button, Header } from '@/components'
 import { uploader, uploaderOptions } from '@/pages/_app'
 import { Cross } from '@/components/Icons'
+import { responseHandler } from '@/utils/responseHandler'
 
 export default () => {
   const [{ data }] = useUserQuery()
@@ -20,10 +21,6 @@ export default () => {
   const [, update] = useUpdateUserMutation()
   const [, pass] = useUpdatePassMutation()
   const router = useRouter()
-
-  if (!id) {
-    router.push('/')
-  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -55,13 +52,12 @@ export default () => {
     responseHandler({ response, setError: isErr, router, action: 'back' })
   }
 
-  // todo swap
   return (
     <main className="w-screen flex flex-wrap flex-col justify-center items-center gap-[5rem]">
       <div className="flex justify-center items-center">
         <Header home={true} search={true} create={true} />
       </div>
-      <section className="flex flex-col justify-around items-center w-auto py-8 px-16 bg-[#121516] shadow-xl shadow-black rounded-xl">
+      <section className="flex flex-col justify-around items-center w-auto py-8 px-16 bg-dark shadow-xl shadow-black rounded-xl">
         <div className="flex ml-4 my-4 items-center relative justify-center">
           <ul className="text-white flex mt-2 gap-4">
             <li
@@ -87,17 +83,14 @@ export default () => {
         </div>
         {err && <p className="text-red-500">{err}</p>}
         {varx && (
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-6 justify-center items-center mt-4"
-          >
+          <form onSubmit={handleSubmit} className="flex-center-col gap-6 justify-center mt-4">
             <UploadButton
               uploader={uploader}
               options={uploaderOptions}
               onComplete={files => files.map(x => setPhoto(x.fileUrl))}
             >
               {({ onClick }) => (
-                <button onClick={onClick} className="flex flex-col items-center">
+                <button onClick={onClick} className="flex-center-col">
                   {photo && <h1 className="mb-4 text-green-400">Photo successfully submitted!</h1>}
 
                   <Image
@@ -119,7 +112,7 @@ export default () => {
                 placeholder={id?.nameid}
                 maxLength={18}
                 onChange={e => isNid(e.target.value)}
-                className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                className="form-input"
               />
             </label>
             <label className="flex justify-start rounded-md">
@@ -130,11 +123,13 @@ export default () => {
                 placeholder={id?.bio! || 'Write something here...'}
                 maxLength={100}
                 onChange={e => isBid(e.target.value)}
-                className="bg-[#121516] text-gray-100 px-1 mx-2 border border-gray-600 p-2 rounded-lg text-md  w-full text-left"
+                className="form-input"
               />
             </label>
             <div className="flex justify-center gap-8 mt-6">
-              <Button type="submit">Save Changes</Button>
+              <Button type="submit" color="blue">
+                Save Changes
+              </Button>
             </div>
           </form>
         )}
@@ -149,7 +144,7 @@ export default () => {
                   value={currPass}
                   type="password"
                   onChange={e => iCurrPass(e.target.value)}
-                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                  className="form-input"
                 />
               </label>
               <label className="text-white text-lg">
@@ -159,7 +154,7 @@ export default () => {
                   value={newPass}
                   type="password"
                   onChange={e => iNewPass(e.target.value)}
-                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                  className="form-input"
                 />
               </label>
               <label className="text-white text-lg">
@@ -169,10 +164,12 @@ export default () => {
                   value={rePass}
                   type="password"
                   onChange={e => iRePass(e.target.value)}
-                  className="bg-[#121516] text-gray-100 mx-2 text-md border border-gray-600 p-2 rounded-lg text-left"
+                  className="form-input"
                 />
               </label>
-              <Button type="submit">Confirm</Button>
+              <Button type="submit" color="blue">
+                Confirm
+              </Button>
             </section>
           </form>
         )}

@@ -1,7 +1,5 @@
 mutation UpdateUser($params: UpdateUser!) {
   updateUser(params: $params) {
-    nameid
-    photoid
-    bio
+    id
   }
 }

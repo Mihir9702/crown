@@ -22,6 +22,8 @@ export class Input {
 export class Create {
   @Field() header!: string
   @Field() content!: string
+  @Field(() => [String], { nullable: true }) tags?: string[]
+  @Field({ defaultValue: false }) pinned?: boolean
 }
 
 @InputType()

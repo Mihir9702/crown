@@ -1,5 +1,6 @@
 query UserSearch($nameid: String!) {
   userSearch(nameid: $nameid) {
     ...UserFragment
+    ...UserRelationFragment
   }
 }

@@ -1,5 +1,5 @@
 mutation CreateComment($params: CreateComment!) {
   createComment(params: $params) {
-    ...CommentFragment
+    id
   }
 }

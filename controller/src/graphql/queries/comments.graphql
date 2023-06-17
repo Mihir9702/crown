@@ -1,5 +1,6 @@
 query Comments($postid: Float!) {
   comments(postid: $postid) {
     ...CommentFragment
+    ...CommentRelationFragment
   }
 }

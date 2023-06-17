@@ -1,15 +1,16 @@
-import React from 'react'
+import { Fragment } from 'react'
 import Image from 'next/image'
 import { usePostsQuery, useUsersQuery } from '@/graphql'
 import { Search } from './Icons'
 import Button from './Button'
+import jsont from '@/utils/tags.json'
 
 interface Props {
-  search: string
-  setSearch?: React.Dispatch<React.SetStateAction<string>>
+  s: string
+  ss?: React.Dispatch<React.SetStateAction<string>>
 }
 
-export function SearchForm(props: Props) {
+export function SearchForm({ s, ss }: Props) {
   const handleSubmit = (e: any) => {
     e.preventDefault()
   }
@@ -31,13 +32,12 @@ export function SearchForm(props: Props) {
           id="default-search"
           className="w-screen sm:w-full p-4 pl-12 text-sm border border-gray-400 rounded-lg bg-[#1B1D1E] placeholder-gray-400 text-gray-100"
           placeholder="Search Names, Titles..."
-          //  @ts-ignore
-          onChange={x => props.setSearch(x.target.value)}
-          name={props.search}
-          value={props.search}
+          onChange={x => ss && ss(x.target.value)}
+          name={s}
+          value={s}
           required
         />
-        <Button type="submit" className="absolute right-2.5 bottom-2.5">
+        <Button type="submit" className="absolute right-2.5 bottom-2.5" color="blue">
           Search
         </Button>
       </div>
@@ -45,7 +45,7 @@ export function SearchForm(props: Props) {
   )
 }
 
-export function SearchUser(props: Props) {
+function SearchUser({ s }: Props) {
   const [{ data }] = useUsersQuery()
   const id = data?.users
 
@@ -59,7 +59,7 @@ export function SearchUser(props: Props) {
     )
 
   id.map(x => {
-    if (x.nameid.includes(props.search)) {
+    if (x.nameid.includes(s)) {
       match.push(x)
     }
   })
@@ -70,14 +70,14 @@ export function SearchUser(props: Props) {
       <section className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
-            <div className="flex flex-col items-center w-max hover:bg-gray-800 rounded-xl p-2 px-4">
+            <div className="flex-center-col w-max hover:bg-highlight rounded-lg p-2">
               <h1>{x.nameid}</h1>
               <Image
                 src={x.photoid || ''}
-                alt="id"
+                alt="user.photoid"
                 width={120}
                 height={120}
-                className="rounded-xl"
+                className="rounded-lg"
               />
             </div>
           ))}
@@ -86,11 +86,11 @@ export function SearchUser(props: Props) {
   )
 }
 
-export function SearchPost(props: Props) {
+function SearchPost({ s }: Props) {
   const [{ data }] = usePostsQuery()
   const id = data?.posts
 
-  const match = id?.filter(item => item.header.toLowerCase().includes(props.search.toLowerCase()))
+  const match = id?.filter(item => item.header.toLowerCase().includes(s.toLowerCase()))
 
   return (
     <main className="w-full max-w-5xl">
@@ -98,18 +98,76 @@ export function SearchPost(props: Props) {
       <section className="w-full grid grid-cols-3">
         {match &&
           match.map(x => (
-            <div className="flex flex-col items-center hover:bg-gray-800 rounded-xl p-2 px-4">
+            <div className="flex-center-col hover:bg-highlight rounded-lg p-2">
               <h1>{x.header}</h1>
               <Image
                 src={x.content || ''}
-                alt="id"
+                alt="post.content"
                 width={120}
                 height={120}
-                className="rounded-xl"
+                className="rounded-lg"
               />
             </div>
           ))}
       </section>
     </main>
+  )
+}
+
+export function TagList({ s, ss }: Props) {
+  return (
+    <div className="flex flex-wrap max-w-3xl gap-3">
+      {jsont.map(t => (
+        <Button color="dark" onClick={() => ss && ss(s + ' ' + t)}>
+          {t}
+        </Button>
+      ))}
+    </div>
+  )
+}
+
+export function SearchTag({ s }: Props) {
+  const [{ data }] = usePostsQuery()
+  const posts = data?.posts
+  const words = s.split(' ')
+
+  const hot: any[] = []
+  words.map(word => {
+    posts?.map(post => {
+      if (post.tags?.includes(word)) {
+        hot.push(post)
+      }
+    })
+  })
+
+  return (
+    <div>
+      <h1>[Hot] - {hot.length}</h1>
+      <section className="w-full grid grid-cols-3">
+        {hot &&
+          hot.map(x => (
+            <div className="flex-center-col hover:bg-highlight rounded-lg p-2">
+              <h1>{x.header}</h1>
+              <Image
+                src={x.content}
+                alt="post.content"
+                width={120}
+                height={120}
+                className="rounded-lg"
+              />
+            </div>
+          ))}
+      </section>
+    </div>
+  )
+}
+
+export const SearchResults = ({ s }: Props) => {
+  return (
+    <Fragment>
+      <SearchTag s={s} />
+      <SearchUser s={s} />
+      <SearchPost s={s} />
+    </Fragment>
   )
 }

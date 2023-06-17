@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useDeletePostMutation, usePostQuery, useUserQuery } from '@/graphql'
-import { Header, responseHandler, Card, Comment } from '@/components'
+import { Header, Card, Comment } from '@/components'
 import { ArrowLeft, Check, Cross, Trash } from '@/components/Icons'
 import { SortDisplay } from '@/components/ItemDisplay'
+import { responseHandler } from '@/utils/responseHandler'
 
 export default () => {
   const pathname = usePathname()
@@ -22,7 +23,7 @@ export default () => {
 
   const [, dp] = useDeletePostMutation()
 
-  const mine = id?.owner === idx?.nameid
+  const mine = id?.user.nameid === idx?.nameid
 
   const uiTemplate = {
     remove: (
@@ -77,7 +78,7 @@ export default () => {
       {mine && positive && uiTemplate.remove100}
       <div className="flex flex-col w-full justify-center items-center pb-16 gap-32">
         <Card {...id} />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 min-w-[300px]">
           <SortDisplay setSort={setSort} />
           <Comment sort={sort} postid={Number(path)} />
         </div>

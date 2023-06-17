@@ -1,5 +1,6 @@
 query Users {
   users {
     ...UserFragment
+    ...UserRelationFragment
   }
 }

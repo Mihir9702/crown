@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { Settings } from '@/components/Icons'
 import { useRouter } from 'next/navigation'
 import Icon from '@/assets/id.png'
-import { Button, helpid, responseHandler } from '.'
+import { Button } from '.'
+import { tooltip } from '@/utils/Tooltip'
+import { responseHandler } from '@/utils/responseHandler'
 
 interface Props {
   path: string
-  isOpts: React.Dispatch<React.SetStateAction<string>>
+  isOpts: React.Dispatch<React.SetStateAction<'all' | 'likes'>>
 }
 
 export default function UserCard(props: Props) {
@@ -32,7 +34,7 @@ export default function UserCard(props: Props) {
   }
 
   return (
-    <main className="w-full flex justify-center items-center mt-16">
+    <main className="w-full flex-center min-w-[400px] justify-center mt-16">
       <section
         className={`flex flex-col items-end w-full max-w-sm pb-8 bg-[#121516] shadow-xl shadow-black rounded-xl ${
           !mine ? 'pt-12' : ''
@@ -42,7 +44,7 @@ export default function UserCard(props: Props) {
         {mine && (
           <div className="flex flex-col items-center gap-2">
             <Link
-              {...helpid('Settings')}
+              {...tooltip('Settings')}
               href={`/u/${id?.nameid}/settings`}
               className="text-gray-400 hover:text-gray-600 m-2 cursor-default"
             >
@@ -50,7 +52,7 @@ export default function UserCard(props: Props) {
             </Link>
 
             <button
-              {...helpid('Logout')}
+              {...tooltip('Logout')}
               className="text-transparent bg-red-500 hover:bg-red-800 rounded-full p-2 cursor-default"
               onClick={() => handleLogout()}
             />
@@ -61,7 +63,7 @@ export default function UserCard(props: Props) {
           <Image
             src={id?.photoid || Icon}
             className="mb-3 rounded-full shadow-lg"
-            alt="photo-id"
+            alt="user.photoid"
             width={96}
             height={96}
             priority
@@ -86,12 +88,11 @@ export default function UserCard(props: Props) {
           <p className="mt-4 text-center">{id?.bio}</p>
           {mine && (
             <section className="flex mt-4 gap-4">
-              <Button onClick={() => props.isOpts('posts')}>Your Posts</Button>
+              <Button color="blue" onClick={() => props.isOpts('all')}>
+                Your Posts
+              </Button>
 
-              <Button
-                className="bg-violet-600 hover:bg-violet-700"
-                onClick={() => props.isOpts('posts')}
-              >
+              <Button color="violet" onClick={() => props.isOpts('likes')}>
                 Saved
               </Button>
             </section>

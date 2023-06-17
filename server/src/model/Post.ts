@@ -6,7 +6,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm'
+import { User } from './User'
+import { Comment } from './Comment'
 
 @ObjectType()
 @Entity()
@@ -23,10 +27,6 @@ export class Post extends BaseEntity {
   @Column({ type: 'text' })
   content!: string
 
-  @Field(() => String)
-  @Column({ type: 'text' })
-  owner!: string
-
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   @Column({ nullable: true, default: false })
   pinned?: boolean
@@ -38,6 +38,18 @@ export class Post extends BaseEntity {
   @Field(() => Number)
   @Column({ unique: true })
   postid!: number
+
+  @Field(() => [String], { nullable: true })
+  @Column('simple-array', { nullable: true })
+  tags?: string[]
+
+  @Field(() => User)
+  @ManyToOne(() => User, user => user.posts)
+  user!: User
+
+  @Field(() => [Comment], { nullable: true })
+  @OneToMany(() => Comment, comment => comment.post)
+  comments?: Comment[]
 
   @Field(() => String)
   @CreateDateColumn()

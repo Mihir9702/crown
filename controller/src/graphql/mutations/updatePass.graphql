@@ -1,5 +1,5 @@
 mutation UpdatePass($params: UpdatePass!) {
   updatePass(params: $params) {
-    ...UserFragment
+    id
   }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Header, Card, ItemDisplay, Footer, formatDisplay } from '@/components'
+import { Header, Card, ItemDisplay, Footer } from '@/components'
+import { formatDisplay } from '@/utils/formatDisplay'
 import Image from 'next/image'
 import ICrown from '@/assets/crown.png'
 import { usePostsQuery, useUsersQuery } from '@/graphql'
@@ -15,7 +16,7 @@ export default () => {
   const users = ud?.users
 
   const [{ data: pd }] = usePostsQuery()
-  const posts = pd?.posts
+  const posts = pd?.posts!
 
   formatDisplay(posts, sort)
 
@@ -26,9 +27,9 @@ export default () => {
   }, [])
 
   return (
-    <main className="flex flex-col justify-center gap-8 items-center">
+    <main className="flex-center-col justify-between gap-8 min-h-screen">
       <Header home={false} create={true} search={true} />
-      <Image className="invert w-64" src={ICrown} alt="Crown Logo" priority />
+      <Image className="invert w-64" src={ICrown} alt="logo" />
       {users ? users.length : 0} users | {posts ? posts.length : 0} posts
       <ItemDisplay show={show} setSort={setSort} isGrid={isGrid} isShow={isShow} />
       <section className={`grid ${gridCols} items-center w-auto justify-center gap-8 pb-4`}>
@@ -36,7 +37,7 @@ export default () => {
           posts.map(p => {
             let img = 225
             return show ? (
-              <Card key={p.postid} {...p} />
+              <Card key={p.id} {...p} />
             ) : (
               <Image
                 key={p.postid}

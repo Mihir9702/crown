@@ -1,6 +1,6 @@
 import { useState, Dispatch, SetStateAction } from 'react'
 import { Clock, Col, EyeClose, EyeOpen, Grid, Heart } from './Icons'
-import { helpid } from './index'
+import { tooltip } from '@/utils/Tooltip'
 
 type IsShow = Dispatch<SetStateAction<boolean>>
 type DispatchElement = Dispatch<SetStateAction<string>>
@@ -19,7 +19,7 @@ export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
   return (
     <p className="flex gap-2">
       <span
-        {...helpid('1-col')}
+        {...tooltip('1-col')}
         className={`${co} ${icon}`}
         onClick={() => {
           ico('text-gray-400')
@@ -31,7 +31,7 @@ export function GridDisplay({ isGrid }: { isGrid: DispatchElement }) {
       </span>
 
       <span
-        {...helpid('4-col')}
+        {...tooltip('4-col')}
         className={`${act} ${icon}`}
         onClick={() => {
           ico('')
@@ -51,7 +51,7 @@ export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
   return (
     <p className="flex gap-2">
       <span
-        {...helpid('recently')}
+        {...tooltip('recently')}
         className={`${co} ${icon}`}
         onClick={() => {
           ico('text-gray-400')
@@ -63,7 +63,7 @@ export function SortDisplay({ setSort }: { setSort: DispatchElement }) {
       </span>
 
       <span
-        {...helpid('popular')}
+        {...tooltip('popular')}
         className={`${act} ${icon}`}
         onClick={() => {
           ico('')

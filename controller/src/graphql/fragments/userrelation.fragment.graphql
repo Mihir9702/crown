@@ -1,0 +1,16 @@
+fragment UserRelationFragment on User {
+  posts {
+    id
+    header
+    content
+    postid
+    likes
+    createdAt
+  }
+
+  comments {
+    id
+  }
+  createdAt
+  updatedAt
+}

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLoginMutation, useUserQuery } from '@/graphql'
 import Link from 'next/link'
-import { Button, responseHandler } from '@/components'
+import { Button } from '@/components'
+import { responseHandler } from '@/utils/responseHandler'
 
 export default () => {
   const [username, setUsername] = useState('')
@@ -29,10 +30,10 @@ export default () => {
   }
 
   return (
-    <main className="flex justify-center items-start bg-[#0e1111] h-screen w-full">
+    <main className="flex justify-center items-start bg-background h-screen w-full">
       <form
         onSubmit={handleSubmit}
-        className="border-2 border-[#101110] p-8 mt-8 rounded-xl shadow-lg shadow-black py-12 flex flex-col items-start text-gray-300"
+        className="border-2 border-border p-8 mt-8 rounded-xl shadow-lg shadow-black py-12 flex flex-col items-start text-gray-300"
       >
         <h1 className="font-bold text-2xl text-gray-200">Login</h1>
         {error && <p className="text-red-500 my-4">{error}</p>}
@@ -41,21 +42,21 @@ export default () => {
             name={username}
             type="text"
             placeholder="Username"
-            className="text-gray-300 text-md md:text-lg bg-gray-600 outline-none p-2 rounded-md"
+            className="form-input"
             onChange={e => setUsername(e.target.value)}
           />
           <input
             name={password}
             type="password"
             placeholder="Password"
-            className="text-gray-300 text-md md:text-lg bg-gray-600 outline-none p-2 rounded-md"
+            className="form-input"
             onChange={e => setPassword(e.target.value)}
           />
         </div>
         <Link href={'/signup'} legacyBehavior>
           <a className="text-gray-400 hover:text-gray-500 my-4 text-sm">Create Account</a>
         </Link>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" color="blue">
           Login
         </Button>
       </form>

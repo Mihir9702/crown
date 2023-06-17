@@ -1,22 +1,17 @@
 import { useState } from 'react'
 import { Header } from '@/components'
-import { SearchForm, SearchPost, SearchUser } from '@/components/Search'
+import { SearchForm, SearchResults, TagList } from '@/components/Search'
 
 export default () => {
-  const [s, is] = useState<string>('') // ?
+  const [s, ss] = useState<string>('')
 
+  // taglist on rightside (?)
   return (
-    <main className="flex flex-col items-center gap-6 h-screen justify-between">
-      <div>
-        <Header home={true} create={true} search={false} />
-        <SearchForm search={s} setSearch={is} />
-        {s && (
-          <>
-            <SearchUser search={s} />
-            <SearchPost search={s} />
-          </>
-        )}
-      </div>
+    <main className="flex-center-col gap-6 h-screen justify-start">
+      <Header home={true} create={true} search={false} />
+      <SearchForm s={s} ss={ss} />
+      <TagList s={s} ss={ss} />
+      {s && <SearchResults s={s} />}
     </main>
   )
 }
