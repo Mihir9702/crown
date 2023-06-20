@@ -13,14 +13,16 @@ fragment PostRelationFragment on Post {
   }
   comments {
     id
+    content
+    commentid
     user {
       id
+      nameid
     }
     post {
       id
-      postid
-      likes
     }
     createdAt
+    updatedAt
   }
 }

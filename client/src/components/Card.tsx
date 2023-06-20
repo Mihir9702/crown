@@ -18,7 +18,7 @@ import { useState } from 'react'
 
 // props vs posts ??
 
-export default (props: Post) => {
+export default (props: Post | any) => {
   const [content, setContent] = useState('')
   const [, likePost] = useLikePostMutation()
   const [, unlikePost] = useUnlikePostMutation()

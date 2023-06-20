@@ -57,23 +57,29 @@ export default () => {
       <div className="flex justify-center items-center">
         <Header home={true} search={true} create={true} />
       </div>
-      <section className="flex flex-col justify-around items-center w-auto py-8 px-16 bg-dark shadow-xl shadow-black rounded-xl">
+      <section className="flex flex-col justify-around items-center w-auto py-8 px-24 bg-dark shadow-xl shadow-black rounded-xl">
         <div className="flex ml-4 my-4 items-center relative justify-center">
-          <ul className="text-white flex mt-2 gap-4">
-            <li
+          <header className="text-white flex mt-2 gap-4">
+            <button
               onClick={() => ivarx(true)}
-              className={`${varx ? 'text-gray-500' : 'text-gray-100'} hover:text-gray-500`}
+              className={`${
+                varx ? 'text-gray-500' : 'text-gray-100'
+              } hover:text-gray-500 cursor-pointer`}
+              disabled={varx}
             >
               Account
-            </li>
+            </button>
             |
-            <li
+            <button
               onClick={() => ivarx(false)}
-              className={`${!varx ? 'text-gray-500' : 'text-gray-100'} hover:text-gray-500`}
+              className={`${
+                !varx ? 'text-gray-500' : 'text-gray-100'
+              } hover:text-gray-500 cursor-pointer`}
+              disabled={!varx}
             >
               Security
-            </li>
-          </ul>
+            </button>
+          </header>
           <button
             className="absolute right-0 top-0 -mx-24 -my-6 text-gray-500 hover:text-gray-700"
             onClick={() => router.back()}

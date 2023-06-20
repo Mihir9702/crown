@@ -8,6 +8,8 @@ import DropDown from '@/components/DropDown'
 import jsont from '@/utils/tags.json'
 import { responseHandler } from '@/utils/responseHandler'
 
+// replace upcdn with sdk for scaled production
+
 export default () => {
   const [error, setError] = useState<string | undefined>('')
   const [header, setHeader] = useState<string>('')

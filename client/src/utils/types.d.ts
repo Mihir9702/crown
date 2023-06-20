@@ -42,30 +42,3 @@ export declare type ResponseHandler = {
   router: AppRouterInstance
   action?: string
 }
-
-export declare type Post = {
-  __typename?: 'Post' | undefined
-  id: number
-  header: string
-  content: string
-  likes?: number[] | null | undefined
-  postid: number
-  createdAt: string
-  updatedAt: string
-  user: {
-    __typename?: 'User' | undefined
-    nameid: string
-    userid: number
-  }
-  comments: {
-    __typename?: 'Comment' | undefined
-    likes: number[]
-    commentid: number
-    user: {
-      __typename?: 'User' | undefined
-      nameid: string
-      userid: number
-    }
-    createdAt: string
-  }
-}

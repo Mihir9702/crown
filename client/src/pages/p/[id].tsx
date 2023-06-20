@@ -5,6 +5,7 @@ import { Header, Card, Comment } from '@/components'
 import { ArrowLeft, Check, Cross, Trash } from '@/components/Icons'
 import { SortDisplay } from '@/components/ItemDisplay'
 import { responseHandler } from '@/utils/responseHandler'
+import { formatDisplay } from '@/utils/formatDisplay'
 
 export default () => {
   const pathname = usePathname()
@@ -24,6 +25,7 @@ export default () => {
   const [, dp] = useDeletePostMutation()
 
   const mine = id?.user.nameid === idx?.nameid
+  const comments = id?.comments
 
   const uiTemplate = {
     remove: (
@@ -54,6 +56,8 @@ export default () => {
     ),
   }
 
+  formatDisplay(comments!, sort)
+
   const deletePost = async () => {
     if (idx) {
       const response = await dp({
@@ -69,6 +73,21 @@ export default () => {
 
   if (!id) return <main>Nothing was found...</main>
 
+  if (!comments) {
+    return (
+      <main className="flex flex-col justify-between items-center gap-32">
+        <Header home={true} create={true} search={true} />
+        {uiTemplate.returnKey}
+        {err && <p className="text-red-500">{err}</p>}
+        {mine && !positive && uiTemplate.remove}
+        {mine && positive && uiTemplate.remove100}
+        <div className="flex flex-col w-full justify-center items-center pb-16 gap-32">
+          <Card {...id} />
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="flex flex-col justify-between items-center gap-32">
       <Header home={true} create={true} search={true} />
@@ -78,10 +97,21 @@ export default () => {
       {mine && positive && uiTemplate.remove100}
       <div className="flex flex-col w-full justify-center items-center pb-16 gap-32">
         <Card {...id} />
-        <div className="flex flex-col gap-4 min-w-[300px]">
-          <SortDisplay setSort={setSort} />
-          <Comment sort={sort} postid={Number(path)} />
-        </div>
+        {comments && (
+          <section className="flex flex-col gap-4 min-w-[375px] max-w-[575px]">
+            <div className="flex items-center justify-between">
+              <SortDisplay setSort={setSort} />
+              {comments.length} - Comments
+            </div>
+            {comments.map(c => (
+              <main className="comments">
+                <section className="comments">
+                  <Comment sort={sort} comment={c} loggedIn={!!idx} />
+                </section>
+              </main>
+            ))}
+          </section>
+        )}
       </div>
     </main>
   )

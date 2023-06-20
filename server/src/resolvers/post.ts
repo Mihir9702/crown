@@ -19,7 +19,7 @@ export class PostResolver {
   async post(@Arg('postid') postid: number): Promise<Post | null> {
     return await Post.findOne({
       where: { postid },
-      relations: ['user', 'comments'],
+      relations: ['user', 'comments', 'comments.user', 'comments.post'],
     })
   }
 
@@ -42,7 +42,7 @@ export class PostResolver {
     const user = await User.findOne({ where: { userid: req.session.userid } })
     if (!user) throw new Error('[CreatePost] - No user session')
 
-    const postid = randomNumber(5)
+    const postid = randomNumber(6)
 
     const post = await Post.create({ ...params, user, postid }).save()
 

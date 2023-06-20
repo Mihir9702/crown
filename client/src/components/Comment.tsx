@@ -1,60 +1,43 @@
 import Link from 'next/link'
 import React from 'react'
-import {
-  useCommentsQuery,
-  useLikeCommentMutation,
-  useUnlikeCommentMutation,
-  useUserQuery,
-} from '@/graphql'
+import { Comment, User, useLikeCommentMutation, useUnlikeCommentMutation } from '@/graphql'
 import { Icons20 } from './Icons'
-import { formatDisplay } from '@/utils/formatDisplay'
 import { formatPostTime } from '@/utils/formatPostTime'
 
-export default ({ sort, postid }: { sort: string; postid: number }) => {
-  const [{ data: id }] = useUserQuery()
-  const idx = id?.user
+interface Props {
+  comment: Comment
+  idx: User
+}
 
-  const [{ data: cid }] = useCommentsQuery({ variables: { postid } })
-  const uidx = cid?.comments
-
+export default ({ comment, idx }: Props) => {
   const [, lc] = useLikeCommentMutation()
   const [, ulc] = useUnlikeCommentMutation()
 
-  formatDisplay(uidx, sort)
+  if (!comment) return null
 
   return (
-    <main className="bg-background flex justify-center w-full overflow-auto overflow-x-hidden pb-7">
-      <section className="w-full max-w-3xl flex flex-col items-center rounded-lg border border-gray-600 overflow-auto overflow-x-hidden min-h-[575px] max-h-[575px] gap-3 p-4 mx-3 md:mx-0 lg:mx-0">
-        {uidx &&
-          uidx.map(uid => (
-            <div
-              key={uid.commentid}
-              className="w-full flex justify-between items-center gap-3 text-sm px-1"
-            >
-              <div className="flex gap-4 items-center">
-                {idx && uid.likes?.includes(idx.userid) && (
-                  <button onClick={async () => await ulc({ commentid: uid.commentid })}>
-                    {Icons20.RedHeart}
-                  </button>
-                )}
-                {idx && !uid.likes?.includes(idx.userid) && (
-                  <button onClick={async () => await lc({ commentid: uid.commentid })}>
-                    {Icons20.Heart}
-                  </button>
-                )}
-                <span className="text-gray-600">{(uid && uid.likes && uid.likes.length) || 0}</span>
-                <Link
-                  href={`/u/${uid.user.nameid}`}
-                  className="text-left min-w-[5.5rem] hover:text-gray-400"
-                >
-                  {uid.user.nameid}
-                </Link>
-                :<p className="text-left">{uid.content}</p>
-              </div>
-              <span className="text-gray-600">{formatPostTime(Number(uid.createdAt))}</span>
-            </div>
-          ))}
-      </section>
-    </main>
+    <div className="w-full flex justify-between items-center gap-3 text-sm px-1">
+      <div className="flex gap-4 items-center">
+        {idx && comment.likes?.includes(idx.userid) && (
+          <button onClick={async () => await ulc({ commentid: comment.commentid })}>
+            {Icons20.RedHeart}
+          </button>
+        )}
+        {idx && !comment.likes?.includes(idx.userid) && (
+          <button onClick={async () => await lc({ commentid: comment.commentid })}>
+            {Icons20.Heart}
+          </button>
+        )}
+        <span className="text-gray-600">{(comment.likes && comment.likes.length) || 0}</span>
+        <Link
+          href={`/u/${comment.user.nameid}`}
+          className="text-left min-w-[5.5rem] hover:text-gray-400"
+        >
+          {comment.user.nameid}
+        </Link>
+        :<p className="text-left">{comment.content}</p>
+      </div>
+      <span className="text-gray-600">{formatPostTime(Number(comment.createdAt))}</span>
+    </div>
   )
 }

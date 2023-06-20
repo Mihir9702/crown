@@ -231,7 +231,7 @@ export type CommentRelationFragmentFragment = { __typename?: 'Comment', user: { 
 
 export type PostFragmentFragment = { __typename?: 'Post', id: number, header: string, content: string, postid: number, likes?: Array<number> | null, tags?: Array<string> | null, createdAt: string, updatedAt: string };
 
-export type PostRelationFragmentFragment = { __typename?: 'Post', user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, createdAt: string, user: { __typename?: 'User', id: number }, post: { __typename?: 'Post', id: number, postid: number, likes?: Array<number> | null } }> | null };
+export type PostRelationFragmentFragment = { __typename?: 'Post', user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, content: string, commentid: number, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string }, post: { __typename?: 'Post', id: number } }> | null };
 
 export type UserFragmentFragment = { __typename?: 'User', id: number, nameid: string, userid: number, photoid?: string | null, bio?: string | null, likes?: number | null, createdAt: string, updatedAt: string };
 
@@ -345,12 +345,12 @@ export type PostQueryVariables = Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: number, header: string, content: string, postid: number, likes?: Array<number> | null, tags?: Array<string> | null, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, createdAt: string, user: { __typename?: 'User', id: number }, post: { __typename?: 'Post', id: number, postid: number, likes?: Array<number> | null } }> | null } | null };
+export type PostQuery = { __typename?: 'Query', post?: { __typename?: 'Post', id: number, header: string, content: string, postid: number, likes?: Array<number> | null, tags?: Array<string> | null, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, content: string, commentid: number, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string }, post: { __typename?: 'Post', id: number } }> | null } | null };
 
 export type PostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: number, header: string, content: string, postid: number, likes?: Array<number> | null, tags?: Array<string> | null, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, createdAt: string, user: { __typename?: 'User', id: number }, post: { __typename?: 'Post', id: number, postid: number, likes?: Array<number> | null } }> | null }> | null };
+export type PostsQuery = { __typename?: 'Query', posts?: Array<{ __typename?: 'Post', id: number, header: string, content: string, postid: number, likes?: Array<number> | null, tags?: Array<string> | null, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string, posts?: Array<{ __typename?: 'Post', id: number, postid: number, createdAt: string }> | null, comments?: Array<{ __typename?: 'Comment', id: number }> | null }, comments?: Array<{ __typename?: 'Comment', id: number, content: string, commentid: number, createdAt: string, updatedAt: string, user: { __typename?: 'User', id: number, nameid: string }, post: { __typename?: 'Post', id: number } }> | null }> | null };
 
 export type UserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -432,15 +432,17 @@ export const PostRelationFragmentFragmentDoc = gql`
   }
   comments {
     id
+    content
+    commentid
     user {
       id
+      nameid
     }
     post {
       id
-      postid
-      likes
     }
     createdAt
+    updatedAt
   }
 }
     `;
